@@ -14,7 +14,6 @@ public class ModLanguageProvider extends LanguageProvider {
 	@Override
 	protected void addTranslations() {
 		add("itemGroup." + Main.MODID, "Surviving the Aftermath");
-
 		add(ModBlocks.EXAMPLE.get(), "Example");
 	}
 }

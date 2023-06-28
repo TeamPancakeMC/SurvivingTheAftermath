@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "mod.surviving_the_aftermath.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "surviving_the_aftermath.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
