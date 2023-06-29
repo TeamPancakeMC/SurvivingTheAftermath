@@ -17,5 +17,6 @@ public class EventSubscriber {
 
 		generator.addProvider(event.includeClient(), new ModLanguageProvider(output));
 		generator.addProvider(event.includeClient(), new ModBlockStateProvider(output, existingFileHelper));
+		generator.addProvider(event.includeClient(), new ModSoundProvider(output, existingFileHelper));
 	}
 }

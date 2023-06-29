@@ -1,7 +1,5 @@
 {
-  "orchelias_vox":{
-    "subtitle": "orchelias_vox",
-    "replace": "true",
+  "orchelias_vox": {
     "sounds": [
       {
         "name": "surviving_the_aftermath:orchelias_vox",
