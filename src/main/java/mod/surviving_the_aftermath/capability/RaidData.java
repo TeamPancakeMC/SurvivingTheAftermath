@@ -59,6 +59,7 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 				if (entity instanceof Player) {
 					var piglin = EntityType.PIGLIN.create(level);
 					piglin.moveTo(Vec3.atCenterOf(p));
+					piglin.setImmuneToZombification(true);
 					level.addFreshEntity(piglin);
 				}
 				return true;
