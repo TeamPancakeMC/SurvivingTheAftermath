@@ -1,6 +1,10 @@
 package mod.surviving_the_aftermath;
 
-import mod.surviving_the_aftermath.init.*;
+import mod.surviving_the_aftermath.init.ModBlockEntities;
+import mod.surviving_the_aftermath.init.ModBlocks;
+import mod.surviving_the_aftermath.init.ModItems;
+import mod.surviving_the_aftermath.init.ModSoundEvents;
+import mod.surviving_the_aftermath.init.ModTabs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
