@@ -7,6 +7,7 @@ import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.init.ModStructures;
 import mod.surviving_the_aftermath.init.ModTags;
 import mod.surviving_the_aftermath.structure.CityStructure;
+import mod.surviving_the_aftermath.structure.HouseOfSakura;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
@@ -41,10 +42,19 @@ public class EventSubscriber {
 											context.lookup(Registries.BIOME).getOrThrow(ModTags.HAS_CITY), Map.of(),
 											GenerationStep.Decoration.SURFACE_STRUCTURES,
 											TerrainAdjustment.BEARD_BOX)));
+							context.register(ModStructures.HOUSE_OF_SAKURA,
+									new HouseOfSakura(new StructureSettings(
+											context.lookup(Registries.BIOME).getOrThrow(ModTags.HAS_HOUSE_OF_SAKURA),
+											Map.of(), GenerationStep.Decoration.SURFACE_STRUCTURES,
+											TerrainAdjustment.BEARD_THIN)));
 						}).add(Registries.STRUCTURE_SET, context -> {
 							context.register(ModStructures.CITY_SET, new StructureSet(
 									context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.CITY),
 									new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 2057068235)));
+							context.register(ModStructures.HOUSE_OF_SAKURA_SET, new StructureSet(
+									context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.HOUSE_OF_SAKURA),
+									new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 1712650656)));
+
 						}), Set.of(Main.MODID)));
 
 		generator.addProvider(event.includeClient(), new ModLanguageProvider(output));

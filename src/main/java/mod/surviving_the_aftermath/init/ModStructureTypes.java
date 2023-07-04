@@ -2,6 +2,7 @@ package mod.surviving_the_aftermath.init;
 
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.structure.CityStructure;
+import mod.surviving_the_aftermath.structure.HouseOfSakura;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -13,4 +14,6 @@ public class ModStructureTypes {
 
 	public static final RegistryObject<StructureType<?>> CITY = STRUCTURE_TYPES.register("city",
 			() -> () -> CityStructure.CODEC);
+	public static final RegistryObject<StructureType<?>> HOUSE_OF_SAKURA = STRUCTURE_TYPES.register("house_of_sakura",
+			() -> () -> HouseOfSakura.CODEC);
 }

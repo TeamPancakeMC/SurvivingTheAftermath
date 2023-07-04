@@ -22,5 +22,6 @@ public class ModBiomeTagProvider extends BiomeTagsProvider {
 	@Override
 	protected void addTags(Provider pProvider) {
 		tag(ModTags.HAS_CITY).add(Biomes.PLAINS);
+		tag(ModTags.HAS_HOUSE_OF_SAKURA).add(Biomes.CHERRY_GROVE);
 	}
 }

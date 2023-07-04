@@ -10,7 +10,11 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 public class ModStructures {
 	public static final ResourceKey<Structure> CITY = ResourceKey.create(Registries.STRUCTURE,
 			new ResourceLocation(Main.MODID, "city"));
-
 	public static final ResourceKey<StructureSet> CITY_SET = ResourceKey.create(Registries.STRUCTURE_SET,
 			new ResourceLocation(Main.MODID, "city"));
+
+	public static final ResourceKey<Structure> HOUSE_OF_SAKURA = ResourceKey.create(Registries.STRUCTURE,
+			new ResourceLocation(Main.MODID, "house_of_sakura"));
+	public static final ResourceKey<StructureSet> HOUSE_OF_SAKURA_SET = ResourceKey.create(Registries.STRUCTURE_SET,
+			new ResourceLocation(Main.MODID, "house_of_sakura"));
 }

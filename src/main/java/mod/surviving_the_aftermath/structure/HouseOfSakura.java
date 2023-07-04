@@ -24,12 +24,12 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnorePr
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
-public class CityStructure extends Structure {
+public class HouseOfSakura extends Structure {
 
-	public static final Codec<Structure> CODEC = simpleCodec(CityStructure::new);
-	private static final ResourceLocation STRUCTURE = new ResourceLocation(Main.MODID, "city");
+	public static final Codec<Structure> CODEC = simpleCodec(HouseOfSakura::new);
+	private static final ResourceLocation STRUCTURE = new ResourceLocation(Main.MODID, "house_of_sakura");
 
-	public CityStructure(StructureSettings settings) {
+	public HouseOfSakura(StructureSettings settings) {
 		super(settings);
 	}
 
@@ -50,18 +50,18 @@ public class CityStructure extends Structure {
 
 	@Override
 	public StructureType<?> type() {
-		return ModStructureTypes.CITY.get();
+		return ModStructureTypes.HOUSE_OF_SAKURA.get();
 	}
 
 	public static class Piece extends TemplateStructurePiece {
 		public Piece(StructureTemplateManager pStructureManager, ResourceLocation pLocation, BlockPos pPos,
 				Rotation pRotation) {
-			super(ModStructurePieceTypes.CITY.get(), 0, pStructureManager, pLocation, pLocation.toString(),
+			super(ModStructurePieceTypes.HOUSE_OF_SAKURA.get(), 0, pStructureManager, pLocation, pLocation.toString(),
 					makeSettings(pRotation), pPos);
 		}
 
 		public Piece(StructureTemplateManager pStructureManager, CompoundTag pTag) {
-			super(ModStructurePieceTypes.CITY.get(), pTag, pStructureManager, (p_228568_) -> {
+			super(ModStructurePieceTypes.HOUSE_OF_SAKURA.get(), pTag, pStructureManager, (p_228568_) -> {
 				return makeSettings(Rotation.valueOf(pTag.getString("rot")));
 			});
 		}

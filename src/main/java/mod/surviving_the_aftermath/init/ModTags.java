@@ -9,4 +9,7 @@ import net.minecraft.world.level.biome.Biome;
 public class ModTags {
 	public static final TagKey<Biome> HAS_CITY = TagKey.create(Registries.BIOME,
 			new ResourceLocation(Main.MODID, "has_city"));
+	public static final TagKey<Biome> HAS_HOUSE_OF_SAKURA = TagKey
+			.create(Registries.BIOME,
+			new ResourceLocation(Main.MODID, "has_house_of_sakura"));
 }
