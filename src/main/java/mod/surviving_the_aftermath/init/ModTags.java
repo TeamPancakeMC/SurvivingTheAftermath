@@ -12,4 +12,7 @@ public class ModTags {
 	public static final TagKey<Biome> HAS_HOUSE_OF_SAKURA = TagKey
 			.create(Registries.BIOME,
 			new ResourceLocation(Main.MODID, "has_house_of_sakura"));
+	public static final TagKey<Biome> HAS_NETHER_RAID = TagKey
+			.create(Registries.BIOME,
+			new ResourceLocation(Main.MODID, "has_nether_raid"));
 }

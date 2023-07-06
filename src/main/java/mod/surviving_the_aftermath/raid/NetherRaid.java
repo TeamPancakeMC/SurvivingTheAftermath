@@ -40,11 +40,13 @@ public class NetherRaid {
 	private HashSet<UUID> enemies = new HashSet<>();
 	private int timer;
 	private int wave;
+	private int delay; // Delay to make sure raid mobs have been re-added to the world after load
 
 	public NetherRaid(int wave, List<BlockPos> spawn, HashSet<UUID> enemies) {
 		this.wave = wave;
 		this.spawn = spawn;
 		this.enemies = enemies;
+		this.delay = 100;
 	}
 
 	public NetherRaid(BlockPos pos, ServerLevel level) {
@@ -74,9 +76,11 @@ public class NetherRaid {
 	}
 
 	public void tick(ServerLevel level) {
+		if (delay > 0)
+			delay--;
 		timer++;
 
-		if (timer % 20 == 0) {
+		if (timer % 20 == 0 && delay == 0) {
 			updatePlayers(level);
 			updateProgress(level);
 		}
@@ -91,6 +95,7 @@ public class NetherRaid {
 			var entity = level.getEntity(id);
 			return entity == null || !entity.isAlive();
 		});
+
 		if (enemies.isEmpty()) {
 			wave++;
 			spawnEnemies(level);

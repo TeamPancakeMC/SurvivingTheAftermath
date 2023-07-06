@@ -17,4 +17,9 @@ public class ModStructures {
 			new ResourceLocation(Main.MODID, "house_of_sakura"));
 	public static final ResourceKey<StructureSet> HOUSE_OF_SAKURA_SET = ResourceKey.create(Registries.STRUCTURE_SET,
 			new ResourceLocation(Main.MODID, "house_of_sakura"));
+	
+	public static final ResourceKey<Structure> NETHER_RAID = ResourceKey.create(Registries.STRUCTURE,
+			new ResourceLocation(Main.MODID, "nether_raid"));
+	public static final ResourceKey<StructureSet> NETHER_RAID_SET = ResourceKey.create(Registries.STRUCTURE_SET,
+			new ResourceLocation(Main.MODID, "nether_raid"));
 }

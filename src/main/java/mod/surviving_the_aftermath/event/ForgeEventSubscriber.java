@@ -13,7 +13,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -37,15 +36,6 @@ public class ForgeEventSubscriber {
 				level.addFreshEntity(allay);
 				RAIDS.add(raid.getId());
 			}
-		}
-	}
-
-	@SubscribeEvent
-	public static void generateStructure(PlayerLoggedInEvent event) {
-		if (event.getEntity().level() instanceof ServerLevel level) {
-			RaidData.get(level).ifPresent(c -> {
-				c.generate();
-			});
 		}
 	}
 

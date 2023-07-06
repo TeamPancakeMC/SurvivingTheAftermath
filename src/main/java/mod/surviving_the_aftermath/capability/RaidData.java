@@ -1,23 +1,21 @@
 package mod.surviving_the_aftermath.capability;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
-import mod.surviving_the_aftermath.Main;
+import com.mojang.serialization.Codec;
+
+import mod.surviving_the_aftermath.init.ModStructures;
 import mod.surviving_the_aftermath.raid.NetherRaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ai.village.poi.PoiManager;
-import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -30,62 +28,57 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 	public static final Capability<RaidData> CAPABILITY = CapabilityManager.get(new CapabilityToken<RaidData>() {
 	});
 
-	private static final ResourceLocation STRUCTURE = new ResourceLocation(Main.MODID, "nether_invasion_portal");
+	public static final Codec<List<NetherRaid>> RAIDS_CODEC = Codec.list(NetherRaid.CODEC);
 
 	private ServerLevel level;
-	private Optional<BlockPos> position = Optional.empty();
-	private Optional<NetherRaid> raid = Optional.empty();
+	private List<NetherRaid> raids = new ArrayList<>();
 
 	public RaidData(ServerLevel level) {
 		this.level = level;
 	}
 
-	public void generate() {
-		if (position.isEmpty()) {
-			var pos = level.getSharedSpawnPos();
-			level.getStructureManager().get(STRUCTURE).ifPresent(template -> {
-				template.placeInWorld(level, pos, pos,
-						new StructurePlaceSettings().addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK), level.random,
-						2);
-			});
-
-			position = level.getPoiManager().findClosest(h -> h.is(PoiTypes.NETHER_PORTAL), pos, 40,
-					PoiManager.Occupancy.ANY);
+	public boolean enterPortal(Entity entity) {
+		var pos = entity.blockPosition();
+		if (level.structureManager().getAllStructuresAt(pos).containsKey(
+				level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID))) {
+			if (entity instanceof Player && noRaidAt(pos)) {
+				raids.add(new NetherRaid(pos, level));
+			}
+			return true;
 		}
+		return false;
 	}
 
-	public boolean enterPortal(Entity entity) {
-		return position.map(p -> {
-			if (entity.blockPosition().distSqr(p) < 400) {
-				if (entity instanceof Player && raid.isEmpty()) {
-					raid = Optional.of(new NetherRaid(p, level));
-				}
-				return true;
+	private boolean noRaidAt(BlockPos pos) {
+		for (var raid : raids) {
+			for (var p : raid.getSpawn()) {
+				if (p.distSqr(pos) < 25)
+					return false;
 			}
-			return false;
-		}).orElse(false);
+		}
+		return true;
 	}
 
 	public void tick() {
-		raid.ifPresent(r -> r.tick(level));
+		for (var raid : raids) {
+			raid.tick(level);
+		}
 	}
 
 	@Override
 	public CompoundTag serializeNBT() {
 		var tag = new CompoundTag();
-		position.ifPresent(p -> tag.put("position", NbtUtils.writeBlockPos(p)));
-		raid.ifPresent(r -> tag.put("raid", NetherRaid.CODEC.encodeStart(NbtOps.INSTANCE, r).getOrThrow(false, s -> {
-		})));
+		tag.put("raids", RAIDS_CODEC.encodeStart(NbtOps.INSTANCE, raids).getOrThrow(false, s -> {
+		}));
 		return tag;
 	}
 
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
-		if (nbt.contains("position"))
-			position = Optional.of(NbtUtils.readBlockPos(nbt.getCompound("position")));
-		if (nbt.contains("raid"))
-			raid = NetherRaid.CODEC.parse(NbtOps.INSTANCE, nbt.get("raid")).result();
-
+		if (nbt.contains("raids"))
+			RAIDS_CODEC.parse(NbtOps.INSTANCE, nbt.get("raids")).result()
+					.ifPresentOrElse(r -> raids = new ArrayList<NetherRaid>(r), () -> {
+					});
 	}
 
 	public static LazyOptional<RaidData> get(Level level) {

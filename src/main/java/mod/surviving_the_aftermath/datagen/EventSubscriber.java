@@ -8,6 +8,7 @@ import mod.surviving_the_aftermath.init.ModStructures;
 import mod.surviving_the_aftermath.init.ModTags;
 import mod.surviving_the_aftermath.structure.CityStructure;
 import mod.surviving_the_aftermath.structure.HouseOfSakura;
+import mod.surviving_the_aftermath.structure.NetherRaidStructure;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
@@ -47,6 +48,11 @@ public class EventSubscriber {
 											context.lookup(Registries.BIOME).getOrThrow(ModTags.HAS_HOUSE_OF_SAKURA),
 											Map.of(), GenerationStep.Decoration.SURFACE_STRUCTURES,
 											TerrainAdjustment.BEARD_THIN)));
+							context.register(ModStructures.NETHER_RAID,
+									new NetherRaidStructure(new StructureSettings(
+											context.lookup(Registries.BIOME).getOrThrow(ModTags.HAS_NETHER_RAID),
+											Map.of(), GenerationStep.Decoration.SURFACE_STRUCTURES,
+											TerrainAdjustment.BEARD_THIN)));
 						}).add(Registries.STRUCTURE_SET, context -> {
 							context.register(ModStructures.CITY_SET, new StructureSet(
 									context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.CITY),
@@ -54,6 +60,9 @@ public class EventSubscriber {
 							context.register(ModStructures.HOUSE_OF_SAKURA_SET, new StructureSet(
 									context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.HOUSE_OF_SAKURA),
 									new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 1712650656)));
+							context.register(ModStructures.NETHER_RAID_SET, new StructureSet(
+									context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.NETHER_RAID),
+									new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 1629143766)));
 
 						}), Set.of(Main.MODID)));
 
