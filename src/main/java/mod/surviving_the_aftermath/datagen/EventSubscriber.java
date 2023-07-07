@@ -33,8 +33,10 @@ public class EventSubscriber {
 		var output = generator.getPackOutput();
 		var existingFileHelper = event.getExistingFileHelper();
 
-		generator.addProvider(event.includeServer(),
-				new ModBiomeTagProvider(generator.getPackOutput(), event.getLookupProvider(), existingFileHelper));
+		generator.addProvider(event.includeServer(), new ModTagProviders.ModBiomeTagProvider(generator.getPackOutput(),
+				event.getLookupProvider(), existingFileHelper));
+		generator.addProvider(event.includeServer(), new ModTagProviders.ModStructureTagProvider(
+				generator.getPackOutput(), event.getLookupProvider(), existingFileHelper));
 		generator.addProvider(event.includeServer(),
 				(DataProvider.Factory<DatapackBuiltinEntriesProvider>) o -> new DatapackBuiltinEntriesProvider(o,
 						event.getLookupProvider(), new RegistrySetBuilder().add(Registries.STRUCTURE, context -> {

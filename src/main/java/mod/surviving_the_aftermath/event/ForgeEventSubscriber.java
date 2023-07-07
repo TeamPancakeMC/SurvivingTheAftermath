@@ -5,14 +5,18 @@ import java.util.Set;
 
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.capability.RaidData;
+import mod.surviving_the_aftermath.init.ModTags;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
+import net.minecraftforge.event.level.LevelEvent.CreateSpawnPosition;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -48,6 +52,20 @@ public class ForgeEventSubscriber {
 	@SubscribeEvent
 	public static void tickRaid(LevelTickEvent event) {
 		RaidData.get(event.level).ifPresent(c -> c.tick());
+	}
+
+	@SubscribeEvent
+	public static void changeSpawn(CreateSpawnPosition event) {
+		if (event.getLevel() instanceof ServerLevel level) {
+			var settings = event.getSettings();
+			var pos = level.findNearestMapStructure(ModTags.NETHER_RAID,
+					new BlockPos(settings.getXSpawn(), settings.getYSpawn(), settings.getZSpawn()), 100, false);
+			if (pos != null) {
+				settings.setSpawn(new BlockPos(pos.getX(),
+						level.getHeight(Heightmap.Types.WORLD_SURFACE, pos.getX(), pos.getZ()), pos.getZ()), 0);
+				event.setCanceled(true);
+			}
+		}
 	}
 
 	public static final ResourceLocation RAID_DATA_LOCATION = new ResourceLocation(Main.MODID, "raiddata");
