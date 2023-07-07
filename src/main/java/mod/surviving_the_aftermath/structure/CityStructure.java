@@ -8,12 +8,18 @@ import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.init.ModStructurePieceTypes;
 import mod.surviving_the_aftermath.init.ModStructureTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -85,6 +91,30 @@ public class CityStructure extends Structure {
 		protected void handleDataMarker(String pName, BlockPos pPos, ServerLevelAccessor pLevel, RandomSource pRandom,
 				BoundingBox pBox) {
 
+		}
+
+		@SuppressWarnings("deprecation")
+		@Override
+		public void postProcess(WorldGenLevel pLevel, StructureManager pStructureManager, ChunkGenerator pGenerator,
+				RandomSource rand, BoundingBox pBox, ChunkPos pChunkPos, BlockPos pPos) {
+			super.postProcess(pLevel, pStructureManager, pGenerator, rand, pBox, pChunkPos, pPos);
+			var spawnPos = new BlockPos(rand.nextInt(pBox.minX(), pBox.maxX()), pPos.getY(),
+					rand.nextInt(pBox.minZ(), pBox.maxZ()));
+			for (int y = spawnPos.getY(); y < pBox.maxY(); y++) {
+				if (getBlock(pLevel, spawnPos.getX(), y, spawnPos.getZ(), pBox).isAir()
+						&& getBlock(pLevel, spawnPos.getX(), y + 1, spawnPos.getZ(), pBox).isAir()) {
+					var villager = EntityType.VILLAGER.create(pLevel.getLevel());
+					villager.moveTo(spawnPos.getX(), y, spawnPos.getZ());
+					BuiltInRegistries.VILLAGER_TYPE.getRandom(rand).ifPresent((profession) -> {
+						villager.setVillagerData(villager.getVillagerData().setType(profession.value()));
+					});
+					BuiltInRegistries.VILLAGER_PROFESSION.getRandom(rand).ifPresent((profession) -> {
+						villager.setVillagerData(villager.getVillagerData().setProfession(profession.value()));
+					});
+					pLevel.addFreshEntity(villager);
+					break;
+				}
+			}
 		}
 	}
 }
