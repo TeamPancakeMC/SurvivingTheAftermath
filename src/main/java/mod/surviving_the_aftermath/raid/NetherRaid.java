@@ -20,6 +20,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
@@ -96,7 +98,15 @@ public class NetherRaid {
 
 		enemies.removeIf(id -> {
 			var entity = level.getEntity(id);
-			return entity == null || !entity.isAlive();
+			if (entity == null || !entity.isAlive()) {
+				return true;
+			} else {
+				if (entity instanceof Mob mob && mob.getTarget() == null && !players.isEmpty()) {
+					mob.getBrain().setMemory(MemoryModuleType.ANGRY_AT,
+							players.get(level.getRandom().nextInt(players.size())));
+				}
+				return false;
+			}
 		});
 
 		if (enemies.isEmpty()) {
@@ -113,7 +123,8 @@ public class NetherRaid {
 			piglin.setImmuneToZombification(true);
 			level.addFreshEntity(piglin);
 			if (!players.isEmpty())
-				piglin.setTarget(level.getPlayerByUUID(players.get(level.getRandom().nextInt(players.size()))));
+				piglin.getBrain().setMemory(MemoryModuleType.ANGRY_AT,
+						players.get(level.getRandom().nextInt(players.size())));
 			enemies.add(piglin.getUUID());
 		}
 	}
