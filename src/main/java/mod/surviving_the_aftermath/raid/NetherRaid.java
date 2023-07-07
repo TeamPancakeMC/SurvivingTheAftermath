@@ -91,6 +91,9 @@ public class NetherRaid {
 	}
 
 	private void updateProgress(ServerLevel level) {
+		if (players.isEmpty())
+			return;
+
 		enemies.removeIf(id -> {
 			var entity = level.getEntity(id);
 			return entity == null || !entity.isAlive();
@@ -118,7 +121,7 @@ public class NetherRaid {
 	private void updatePlayers(ServerLevel level) {
 		Set<UUID> updated = new HashSet<>();
 		for (var player : level.players()) {
-			if (player.distanceToSqr(Vec3.atCenterOf(spawn.get(0))) < 100 * 100) {
+			if (player.distanceToSqr(Vec3.atCenterOf(spawn.get(0))) < 30 * 30) {
 				updated.add(player.getUUID());
 			}
 		}
