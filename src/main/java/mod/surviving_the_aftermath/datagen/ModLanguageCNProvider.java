@@ -2,6 +2,7 @@ package mod.surviving_the_aftermath.datagen;
 
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.init.ModBlocks;
+import mod.surviving_the_aftermath.raid.NetherRaid;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -15,5 +16,6 @@ public class ModLanguageCNProvider extends LanguageProvider {
         add("itemGroup." + Main.MODID, "幸存下来");
         add(ModBlocks.PARTY_BONFIRE.get(), "派对篝火");
         add("message.surviving_the_aftermath.raid_completed", "你听到了村民的欢呼声，今晚注定无眠");
+		add(NetherRaid.NAME, "");
     }
 }

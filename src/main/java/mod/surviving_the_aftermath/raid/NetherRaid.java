@@ -11,6 +11,7 @@ import java.util.UUID;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import mod.surviving_the_aftermath.Main;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
@@ -35,7 +36,9 @@ public class NetherRaid {
 									.fieldOf("enemies").forGetter(NetherRaid::getEnemies))
 					.apply(instance, NetherRaid::new));
 
-	private ServerBossEvent progress = new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.RED,
+	public static final String NAME = Main.MODID + "." + "nether_raid";
+
+	private ServerBossEvent progress = new ServerBossEvent(Component.translatable(NAME), BossEvent.BossBarColor.RED,
 			BossEvent.BossBarOverlay.PROGRESS);
 	private List<BlockPos> spawn = new ArrayList<>();
 	private List<UUID> players = new ArrayList<>();
