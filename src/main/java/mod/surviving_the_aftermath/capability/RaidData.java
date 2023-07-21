@@ -60,8 +60,11 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 	}
 
 	public void tick() {
-		for (var raid : raids) {
-			raid.tick(level);
+		for (int i = raids.size() - 1; i >= 0; i--) {
+			raids.get(i).tick(level);
+			if (raids.get(i).isDone()) {
+				raids.remove(i);
+			}
 		}
 	}
 
