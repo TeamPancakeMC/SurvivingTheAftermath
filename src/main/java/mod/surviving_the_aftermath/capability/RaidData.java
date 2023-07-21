@@ -68,6 +68,11 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 		}
 	}
 
+	public void joinRaid(Entity entity) {
+		for (var raid : raids)
+			raid.join(entity);
+	}
+
 	@Override
 	public CompoundTag serializeNBT() {
 		var tag = new CompoundTag();

@@ -15,6 +15,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.level.LevelEvent.CreateSpawnPosition;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -52,6 +53,11 @@ public class ForgeEventSubscriber {
 	@SubscribeEvent
 	public static void tickRaid(LevelTickEvent event) {
 		RaidData.get(event.level).ifPresent(c -> c.tick());
+	}
+
+	@SubscribeEvent
+	public static void joinRaid(EntityJoinLevelEvent event) {
+		RaidData.get(event.getLevel()).ifPresent(c -> c.joinRaid(event.getEntity()));
 	}
 
 	@SubscribeEvent

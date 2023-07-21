@@ -19,6 +19,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.Entity;
@@ -64,46 +66,52 @@ public class NetherRaid {
 					new WaveEntry(EntityType.BLAZE, 1, 1, List.of()),
 					new WaveEntry(EntityType.PIGLIN_BRUTE, 1, 1,
 							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-									Items.GOLDEN_BOOTS))),
+									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
 			List.of(new WaveEntry(EntityType.PIGLIN, 3, 4,
-					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS)),
+					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS,
+							Items.GOLDEN_SWORD)),
 					new WaveEntry(EntityType.HOGLIN, 2, 3, List.of()),
 					new WaveEntry(EntityType.MAGMA_CUBE, 1, 2, List.of()),
 					new WaveEntry(EntityType.BLAZE, 1, 1, List.of()),
 					new WaveEntry(EntityType.PIGLIN_BRUTE, 1, 1,
 							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-									Items.GOLDEN_BOOTS))),
+									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
 			List.of(new WaveEntry(EntityType.PIGLIN, 3, 4,
-					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS)),
+					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS,
+							Items.GOLDEN_SWORD)),
 					new WaveEntry(EntityType.HOGLIN, 2, 3, List.of()),
 					new WaveEntry(EntityType.MAGMA_CUBE, 2, 3, List.of()),
 					new WaveEntry(EntityType.BLAZE, 2, 2, List.of()),
 					new WaveEntry(EntityType.PIGLIN_BRUTE, 2, 2,
 							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-									Items.GOLDEN_BOOTS))),
+									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
 			List.of(new WaveEntry(EntityType.PIGLIN, 2, 3,
-					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS)),
+					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS,
+							Items.GOLDEN_SWORD)),
 					new WaveEntry(EntityType.HOGLIN, 2, 3, List.of()),
 					new WaveEntry(EntityType.MAGMA_CUBE, 2, 3, List.of()),
 					new WaveEntry(EntityType.BLAZE, 2, 3, List.of()),
 					new WaveEntry(EntityType.PIGLIN_BRUTE, 2, 3,
 							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-									Items.GOLDEN_BOOTS))),
+									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
 			List.of(new WaveEntry(EntityType.PIGLIN, 2, 3,
-					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS)),
+					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS,
+							Items.GOLDEN_SWORD)),
 					new WaveEntry(EntityType.HOGLIN, 3, 3, List.of()),
 					new WaveEntry(EntityType.MAGMA_CUBE, 3, 4, List.of()),
 					new WaveEntry(EntityType.BLAZE, 3, 4, List.of()),
 					new WaveEntry(EntityType.PIGLIN_BRUTE, 2, 3,
 							List.of(Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS,
-									Items.NETHERITE_BOOTS))),
+									Items.NETHERITE_BOOTS, Items.GOLDEN_SWORD))),
 			List.of(new WaveEntry(EntityType.PIGLIN, 2, 3,
-					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS)),
+					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS,
+							Items.GOLDEN_SWORD)),
 					new WaveEntry(EntityType.HOGLIN, 3, 4, List.of()),
 					new WaveEntry(EntityType.MAGMA_CUBE, 3, 4, List.of()),
 					new WaveEntry(EntityType.BLAZE, 3, 4, List.of()),
-					new WaveEntry(EntityType.PIGLIN_BRUTE, 3, 4, List.of(Items.NETHERITE_HELMET,
-							Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS))));
+					new WaveEntry(EntityType.PIGLIN_BRUTE, 3, 4,
+							List.of(Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS,
+									Items.NETHERITE_BOOTS, Items.GOLDEN_SWORD))));
 
 	public static final Codec<NetherRaid> CODEC = RecordCodecBuilder.create(instance -> instance
 			.group(Codec.INT.fieldOf("wave").forGetter(NetherRaid::getWave),
@@ -204,7 +212,7 @@ public class NetherRaid {
 
 		enemies.removeIf(id -> {
 			var entity = level.getEntity(id);
-			if (entity == null || !entity.isAlive()) {
+			if (entity == null || entity.isRemoved()) {
 				return true;
 			} else {
 				if (entity instanceof Mob mob && mob.getTarget() == null && !players.isEmpty()) {
@@ -217,6 +225,8 @@ public class NetherRaid {
 
 		if (enemies.isEmpty()) {
 			wave++;
+			level.playSeededSound(null, spawn.get(0).getX(), spawn.get(0).getY(), spawn.get(0).getZ(),
+					SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(2), SoundSource.NEUTRAL, 2, 1, level.random.nextLong());
 			if (wave > WAVES.size()) {
 				victoryTimer = 20 * 20;
 				return;
@@ -224,6 +234,14 @@ public class NetherRaid {
 			spawnEnemies(level, WAVES.get(Math.min(WAVES.size() - 1, wave - 1)));
 		}
 		progress.setProgress(enemies.size() / (float) totalEnemyCount);
+	}
+
+	public void join(Entity entity) {
+		if (entity.getType() == EntityType.MAGMA_CUBE && !isVictory()
+				&& entity.blockPosition().distSqr(spawn.get(0)) < 25 * 25 && enemies.add(entity.getUUID())) {
+			totalEnemyCount++;
+			progress.setProgress(enemies.size() / (float) totalEnemyCount);
+		}
 	}
 
 	private void spawnEnemies(ServerLevel level, List<WaveEntry> entries) {
@@ -266,8 +284,8 @@ public class NetherRaid {
 						}
 					});
 				}
-				level.addFreshEntity(enemy);
 				enemies.add(enemy.getUUID());
+				level.addFreshEntity(enemy);
 				totalEnemyCount++;
 			}
 		}
