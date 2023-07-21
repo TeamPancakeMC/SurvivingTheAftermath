@@ -22,6 +22,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -205,9 +206,15 @@ public class NetherRaid {
 				}
 				if (enemy instanceof Mob mob) {
 					for (var item : entry.gear) {
-						if (level.random.nextFloat() < 0.5f)
+						if (level.random.nextFloat() < 0.5f) {
 							mob.equipItemIfPossible(new ItemStack(item));
+						}
 					}
+
+					for (var slot : EquipmentSlot.values()) {
+						mob.setDropChance(slot, 0);
+					}
+
 					if (!players.isEmpty()) {
 						var target = level.getPlayerByUUID(players.get(level.getRandom().nextInt(players.size())));
 						mob.getBrain().setMemory(MemoryModuleType.ANGRY_AT, target.getUUID());
