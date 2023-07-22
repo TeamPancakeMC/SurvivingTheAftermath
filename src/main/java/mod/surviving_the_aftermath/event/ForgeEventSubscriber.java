@@ -1,12 +1,15 @@
 package mod.surviving_the_aftermath.event;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.capability.RaidData;
 import mod.surviving_the_aftermath.init.ModTags;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -33,22 +36,26 @@ public class ForgeEventSubscriber {
 		if (player.level() instanceof ServerLevel level) {
 			var raid = level.getRaidAt(player.blockPosition());
 			if (raid != null && raid.isVictory() && !RAIDS.contains(raid.getId())) {
-				var villager = EntityType.VILLAGER.create(level);
-				var allay = EntityType.ALLAY.create(level);
+				var villager = Objects.requireNonNull(EntityType.VILLAGER.create(level));
+				var allay =  Objects.requireNonNull(EntityType.ALLAY.create(level));
 				villager.moveTo(player.position());
 				allay.moveTo(player.position());
 				level.addFreshEntity(villager);
 				level.addFreshEntity(allay);
 				RAIDS.add(raid.getId());
+				player.sendSystemMessage(Component.nullToEmpty(I18n.get("raid.surviving_the_aftermath.end")));
 			}
 		}
 	}
 
 	@SubscribeEvent
 	public static void netherRaid(EntityTravelToDimensionEvent event) {
-		event.setCanceled(
-				RaidData.get(event.getEntity().level()).map(c -> c.enterPortal(event.getEntity())).orElse(false));
+		event.setCanceled(RaidData.get(event.getEntity().level()).map(c -> c.enterPortal(event.getEntity())).orElse(false));
 	}
+	/*你感受到空气愈发炎热......
+
+
+望着最后一颗火星熄灭，你感觉它们不会再回来了，暂时......*/
 
 	@SubscribeEvent
 	public static void tickRaid(LevelTickEvent event) {

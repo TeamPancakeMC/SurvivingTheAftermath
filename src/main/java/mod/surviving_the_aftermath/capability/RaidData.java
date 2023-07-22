@@ -7,11 +7,15 @@ import com.mojang.serialization.Codec;
 
 import mod.surviving_the_aftermath.init.ModStructures;
 import mod.surviving_the_aftermath.raid.NetherRaid;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -42,6 +46,7 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 		if (level.structureManager().getAllStructuresAt(pos).containsKey(
 				level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID))) {
 			if (entity instanceof Player && noRaidAt(pos)) {
+				entity.sendSystemMessage(Component.nullToEmpty(I18n.get("raid.surviving_the_aftermath.begin")));
 				raids.add(new NetherRaid(pos, level));
 			}
 			return true;
