@@ -52,10 +52,6 @@ public class ForgeEventSubscriber {
 	public static void netherRaid(EntityTravelToDimensionEvent event) {
 		event.setCanceled(RaidData.get(event.getEntity().level()).map(c -> c.enterPortal(event.getEntity())).orElse(false));
 	}
-	/*你感受到空气愈发炎热......
-
-
-望着最后一颗火星熄灭，你感觉它们不会再回来了，暂时......*/
 
 	@SubscribeEvent
 	public static void tickRaid(LevelTickEvent event) {
