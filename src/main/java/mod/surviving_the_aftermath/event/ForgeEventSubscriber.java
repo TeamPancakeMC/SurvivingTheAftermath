@@ -50,7 +50,8 @@ public class ForgeEventSubscriber {
 
 	@SubscribeEvent
 	public static void netherRaid(EntityTravelToDimensionEvent event) {
-		event.setCanceled(RaidData.get(event.getEntity().level()).map(c -> c.enterPortal(event.getEntity())).orElse(false));
+		event.setCanceled(
+				RaidData.get(event.getEntity().level()).map(c -> c.enterPortal(event.getEntity())).orElse(false));
 	}
 
 	@SubscribeEvent
