@@ -8,10 +8,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.mojang.authlib.exceptions.MinecraftClientException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import mod.surviving_the_aftermath.Main;
+import mod.surviving_the_aftermath.event.RaidEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
@@ -38,6 +40,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 
 public class NetherRaid {
 
@@ -147,6 +150,7 @@ public class NetherRaid {
 	public NetherRaid(BlockPos pos, ServerLevel level) {
 		setSpawn(pos, level);
 		updatePlayers(level);
+		MinecraftForge.EVENT_BUS.post(new RaidEvent.Start(players,level));
 		updateProgress(level);
 	}
 
@@ -190,6 +194,7 @@ public class NetherRaid {
 	}
 
 	private void spawnRewards(ServerLevel level) {
+		MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players,level));
 		for (int i = 0; i < 5; i++) {
 			var pos = spawn.get(level.random.nextInt(spawn.size()));
 			var dir = freeDirection(level, pos);

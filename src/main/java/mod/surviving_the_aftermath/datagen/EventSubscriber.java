@@ -69,6 +69,7 @@ public class EventSubscriber {
 						}), Set.of(Main.MODID)));
 
 		generator.addProvider(event.includeClient(), new ModLanguageProvider(output));
+		generator.addProvider(event.includeClient(), new ModLanguageCNProvider(output));
 		generator.addProvider(event.includeClient(), new ModBlockStateProvider(output, existingFileHelper));
 		generator.addProvider(event.includeClient(), new ModSoundProvider(output, existingFileHelper));
 	}

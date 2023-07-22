@@ -1,31 +1,61 @@
 package mod.surviving_the_aftermath.event;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.eventbus.api.Event;
 
-public class RaidEvent extends Event {
-    //突袭中心坐标
-    public BlockPos centerPos;
+import java.util.List;
+import java.util.UUID;
 
-    //突袭开始事件
+public class RaidEvent extends Event {
+    private List<UUID> players;
+    private ServerLevel level;
+
+    public List<UUID> getPlayers() {
+        return players;
+    }
+
+    public ServerLevel getLevel() {
+        return level;
+    }
+
+    public RaidEvent(List<UUID> players, ServerLevel level) {
+        this.players = players;
+        this.level = level;
+    }
+
     public static class Start extends RaidEvent {
+        public Start(List<UUID> players, ServerLevel level) {
+            super(players, level);
+        }
     }
-    //突袭结束事件
     public static class End extends RaidEvent {
+        public End(List<UUID> players, ServerLevel level) {
+            super(players,level);
+        }
     }
-    //突袭正在进行事件
     public static class Ongoing extends RaidEvent {
+        public Ongoing(List<UUID> players, ServerLevel level) {
+            super(players,level);
+        }
     }
-    //突袭胜利事件
     public static class Victory extends RaidEvent {
+        public Victory(List<UUID> players, ServerLevel level) {
+            super(players,level);
+        }
     }
-    //突袭失败事件
     public static class Lose extends RaidEvent {
+        public Lose(List<UUID> players, ServerLevel level) {
+            super(players,level);
+        }
     }
-    //庆祝中事件
     public static class Celebrating extends RaidEvent {
+        public Celebrating(List<UUID> players, ServerLevel level) {
+            super(players,level);
+        }
     }
-    //庆祝结束事件
     public static class CelebrateEnd extends RaidEvent {
+        public CelebrateEnd(List<UUID> players, ServerLevel level) {
+            super(players,level);
+        }
     }
 }
