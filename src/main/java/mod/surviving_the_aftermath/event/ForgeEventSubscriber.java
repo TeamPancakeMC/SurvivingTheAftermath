@@ -1,5 +1,6 @@
 package mod.surviving_the_aftermath.event;
 
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,7 +42,7 @@ public class ForgeEventSubscriber {
 				level.addFreshEntity(villager);
 				level.addFreshEntity(allay);
 				RAIDS.add(raid.getId());
-				player.sendSystemMessage(Component.translate("raid.surviving_the_aftermath.end"));
+				player.sendSystemMessage(Component.translatable("raid.surviving_the_aftermath.end"));
 			}
 		}
 	}

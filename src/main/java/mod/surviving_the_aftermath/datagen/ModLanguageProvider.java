@@ -17,7 +17,7 @@ public class ModLanguageProvider extends LanguageProvider {
 		add("itemGroup." + Main.MODID, "Surviving the Aftermath");
 		add(ModBlocks.EXAMPLE.get(), "Example");
 		add(NetherRaid.NAME, "");
-		add(NetherRaid.NAME + ".begin": "");
-		add(NetherRaid.NAME + ".end", "");
+		add(NetherRaid.NAME + ".begin", "You feel the air becoming increasingly hot...");
+		add(NetherRaid.NAME + ".end", "As I watched the last spark extinguish, I felt they wouldn't come back again, at least not for now...");
 	}
 }
