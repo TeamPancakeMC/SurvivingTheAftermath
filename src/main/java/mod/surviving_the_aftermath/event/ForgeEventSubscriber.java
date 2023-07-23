@@ -7,7 +7,6 @@ import java.util.Set;
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.capability.RaidData;
 import mod.surviving_the_aftermath.init.ModTags;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -36,14 +35,14 @@ public class ForgeEventSubscriber {
 		if (player.level() instanceof ServerLevel level) {
 			var raid = level.getRaidAt(player.blockPosition());
 			if (raid != null && raid.isVictory() && !RAIDS.contains(raid.getId())) {
-				var villager = Objects.requireNonNull(EntityType.VILLAGER.create(level));
-				var allay =  Objects.requireNonNull(EntityType.ALLAY.create(level));
+				var villager = EntityType.VILLAGER.create(level);
+				var allay =  EntityType.ALLAY.create(level);
 				villager.moveTo(player.position());
 				allay.moveTo(player.position());
 				level.addFreshEntity(villager);
 				level.addFreshEntity(allay);
 				RAIDS.add(raid.getId());
-				player.sendSystemMessage(Component.nullToEmpty(I18n.get("raid.surviving_the_aftermath.end")));
+				player.sendSystemMessage(Component.translate("raid.surviving_the_aftermath.end"));
 			}
 		}
 	}
