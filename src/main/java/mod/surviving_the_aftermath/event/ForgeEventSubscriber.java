@@ -36,7 +36,7 @@ public class ForgeEventSubscriber {
 			var raid = level.getRaidAt(player.blockPosition());
 			if (raid != null && raid.isVictory() && !RAIDS.contains(raid.getId())) {
 				var villager = EntityType.VILLAGER.create(level);
-				var allay =  EntityType.ALLAY.create(level);
+				var allay = EntityType.ALLAY.create(level);
 				villager.moveTo(player.position());
 				allay.moveTo(player.position());
 				level.addFreshEntity(villager);
