@@ -1,5 +1,7 @@
 {
   "block.surviving_the_aftermath.example": "Example",
   "itemGroup.surviving_the_aftermath": "Surviving the Aftermath",
+  "message.surviving_the_aftermath.nether_raid.start": "§6 You feel the air burning on your skin...",
+  "message.surviving_the_aftermath.nether_raid.victory": "§6 Watching the last bit of flame go out, you feel like they won't be seeking an revenge any time soon...",
   "surviving_the_aftermath.nether_raid": ""
 }
