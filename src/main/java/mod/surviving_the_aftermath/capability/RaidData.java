@@ -46,7 +46,7 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 		if (level.structureManager().getAllStructuresAt(pos).containsKey(
 				level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID))) {
 			if (entity instanceof Player && noRaidAt(pos)) {
-				entity.sendSystemMessage(Component.nullToEmpty(I18n.get("raid.surviving_the_aftermath.begin")));
+				entity.sendSystemMessage(Component.translate("raid.surviving_the_aftermath.begin"));
 				raids.add(new NetherRaid(pos, level));
 			}
 			return true;
