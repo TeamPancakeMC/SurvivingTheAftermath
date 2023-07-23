@@ -1,7 +1,6 @@
 package mod.surviving_the_aftermath.event;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import mod.surviving_the_aftermath.Main;
