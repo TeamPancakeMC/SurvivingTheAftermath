@@ -16,6 +16,8 @@ public class ModLanguageCNProvider extends LanguageProvider {
         add("itemGroup." + Main.MODID, "幸存下来");
         add(ModBlocks.PARTY_BONFIRE.get(), "派对篝火");
         add("message.surviving_the_aftermath.raid_completed", "你听到了村民的欢呼声，今晚注定无眠");
-		add(NetherRaid.NAME, "");
+	add(NetherRaid.NAME, "");
+	add(NetherRaid.NAME + ".begin": "你感受到空气愈发炎热……");
+	add(NetherRaid.NAME + ".end", "望着最后一颗火星熄灭，你感觉它们不会再回来了，暂时……");
     }
 }
