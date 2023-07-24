@@ -8,15 +8,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import com.mojang.authlib.exceptions.MinecraftClientException;
+import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.event.RaidEvent;
+import mod.surviving_the_aftermath.init.ModStructures;
+import mod.surviving_the_aftermath.structure.NetherRaidStructure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -38,7 +41,16 @@ import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -150,7 +162,7 @@ public class NetherRaid {
 	public NetherRaid(BlockPos pos, ServerLevel level) {
 		setSpawn(pos, level);
 		updatePlayers(level);
-		MinecraftForge.EVENT_BUS.post(new RaidEvent.Start(players,level));
+		MinecraftForge.EVENT_BUS.post(new RaidEvent.Start(players, level));
 		updateProgress(level);
 	}
 
@@ -194,19 +206,21 @@ public class NetherRaid {
 	}
 
 	private void spawnRewards(ServerLevel level) {
-		MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players,level));
+		MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players, level));
 		for (int i = 0; i < 5; i++) {
 			var pos = spawn.get(level.random.nextInt(spawn.size()));
 			var dir = freeDirection(level, pos);
+			var vec = Vec3.atCenterOf(pos);
 			REWARDS.getRandomValue(level.random).ifPresent(reward -> {
-				level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(reward),
+				level.addFreshEntity(new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
 						dir.getStepX() * 0.2, 0.2, dir.getStepZ() * 0.2f));
 			});
 		}
 	}
 
 	private Direction freeDirection(ServerLevel level, BlockPos pos) {
-		return Direction.Plane.HORIZONTAL.stream().filter(d -> level.isEmptyBlock(pos.relative(d))).findFirst()
+		return Direction.Plane.HORIZONTAL.stream()
+				.filter(d -> level.isEmptyBlock(pos.relative(d)) && !spawn.contains(pos.relative(d))).findFirst()
 				.orElse(Direction.UP);
 
 	}
@@ -229,6 +243,8 @@ public class NetherRaid {
 		});
 
 		if (enemies.isEmpty()) {
+			updateStructure(level);
+
 			wave++;
 			level.playSeededSound(null, spawn.get(0).getX(), spawn.get(0).getY(), spawn.get(0).getZ(),
 					SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(2), SoundSource.NEUTRAL, 2, 1, level.random.nextLong());
@@ -239,6 +255,42 @@ public class NetherRaid {
 			spawnEnemies(level, WAVES.get(Math.min(WAVES.size() - 1, wave - 1)));
 		}
 		progress.setProgress(enemies.size() / (float) totalEnemyCount);
+	}
+
+	private void updateStructure(ServerLevel level) {
+		var start = level.structureManager().getStructureAt(spawn.get(0),
+				level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID));
+		if (start != StructureStart.INVALID_START) {
+			var template = level.getStructureManager().get(NetherRaidStructure.STRUCTURE_TRANSFORMED);
+			template.ifPresent(t -> {
+				if (start.getPieces().get(0) instanceof TemplateStructurePiece piece) {
+					var pos = piece.templatePosition();
+					var settings = new StructurePlaceSettings().setRotation(piece.getRotation()).setMirror(Mirror.NONE)
+							.addProcessor(new BlockIgnoreProcessor(
+									ImmutableList.of(Blocks.AIR, Blocks.STRUCTURE_BLOCK, Blocks.NETHER_PORTAL)))
+							.addProcessor(new StructureProcessor() {
+
+								@Override
+								protected StructureProcessorType<?> getType() {
+									return null;
+								}
+
+								@Override
+								public StructureTemplate.StructureBlockInfo processBlock(LevelReader pLevel,
+										BlockPos p_74300_, BlockPos pPos,
+										StructureTemplate.StructureBlockInfo pBlockInfo,
+										StructureTemplate.StructureBlockInfo pRelativeBlockInfo,
+										StructurePlaceSettings pSettings) {
+									return level.random.nextFloat() < 0.9
+											? new StructureTemplate.StructureBlockInfo(pRelativeBlockInfo.pos(),
+													pLevel.getBlockState(pRelativeBlockInfo.pos()), null)
+											: pRelativeBlockInfo;
+								}
+							});
+					t.placeInWorld(level, pos, pos, settings, level.random, 2);
+				}
+			});
+		}
 	}
 
 	public void join(Entity entity) {

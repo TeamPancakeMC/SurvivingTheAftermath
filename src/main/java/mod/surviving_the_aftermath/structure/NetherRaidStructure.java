@@ -11,15 +11,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.ai.village.poi.PoiManager;
-import net.minecraft.world.entity.ai.village.poi.PoiTypes;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.StructureManager;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -34,6 +28,9 @@ public class NetherRaidStructure extends Structure {
 
 	public static final Codec<Structure> CODEC = simpleCodec(NetherRaidStructure::new);
 	private static final ResourceLocation STRUCTURE = new ResourceLocation(Main.MODID, "nether_invasion_portal");
+
+	public static final ResourceLocation STRUCTURE_TRANSFORMED = new ResourceLocation(Main.MODID,
+			"nether_invasion_portal_transformed");
 
 	public NetherRaidStructure(StructureSettings settings) {
 		super(settings);
