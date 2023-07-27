@@ -1,7 +1,11 @@
 {
   "block.surviving_the_aftermath.example": "Example",
+  "block.surviving_the_aftermath.party_bonfire": "Party Bonfire",
+  "item.surviving_the_aftermath.egg_tart": "Egg Tart",
+  "item.surviving_the_aftermath.hamburger": "Hamburger",
+  "item.surviving_the_aftermath.raw_falukorv": "Raw Falukorv",
+  "item.surviving_the_aftermath.stack_of_egg_tarts": "Stack of Egg Tart",
+  "item.surviving_the_aftermath.tianjin_pancake": "Tianjin Pancake",
   "itemGroup.surviving_the_aftermath": "Surviving the Aftermath",
-  "message.surviving_the_aftermath.nether_raid.start": "§6 You feel the air burning on your skin...",
-  "message.surviving_the_aftermath.nether_raid.victory": "§6 Watching the last bit of flame go out, you feel like they won't be seeking an revenge any time soon...",
   "surviving_the_aftermath.nether_raid": ""
 }
