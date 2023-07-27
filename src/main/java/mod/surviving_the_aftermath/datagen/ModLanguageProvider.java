@@ -25,4 +25,5 @@ public class ModLanguageProvider extends LanguageProvider {
 		add(ModItems.TIANJIN_PANCAKE.get(), "Tianjin Pancake");
 		add(NetherRaid.NAME, "");
 	}
+
 }
