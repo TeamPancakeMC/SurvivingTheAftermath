@@ -3,11 +3,14 @@
   "item.surviving_the_aftermath.egg_tart": "蛋挞",
   "item.surviving_the_aftermath.hamburger": "汉堡",
   "item.surviving_the_aftermath.raw_falukorv": "生的法伦香肠",
-  "item.surviving_the_aftermath.cooked_falukorv": "烤熟的法伦香肠",
   "item.surviving_the_aftermath.stack_of_egg_tarts": "蛋挞堆",
   "item.surviving_the_aftermath.tianjin_pancake": "煎饼果子",
-  "itemGroup.surviving_the_aftermath": "劫后余生",
+  "itemGroup.surviving_the_aftermath": "幸存下来",
+  "message.surviving_the_aftermath.nether_raid.escape": "请勿战斗过程逃跑，否则你将付出代价，倒计时开始......%s",
+  "message.surviving_the_aftermath.nether_raid.personal_fail": "你虽然失败了但是可以继续相信你的队友",
   "message.surviving_the_aftermath.nether_raid.start": "你感受到空气愈发炎热......",
   "message.surviving_the_aftermath.nether_raid.victory": "望着最后一颗火星熄灭，你感觉它们不会再回来了，暂时......",
-  "surviving_the_aftermath.nether_raid": ""
+  "surviving_the_aftermath.nether_raid": "",
+  "surviving_the_aftermath.nether_raid.victory": "地狱突袭 胜利",
+  "surviving_the_aftermath.nether_raid.wave": "地狱突袭 第%s波"
 }

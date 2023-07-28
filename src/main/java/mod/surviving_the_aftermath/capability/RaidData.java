@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.mojang.serialization.Codec;
 
+import mod.surviving_the_aftermath.init.ModCapability;
 import mod.surviving_the_aftermath.init.ModStructures;
 import mod.surviving_the_aftermath.raid.NetherRaid;
 import net.minecraft.core.BlockPos;
@@ -17,17 +18,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class RaidData implements INBTSerializable<CompoundTag> {
-
-	public static final Capability<RaidData> CAPABILITY = CapabilityManager.get(new CapabilityToken<RaidData>() {
-	});
-
 	public static final Codec<List<NetherRaid>> RAIDS_CODEC = Codec.list(NetherRaid.CODEC);
 
 	private ServerLevel level;
@@ -90,7 +85,7 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 	}
 
 	public static LazyOptional<RaidData> get(Level level) {
-		return level.getCapability(CAPABILITY);
+		return level.getCapability(ModCapability.RAID_DATA);
 	}
 
 	public static class Provider implements ICapabilitySerializable<CompoundTag> {
@@ -103,7 +98,7 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 
 		@Override
 		public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-			return CAPABILITY.orEmpty(cap, instance);
+			return ModCapability.RAID_DATA.orEmpty(cap, instance);
 		}
 
 		@Override

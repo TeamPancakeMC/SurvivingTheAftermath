@@ -13,6 +13,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import mod.surviving_the_aftermath.Main;
+import mod.surviving_the_aftermath.event.PlayerBattleTrackerEventSubscriber;
 import mod.surviving_the_aftermath.event.RaidEvent;
 import mod.surviving_the_aftermath.init.ModStructures;
 import mod.surviving_the_aftermath.structure.NetherRaidStructure;
@@ -149,6 +150,7 @@ public class NetherRaid {
 	private int totalEnemyCount;
 	private int victoryTimer;
 	private int delay; // Delay to make sure raid mobs have been re-added to the world after load
+	private final int RADIUS = 50;
 
 	public NetherRaid(int wave, List<BlockPos> spawn, HashSet<UUID> enemies, int totalEnemyCount, int victoryTimer) {
 		this.wave = wave;
@@ -157,6 +159,8 @@ public class NetherRaid {
 		this.totalEnemyCount = totalEnemyCount;
 		this.victoryTimer = victoryTimer;
 		this.delay = 100;
+		MinecraftForge.EVENT_BUS.register(new PlayerBattleTrackerEventSubscriber());
+
 	}
 
 	public NetherRaid(BlockPos pos, ServerLevel level) {
@@ -164,6 +168,8 @@ public class NetherRaid {
 		updatePlayers(level);
 		MinecraftForge.EVENT_BUS.post(new RaidEvent.Start(players, level));
 		updateProgress(level);
+		MinecraftForge.EVENT_BUS.register(new PlayerBattleTrackerEventSubscriber());
+
 	}
 
 	private void setSpawn(BlockPos pos, ServerLevel level) {
@@ -195,8 +201,9 @@ public class NetherRaid {
 		if (isVictory())
 			victoryTimer--;
 
-		if (timer % 20 == 0 && delay == 0) {
+		if (timer % 1 == 0 && delay == 0) {
 			if (!isVictory()) {
+				MinecraftForge.EVENT_BUS.post(new RaidEvent.Ongoing(players, level));
 				updatePlayers(level);
 				updateProgress(level);
 			} else {
@@ -288,6 +295,8 @@ public class NetherRaid {
 								}
 							});
 					t.placeInWorld(level, pos, pos, settings, level.random, 2);
+					progress.setName(wave == WAVES.size() ? Component.translatable(NAME + ".victory")
+							: Component.translatable(NAME + ".wave", wave));
 				}
 			});
 		}
@@ -360,7 +369,7 @@ public class NetherRaid {
 	private void updatePlayers(ServerLevel level) {
 		Set<UUID> updated = new HashSet<>();
 		for (var player : level.players()) {
-			if (player.distanceToSqr(Vec3.atCenterOf(spawn.get(0))) < 30 * 30) {
+			if (player.distanceToSqr(Vec3.atCenterOf(spawn.get(0))) < RADIUS * RADIUS) {
 				updated.add(player.getUUID());
 			}
 		}
