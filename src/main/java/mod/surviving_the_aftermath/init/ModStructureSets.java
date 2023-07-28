@@ -57,7 +57,7 @@ public class ModStructureSets {
             ResourceKey<Structure> wagonCargo = ModStructures.register("wagon_cargo" + i);
             ResourceKey<Structure> burnt = ModStructures.register("burnt_structure" + i);
             context.register(wagonCargoSet, new StructureSet(context.lookup(Registries.STRUCTURE).getOrThrow(wagonCargo),
-                    new RandomSpreadStructurePlacement(100, 40, RandomSpreadType.LINEAR, wagonCargoSalt[i])));
+                    new RandomSpreadStructurePlacement(90, 40, RandomSpreadType.LINEAR, wagonCargoSalt[i])));
             context.register(burntSet, new StructureSet(context.lookup(Registries.STRUCTURE).getOrThrow(burnt),
                     new RandomSpreadStructurePlacement(80, 40, RandomSpreadType.LINEAR, burntSalt[i])));
         }
