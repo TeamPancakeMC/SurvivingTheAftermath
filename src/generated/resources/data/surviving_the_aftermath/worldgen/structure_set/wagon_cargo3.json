@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 1733648479,
+    "separation": 2,
+    "spacing": 3
+  },
+  "structures": [
+    {
+      "structure": "surviving_the_aftermath:wagon_cargo3",
+      "weight": 1
+    }
+  ]
+}

@@ -16,7 +16,6 @@ public class Main {
 		ModBlocks.BLOCKS.register(bus);
 		ModItems.ITEMS.register(bus);
 		ModTabs.TABS.register(bus);
-		ModFeatures.FEATURES.register(bus);
 		ModBlockEntities.BLOCK_ENTITIES.register(bus);
 		ModSoundEvents.SOUND_EVENTS.register(bus);
 		ModStructurePieceTypes.STRUCTURE_PIECE_TYPES.register(bus);

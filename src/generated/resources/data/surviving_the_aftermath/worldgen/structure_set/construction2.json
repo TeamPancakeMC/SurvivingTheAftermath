@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 498231431,
+    "separation": 3,
+    "spacing": 5
+  },
+  "structures": [
+    {
+      "structure": "surviving_the_aftermath:construction2",
+      "weight": 1
+    }
+  ]
+}
