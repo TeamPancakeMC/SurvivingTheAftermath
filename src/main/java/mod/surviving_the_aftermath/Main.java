@@ -20,6 +20,7 @@ public class Main {
 		ModSoundEvents.SOUND_EVENTS.register(bus);
 		ModStructurePieceTypes.STRUCTURE_PIECE_TYPES.register(bus);
 		ModStructureTypes.STRUCTURE_TYPES.register(bus);
+		ModMobEffects.MOB_EFFECTS.register(bus);
 	}
 
 	public static ResourceLocation asResource(String name) {

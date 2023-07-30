@@ -7,12 +7,14 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
 public class NetherRaidEventSubscriber {
+    public static final String NETHER_RAID_START = "message.surviving_the_aftermath.nether_raid.start";
+    public static final String NETHER_RAID_VICTORY = "message.surviving_the_aftermath.nether_raid.victory";
     @SubscribeEvent
     public static void onRaidStart(RaidEvent.Start event) {
         event.getPlayers().forEach(uuid -> {
             Player player = event.getLevel().getPlayerByUUID(uuid);
             if (player != null) {
-                player.displayClientMessage(Component.translatable("message.surviving_the_aftermath.nether_raid.start"), true);
+                player.displayClientMessage(Component.translatable(NETHER_RAID_START), true);
             }
         });
     }
@@ -22,7 +24,7 @@ public class NetherRaidEventSubscriber {
         event.getPlayers().forEach(uuid -> {
             Player player = event.getLevel().getPlayerByUUID(uuid);
             if (player != null) {
-                player.displayClientMessage(Component.translatable("message.surviving_the_aftermath.nether_raid.victory"), true);
+                player.displayClientMessage(Component.translatable(NETHER_RAID_VICTORY), true);
             }
         });
     }
