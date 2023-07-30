@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_campfire",
+  "textures": {
+    "fire": "surviving_the_aftermath:block/party_bonfire_fire",
+    "lit_log": "surviving_the_aftermath:block/party_bonfire_log_lit"
+  }
+}
