@@ -22,7 +22,7 @@ public abstract class VillagerMixin extends AbstractVillager{
     }
 
     //updateSpecialPrices
-    @Inject( method = "updateSpecialPrices",at = @At("RETURN"))
+    @Inject( method = "updateSpecialPrices",at = @At("RETURN"), remap=false)
     private void updateSpecialPrices(Player pPlayer, CallbackInfo ci) {
         MerchantOffers offers = this.getOffers();
 
