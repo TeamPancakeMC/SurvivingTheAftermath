@@ -9,4 +9,6 @@
   "item.surviving_the_aftermath.tianjin_pancake": "Tianjin Pancake",
   "itemGroup.surviving_the_aftermath": "Surviving the Aftermath",
   "surviving_the_aftermath.nether_raid": ""
+  "surviving_the_aftermath.nether_raid.victory": "NetherRaid Victory",
+  "surviving_the_aftermath.nether_raid.wave": "NetherRaid The%sWave"
 }
