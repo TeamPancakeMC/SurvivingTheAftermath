@@ -12,13 +12,14 @@ import net.minecraftforge.registries.RegistryObject;
 
 @EventBusSubscriber(bus = Bus.MOD, modid = Main.MODID)
 public class ModTabs {
+
 	public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister
 			.create(Registries.CREATIVE_MODE_TAB.location(), Main.MODID);
 
 	public static final RegistryObject<CreativeModeTab> TAB = TABS.register("tab",
 			() -> CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID))
-					.icon(() -> new ItemStack(ModItems.EXAMPLE.get()))
-					.displayItems(
-							(params, output) -> ModItems.ITEMS.getEntries().forEach(item -> output.accept(item.get())))
-					.build());
+					.icon(() -> new ItemStack(ModBlocks.PARTY_BONFIRE.get()))
+					.displayItems((params, output) -> ModItems.ITEMS.getEntries()
+							.forEach(item -> output.accept(item.get()))).build());
+
 }

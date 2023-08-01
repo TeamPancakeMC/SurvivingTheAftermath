@@ -15,6 +15,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.event.PlayerBattleTrackerEventSubscriber;
 import mod.surviving_the_aftermath.event.RaidEvent;
+import mod.surviving_the_aftermath.init.ModItems;
 import mod.surviving_the_aftermath.init.ModStructures;
 import mod.surviving_the_aftermath.structure.NetherRaidStructure;
 import net.minecraft.core.BlockPos;
@@ -39,6 +40,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -55,15 +57,19 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class NetherRaid {
 
-	private static record WaveEntry(EntityType<?> type, int min, int max, List<Item> gear) {
+	private record WaveEntry(EntityType<?> type, int min, int max, List<Item> gear) {
 
 	}
 
 	private static final SimpleWeightedRandomList<Item> REWARDS = SimpleWeightedRandomList.<Item>builder()
 			.add(Items.GOLD_INGOT, 100).add(Items.DIAMOND, 10).add(Items.EMERALD, 20)
-			.add(Items.ENCHANTED_GOLDEN_APPLE, 2).add(Items.NETHERITE_SCRAP, 2).add(Items.ELYTRA, 1).build();
+			.add(Items.ENCHANTED_GOLDEN_APPLE, 2).add(Items.NETHERITE_SCRAP, 2)
+			.add(ModItems.NETHER_CORE.get(), 1).build();
 
 	private static final List<List<WaveEntry>> WAVES = List.of(
 			List.of(new WaveEntry(EntityType.PIGLIN, 4, 5, List.of())),
@@ -132,7 +138,7 @@ public class NetherRaid {
 	public static final Codec<NetherRaid> CODEC = RecordCodecBuilder.create(instance -> instance
 			.group(Codec.INT.fieldOf("wave").forGetter(NetherRaid::getWave),
 					Codec.list(BlockPos.CODEC).fieldOf("spawn").forGetter(NetherRaid::getSpawn),
-					Codec.list(UUIDUtil.CODEC).xmap(l -> new HashSet<>(l), s -> new ArrayList<>(s)).fieldOf("enemies")
+					Codec.list(UUIDUtil.CODEC).xmap(HashSet::new, ArrayList::new).fieldOf("enemies")
 							.forGetter(NetherRaid::getEnemies),
 					Codec.INT.fieldOf("totalEnemyCount").forGetter(NetherRaid::getTotalEnemyCount),
 					Codec.INT.fieldOf("victoryTimer").forGetter(NetherRaid::getVictoryTimer))
@@ -140,7 +146,7 @@ public class NetherRaid {
 
 	public static final String NAME = Main.MODID + "." + "nether_raid";
 
-	private ServerBossEvent progress = new ServerBossEvent(Component.translatable(NAME), BossEvent.BossBarColor.RED,
+	private final ServerBossEvent progress = new ServerBossEvent(Component.translatable(NAME), BossEvent.BossBarColor.RED,
 			BossEvent.BossBarOverlay.PROGRESS);
 	private List<BlockPos> spawn = new ArrayList<>();
 	private List<UUID> players = new ArrayList<>();
@@ -177,7 +183,7 @@ public class NetherRaid {
 		LinkedList<BlockPos> list = new LinkedList<>();
 		list.add(pos);
 		while (!list.isEmpty()) {
-			var p = list.pop();
+			BlockPos p = list.pop();
 			if (found.contains(p))
 				continue;
 			found.add(p);
@@ -194,14 +200,15 @@ public class NetherRaid {
 
 	public void tick(ServerLevel level) {
 		progress.setVisible(!isVictory());
-
-		if (delay > 0)
+		if (delay > 0) {
 			delay--;
+		}
 		timer++;
-		if (isVictory())
+		if (isVictory()) {
 			victoryTimer--;
+		}
 
-		if (timer % 1 == 0 && delay == 0) {
+		if (delay == 0) {
 			if (!isVictory()) {
 				MinecraftForge.EVENT_BUS.post(new RaidEvent.Ongoing(players, level));
 				updatePlayers(level);
@@ -215,21 +222,18 @@ public class NetherRaid {
 	private void spawnRewards(ServerLevel level) {
 		MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players, level));
 		for (int i = 0; i < 5; i++) {
-			var pos = spawn.get(level.random.nextInt(spawn.size()));
-			var dir = freeDirection(level, pos);
-			var vec = Vec3.atCenterOf(pos);
-			REWARDS.getRandomValue(level.random).ifPresent(reward -> {
-				level.addFreshEntity(new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
-						dir.getStepX() * 0.2, 0.2, dir.getStepZ() * 0.2f));
-			});
+			BlockPos pos = spawn.get(level.random.nextInt(spawn.size()));
+			Direction dir = freeDirection(level, pos);
+			Vec3 vec = Vec3.atCenterOf(pos);
+			REWARDS.getRandomValue(level.random).ifPresent(reward ->
+					level.addFreshEntity(new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
+					dir.getStepX() * 0.2, 0.2, dir.getStepZ() * 0.2f)));
 		}
 	}
 
 	private Direction freeDirection(ServerLevel level, BlockPos pos) {
-		return Direction.Plane.HORIZONTAL.stream()
-				.filter(d -> level.isEmptyBlock(pos.relative(d)) && !spawn.contains(pos.relative(d))).findFirst()
-				.orElse(Direction.UP);
-
+		return Direction.Plane.HORIZONTAL.stream().filter(d -> level.isEmptyBlock(pos.relative(d))
+						&& !spawn.contains(pos.relative(d))).findFirst().orElse(Direction.UP);
 	}
 
 	private void updateProgress(ServerLevel level) {
@@ -237,12 +241,12 @@ public class NetherRaid {
 			return;
 
 		enemies.removeIf(id -> {
-			var entity = level.getEntity(id);
+			Entity entity = level.getEntity(id);
 			if (entity == null || entity.isRemoved()) {
 				return true;
 			} else {
 				if (entity instanceof Mob mob && mob.getTarget() == null && !players.isEmpty()) {
-					var target = level.getPlayerByUUID(players.get(level.getRandom().nextInt(players.size())));
+					Player target = level.getPlayerByUUID(players.get(level.getRandom().nextInt(players.size())));
 					mob.getBrain().setMemory(MemoryModuleType.ANGRY_AT, target.getUUID());
 				}
 				return false;
@@ -251,7 +255,6 @@ public class NetherRaid {
 
 		if (enemies.isEmpty()) {
 			updateStructure(level);
-
 			wave++;
 			level.playSeededSound(null, spawn.get(0).getX(), spawn.get(0).getY(), spawn.get(0).getZ(),
 					SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(2), SoundSource.NEUTRAL, 2, 1, level.random.nextLong());
@@ -265,7 +268,7 @@ public class NetherRaid {
 	}
 
 	private void updateStructure(ServerLevel level) {
-		var start = level.structureManager().getStructureAt(spawn.get(0),
+		StructureStart start = level.structureManager().getStructureAt(spawn.get(0),
 				level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID));
 		if (start != StructureStart.INVALID_START) {
 			var template = level.getStructureManager().get(NetherRaidStructure.STRUCTURE_TRANSFORMED);
@@ -283,6 +286,7 @@ public class NetherRaid {
 								}
 
 								@Override
+								@SuppressWarnings("deprecation")
 								public StructureTemplate.StructureBlockInfo processBlock(LevelReader pLevel,
 										BlockPos p_74300_, BlockPos pPos,
 										StructureTemplate.StructureBlockInfo pBlockInfo,
@@ -376,17 +380,13 @@ public class NetherRaid {
 
 		for (var id : updated) {
 			if (!players.contains(id)) {
-				Optional.ofNullable(level.getPlayerByUUID(id)).ifPresent(p -> {
-					progress.addPlayer((ServerPlayer) p);
-				});
+				Optional.ofNullable(level.getPlayerByUUID(id)).ifPresent(p -> progress.addPlayer((ServerPlayer) p));
 			}
 		}
 
 		for (var id : players) {
 			if (!updated.contains(id)) {
-				Optional.ofNullable(level.getPlayerByUUID(id)).ifPresent(p -> {
-					progress.removePlayer((ServerPlayer) p);
-				});
+				Optional.ofNullable(level.getPlayerByUUID(id)).ifPresent(p -> progress.removePlayer((ServerPlayer) p));
 			}
 		}
 		players = new ArrayList<>(updated);
