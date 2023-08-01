@@ -1,10 +1,5 @@
 package mod.surviving_the_aftermath.datagen;
 
-import java.util.concurrent.CompletableFuture;
-
-import net.minecraft.tags.BiomeTags;
-import org.jetbrains.annotations.Nullable;
-
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.init.ModStructures;
 import mod.surviving_the_aftermath.init.ModTags;
@@ -12,9 +7,15 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.data.tags.StructureTagsProvider;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.concurrent.CompletableFuture;
+
+@ParametersAreNonnullByDefault
 public class ModTagProviders {
 
 	public static class ModBiomeTagProvider extends BiomeTagsProvider {
@@ -37,15 +38,16 @@ public class ModTagProviders {
 
 	public static class ModStructureTagProvider extends StructureTagsProvider {
 
-		public ModStructureTagProvider(PackOutput pOutput, CompletableFuture<Provider> pProvider,
+		public ModStructureTagProvider(PackOutput output, CompletableFuture<Provider> provider,
 				@Nullable ExistingFileHelper existingFileHelper) {
-			super(pOutput, pProvider, Main.MODID, existingFileHelper);
+			super(output, provider, Main.MODID, existingFileHelper);
 		}
 
 		@Override
 		protected void addTags(Provider provider) {
 			tag(ModTags.NETHER_RAID).addOptional(ModStructures.NETHER_RAID.location());
 		}
+
 	}
 
 }
