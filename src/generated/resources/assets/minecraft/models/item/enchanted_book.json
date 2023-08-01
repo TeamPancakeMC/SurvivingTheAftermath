@@ -1,0 +1,62 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "surviving_the_aftermath:item/enchanted_book_counter_attack",
+      "predicate": {
+        "surviving_the_aftermath:special": 0.1
+      }
+    },
+    {
+      "model": "surviving_the_aftermath:item/enchanted_book_bloodthirsty",
+      "predicate": {
+        "surviving_the_aftermath:special": 0.2
+      }
+    },
+    {
+      "model": "surviving_the_aftermath:item/enchanted_book_clean_water",
+      "predicate": {
+        "surviving_the_aftermath:special": 0.3
+      }
+    },
+    {
+      "model": "surviving_the_aftermath:item/enchanted_book_life_tree",
+      "predicate": {
+        "surviving_the_aftermath:special": 0.4
+      }
+    },
+    {
+      "model": "surviving_the_aftermath:item/enchanted_book_devoured",
+      "predicate": {
+        "surviving_the_aftermath:special": 0.5
+      }
+    },
+    {
+      "model": "surviving_the_aftermath:item/enchanted_book_frantic",
+      "predicate": {
+        "surviving_the_aftermath:special": 0.6
+      }
+    },
+    {
+      "model": "surviving_the_aftermath:item/enchanted_book_execute",
+      "predicate": {
+        "surviving_the_aftermath:special": 0.7
+      }
+    },
+    {
+      "model": "surviving_the_aftermath:item/enchanted_book_moon",
+      "predicate": {
+        "surviving_the_aftermath:special": 0.8
+      }
+    },
+    {
+      "model": "surviving_the_aftermath:item/enchanted_book_sun",
+      "predicate": {
+        "surviving_the_aftermath:special": 0.9
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "minecraft:item/enchanted_book"
+  }
+}

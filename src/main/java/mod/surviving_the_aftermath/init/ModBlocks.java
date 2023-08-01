@@ -19,9 +19,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ModBlocks {
+
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Main.MODID);
 	public static final Map<String, Supplier<BlockItem>> BLOCK_ITEMS = new LinkedHashMap<>();
-
 
 	public static final RegistryObject<Block> EXAMPLE = BLOCKS.register("example", () -> new ExampleBlock(
 			BlockBehaviour.Properties.of().strength(2, 3).sound(SoundType.WOOD).mapColor(MapColor.WOOD)));
@@ -32,10 +32,10 @@ public class ModBlocks {
 		return register(name, block, supplier -> () -> new BlockItem(supplier.get(),new Item.Properties()));
 	}
 
-	private static RegistryObject<Block> register(String name, Supplier<Block> block,
-												  Function<RegistryObject<Block>, Supplier<? extends BlockItem>> item) {
+	private static RegistryObject<Block> register(String name, Supplier<Block> block, Function<RegistryObject<Block>, Supplier<? extends BlockItem>> item) {
 		RegistryObject<Block> register = BLOCKS.register(name, block);
 		BLOCK_ITEMS.put(name, () -> item.apply(register).get());
 		return register;
 	}
+
 }

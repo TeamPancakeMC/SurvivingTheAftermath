@@ -23,12 +23,13 @@ public class EventSubscriber {
 		CompletableFuture<HolderLookup.Provider> provider = event.getLookupProvider();
 		generator.addProvider(event.includeServer(), new ModTagProviders.ModBiomeTagProvider(output, provider, existingFileHelper));
 		generator.addProvider(event.includeServer(), new ModTagProviders.ModStructureTagProvider(output, provider, existingFileHelper));
-		generator.addProvider(event.includeClient(), new ModLanguageProvider(output));
-		generator.addProvider(event.includeClient(), new ModLanguageCNProvider(output));
 		generator.addProvider(event.includeClient(), new ModItemModelProvider(output, existingFileHelper));
 		generator.addProvider(event.includeClient(), new ModBlockStateProvider(output, existingFileHelper));
 		generator.addProvider(event.includeClient(), new ModSoundProvider(output, existingFileHelper));
 		generator.addProvider(event.includeServer(), new RegistryDataGenerator(output, provider));
+		generator.addProvider(event.includeClient(), new ModLanguageProvider(output));
+		generator.addProvider(event.includeClient(), new ModLanguageCNProvider(output));
+		generator.addProvider(event.includeServer(), new ModLootTableProvider(output));
 	}
 
 }

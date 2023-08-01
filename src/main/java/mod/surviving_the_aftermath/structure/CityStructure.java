@@ -13,6 +13,7 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -53,8 +54,9 @@ public class CityStructure extends AbstractStructure {
 			super.postProcess(level, structureManager, generator, rand, box, chunkPos, pos);
 			BlockPos spawnPos = new BlockPos(rand.nextInt(box.minX(), box.maxX()), pos.getY(), rand.nextInt(box.minZ(), box.maxZ()));
 			for (int y = spawnPos.getY(); y < box.maxY(); y++) {
-				if (getBlock(level, spawnPos.getX(), y, spawnPos.getZ(), box).isAir()
-						&& getBlock(level, spawnPos.getX(), y + 1, spawnPos.getZ(), box).isAir()) {
+				BlockState state1 = this.getBlock(level, spawnPos.getX(), y, spawnPos.getZ(), box);
+				BlockState state2 = this.getBlock(level, spawnPos.getX(), y + 1, spawnPos.getZ(), box);
+				if (state1.isAir() && state2.isAir()) {
 					Villager villager = EntityType.VILLAGER.create(level.getLevel());
 					villager.moveTo(spawnPos.getX(), y, spawnPos.getZ());
 					BuiltInRegistries.VILLAGER_TYPE.getRandom(rand).ifPresent((profession) ->
