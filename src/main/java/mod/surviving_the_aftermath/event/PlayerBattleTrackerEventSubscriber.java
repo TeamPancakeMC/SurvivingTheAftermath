@@ -2,8 +2,11 @@ package mod.surviving_the_aftermath.event;
 
 
 import com.google.common.collect.Maps;
+import mod.surviving_the_aftermath.capability.RaidData;
 import mod.surviving_the_aftermath.init.ModCapability;
 import mod.surviving_the_aftermath.init.ModMobEffects;
+import mod.surviving_the_aftermath.raid.NetherRaid;
+import mod.surviving_the_aftermath.raid.RaidState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,6 +29,12 @@ public class PlayerBattleTrackerEventSubscriber {
     private Map<UUID,Integer> deathMap = Maps.newHashMap();
     private Map<UUID,Long> escapeMap = Maps.newHashMap();
     private Map<UUID, List<UUID>> spectatorMap = new HashMap<>();
+
+    private UUID currentRaidId;
+
+    public PlayerBattleTrackerEventSubscriber(UUID currentRaidId) {
+        this.currentRaidId = currentRaidId;
+    }
 
     @SubscribeEvent
     public void updatePlayer(RaidEvent.Ongoing event) {
@@ -67,7 +76,7 @@ public class PlayerBattleTrackerEventSubscriber {
         if (level.isClientSide) return;
         if (player instanceof ServerPlayer serverPlayer) {
             if (deathMap.containsKey(serverPlayer.getUUID())) {
-                if (players.size() > 0){
+                if (!players.isEmpty()){
                     player.displayClientMessage(Component.translatable(PLAYER_BATTLE_PERSONAL_FAIL), true);
                     setSpectator(serverPlayer, level);
                     deathMap.remove(serverPlayer.getUUID());
@@ -75,8 +84,10 @@ public class PlayerBattleTrackerEventSubscriber {
                 }
 
                 Integer deathCount = deathMap.get(serverPlayer.getUUID());
-                if (deathCount < MAX_DEATH_COUNT && players.size() == 0) {
-                    //TODO:游戏结束
+                if (deathCount < MAX_DEATH_COUNT && players.isEmpty()) {
+                    NetherRaid netherRaid = RaidData.getNetherRaid(currentRaidId);
+                    restorePlayerGameMode(level);
+                    netherRaid.setState(RaidState.LOSE);
                 }
             }
         }
@@ -126,5 +137,16 @@ public class PlayerBattleTrackerEventSubscriber {
             spectatorMap.get(serverTarget.getUUID()).add(player.getUUID());
             player.setCamera(serverTarget);
         }
+    }
+
+    private void restorePlayerGameMode(Level level) {
+        spectatorMap.values().stream()
+                .flatMap(Collection::stream)
+                .forEach(uuid -> {
+                    Player player = level.getPlayerByUUID(uuid);
+                    if (player instanceof ServerPlayer serverPlayer){
+                        serverPlayer.setGameMode(GameType.SURVIVAL);
+                    }
+                });
     }
 }

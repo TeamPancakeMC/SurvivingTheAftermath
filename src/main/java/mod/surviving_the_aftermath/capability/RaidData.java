@@ -2,7 +2,10 @@ package mod.surviving_the_aftermath.capability;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 
 import mod.surviving_the_aftermath.init.ModCapability;
@@ -15,7 +18,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -28,9 +30,19 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 	private ServerLevel level;
 	private List<NetherRaid> raids = new ArrayList<>();
 
+	public static Map<UUID,NetherRaid> playerBattleTrackerManager = Maps.newHashMap();
+
 	public RaidData(ServerLevel level) {
 		this.level = level;
 	}
+
+	public static void registryTracker(UUID raidId, NetherRaid netherRaid) {
+		playerBattleTrackerManager.put(raidId, netherRaid);
+	}
+	public static NetherRaid getNetherRaid(UUID raidId) {
+		return playerBattleTrackerManager.get(raidId);
+	}
+
 
 	public void Create(BlockPos pos) {
 		if (level.structureManager().getAllStructuresAt(pos).containsKey(level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID)) && noRaidAt(pos)) {
@@ -51,7 +63,8 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 	public void tick() {
 		for (int i = raids.size() - 1; i >= 0; i--) {
 			raids.get(i).tick(level);
-			if (raids.get(i).isDone()) {
+			if (raids.get(i).loseOrEnd()) {
+				playerBattleTrackerManager.remove(raids.get(i).getRaidId());
 				raids.remove(i);
 			}
 		}

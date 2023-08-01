@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import mod.surviving_the_aftermath.Main;
+import mod.surviving_the_aftermath.capability.RaidData;
 import mod.surviving_the_aftermath.event.PlayerBattleTrackerEventSubscriber;
 import mod.surviving_the_aftermath.event.RaidEvent;
 import mod.surviving_the_aftermath.init.ModItems;
@@ -31,6 +32,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
@@ -56,7 +58,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class NetherRaid {
-
 	private record WaveEntry(EntityType<?> type, int min, int max, List<Item> gear) {
 
 	}
@@ -89,6 +90,7 @@ public class NetherRaid {
 							Items.GOLDEN_SWORD)),
 					new WaveEntry(EntityType.HOGLIN, 2, 3, List.of()),
 					new WaveEntry(EntityType.MAGMA_CUBE, 1, 2, List.of()),
+					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
 					new WaveEntry(EntityType.BLAZE, 1, 1, List.of()),
 					new WaveEntry(EntityType.PIGLIN_BRUTE, 1, 1,
 							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
@@ -99,6 +101,7 @@ public class NetherRaid {
 					new WaveEntry(EntityType.HOGLIN, 2, 3, List.of()),
 					new WaveEntry(EntityType.MAGMA_CUBE, 2, 3, List.of()),
 					new WaveEntry(EntityType.BLAZE, 2, 2, List.of()),
+					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
 					new WaveEntry(EntityType.PIGLIN_BRUTE, 2, 2,
 							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
 									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
@@ -107,6 +110,7 @@ public class NetherRaid {
 							Items.GOLDEN_SWORD)),
 					new WaveEntry(EntityType.HOGLIN, 2, 3, List.of()),
 					new WaveEntry(EntityType.MAGMA_CUBE, 2, 3, List.of()),
+					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
 					new WaveEntry(EntityType.BLAZE, 2, 3, List.of()),
 					new WaveEntry(EntityType.PIGLIN_BRUTE, 2, 3,
 							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
@@ -116,6 +120,7 @@ public class NetherRaid {
 							Items.GOLDEN_SWORD)),
 					new WaveEntry(EntityType.HOGLIN, 3, 3, List.of()),
 					new WaveEntry(EntityType.MAGMA_CUBE, 3, 4, List.of()),
+					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
 					new WaveEntry(EntityType.BLAZE, 3, 4, List.of()),
 					new WaveEntry(EntityType.PIGLIN_BRUTE, 2, 3,
 							List.of(Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS,
@@ -124,6 +129,7 @@ public class NetherRaid {
 					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS,
 							Items.GOLDEN_SWORD)),
 					new WaveEntry(EntityType.HOGLIN, 3, 4, List.of()),
+					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
 					new WaveEntry(EntityType.MAGMA_CUBE, 3, 4, List.of()),
 					new WaveEntry(EntityType.BLAZE, 3, 4, List.of()),
 					new WaveEntry(EntityType.PIGLIN_BRUTE, 3, 4,
@@ -135,8 +141,7 @@ public class NetherRaid {
 					Codec.list(BlockPos.CODEC).fieldOf("spawn").forGetter(NetherRaid::getSpawn),
 					Codec.list(UUIDUtil.CODEC).xmap(HashSet::new, ArrayList::new).fieldOf("enemies")
 							.forGetter(NetherRaid::getEnemies),
-					Codec.INT.fieldOf("totalEnemyCount").forGetter(NetherRaid::getTotalEnemyCount),
-					Codec.INT.fieldOf("victoryTimer").forGetter(NetherRaid::getVictoryTimer))
+					Codec.INT.fieldOf("totalEnemyCount").forGetter(NetherRaid::getTotalEnemyCount))
 			.apply(instance, NetherRaid::new));
 
 	public static final String NAME = Main.MODID + "." + "nether_raid";
@@ -146,31 +151,42 @@ public class NetherRaid {
 	private List<BlockPos> spawn = new ArrayList<>();
 	private List<UUID> players = new ArrayList<>();
 	private HashSet<UUID> enemies = new HashSet<>();
-	private int timer;
 	private int wave;
 	private int totalEnemyCount;
-	private int victoryTimer;
 	private int delay; // Delay to make sure raid mobs have been re-added to the world after load
 	private final int RADIUS = 50;
+	private RaidState state;
 
-	public NetherRaid(int wave, List<BlockPos> spawn, HashSet<UUID> enemies, int totalEnemyCount, int victoryTimer) {
+
+	private static int REWARD_TIME = 20 * 10;
+
+	private static final UUID RAID_ID = UUID.randomUUID();
+
+	public NetherRaid(int wave, List<BlockPos> spawn, HashSet<UUID> enemies, int totalEnemyCount) {
 		this.wave = wave;
 		this.spawn = spawn;
 		this.enemies = enemies;
 		this.totalEnemyCount = totalEnemyCount;
-		this.victoryTimer = victoryTimer;
 		this.delay = 100;
-		MinecraftForge.EVENT_BUS.register(new PlayerBattleTrackerEventSubscriber());
+		this.state = RaidState.START;
+		MinecraftForge.EVENT_BUS.register(new PlayerBattleTrackerEventSubscriber(RAID_ID));
+		RaidData.registryTracker(RAID_ID,this);
 
 	}
 
 	public NetherRaid(BlockPos pos, ServerLevel level) {
 		setSpawn(pos, level);
 		updatePlayers(level);
+		this.state = RaidState.START;
 		MinecraftForge.EVENT_BUS.post(new RaidEvent.Start(players, level));
 		updateProgress(level);
-		MinecraftForge.EVENT_BUS.register(new PlayerBattleTrackerEventSubscriber());
+		MinecraftForge.EVENT_BUS.register(new PlayerBattleTrackerEventSubscriber(RAID_ID));
+		RaidData.registryTracker(RAID_ID,this);
 
+	}
+
+	public UUID getRaidId() {
+		return RAID_ID;
 	}
 
 	private void setSpawn(BlockPos pos, ServerLevel level) {
@@ -194,37 +210,44 @@ public class NetherRaid {
 	}
 
 	public void tick(ServerLevel level) {
-		progress.setVisible(!isVictory());
-		if (delay > 0) {
-			delay--;
-		}
-		timer++;
-		if (isVictory()) {
-			victoryTimer--;
-		}
-
+		progress.setVisible(this.state == RaidState.ONGOING);
+		if (delay > 0) delay--;
 		if (delay == 0) {
-			if (!isVictory()) {
+			if (this.state != RaidState.VICTORY) {
+				setState(RaidState.ONGOING);
 				MinecraftForge.EVENT_BUS.post(new RaidEvent.Ongoing(players, level));
 				updatePlayers(level);
 				updateProgress(level);
-			} else {
-				spawnRewards(level);
+			}else {
+				if (REWARD_TIME > 0) {
+					REWARD_TIME--;
+					setState(RaidState.VICTORY);
+					MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players, level));
+					spawnRewards(level);
+				}else {
+					setState(RaidState.END);
+					MinecraftForge.EVENT_BUS.post(new RaidEvent.End(players, level));
+				}
 			}
 		}
+
+
 	}
 
 	private void spawnRewards(ServerLevel level) {
-		MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players, level));
+		setState(RaidState.CELEBRATING);
+		MinecraftForge.EVENT_BUS.post(new RaidEvent.Celebrating(players, level));
 //		for (int i = 0; i < 5; i++) {
 //
 //		}
+
 		BlockPos pos = spawn.get(level.random.nextInt(spawn.size()));
 		Direction dir = freeDirection(level, pos);
 		Vec3 vec = Vec3.atCenterOf(pos);
 		REWARDS.getRandomValue(level.random).ifPresent(reward ->
 				level.addFreshEntity(new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
 						dir.getStepX() * 0.2, 0.2, dir.getStepZ() * 0.2f)));
+		setState(RaidState.VICTORY);
 	}
 
 	private Direction freeDirection(ServerLevel level, BlockPos pos) {
@@ -255,7 +278,8 @@ public class NetherRaid {
 			level.playSeededSound(null, spawn.get(0).getX(), spawn.get(0).getY(), spawn.get(0).getZ(),
 					SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(2), SoundSource.NEUTRAL, 2, 1, level.random.nextLong());
 			if (wave > WAVES.size()) {
-				victoryTimer = 20 * 20;
+				setState(RaidState.VICTORY);
+				MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players, level));
 				return;
 			}
 			spawnEnemies(level, WAVES.get(Math.min(WAVES.size() - 1, wave - 1)));
@@ -305,7 +329,7 @@ public class NetherRaid {
 	}
 
 	public void join(Entity entity) {
-		if (entity.getType() == EntityType.MAGMA_CUBE && !isVictory()
+		if (entity.getType() == EntityType.MAGMA_CUBE && this.state == RaidState.ONGOING
 				&& entity.blockPosition().distSqr(spawn.get(0)) < 25 * 25 && enemies.add(entity.getUUID())) {
 			totalEnemyCount++;
 			progress.setProgress(enemies.size() / (float) totalEnemyCount);
@@ -334,7 +358,9 @@ public class NetherRaid {
 							mob.equipItemIfPossible(new ItemStack(item));
 						}
 					}
-
+					if (enemy instanceof Ghast){
+						enemy.setPos(enemy.getX(), enemy.getY() + 20, enemy.getZ());
+					}
 					for (var slot : EquipmentSlot.values()) {
 						mob.setDropChance(slot, 0);
 					}
@@ -406,15 +432,15 @@ public class NetherRaid {
 		return totalEnemyCount;
 	}
 
-	public int getVictoryTimer() {
-		return victoryTimer;
+
+	public RaidState getState() {
+		return state;
 	}
 
-	public boolean isVictory() {
-		return victoryTimer > 0;
+	public boolean loseOrEnd() {
+		return state == RaidState.LOSE || state == RaidState.END;
 	}
-
-	public boolean isDone() {
-		return victoryTimer == 1;
+	public void setState(RaidState state) {
+		this.state = state;
 	}
 }

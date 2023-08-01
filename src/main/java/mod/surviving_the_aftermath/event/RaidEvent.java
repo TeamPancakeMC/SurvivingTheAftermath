@@ -53,9 +53,4 @@ public class RaidEvent extends Event {
             super(players,level);
         }
     }
-    public static class CelebrateEnd extends RaidEvent {
-        public CelebrateEnd(List<UUID> players, ServerLevel level) {
-            super(players,level);
-        }
-    }
 }
