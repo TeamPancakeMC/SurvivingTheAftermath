@@ -1,22 +1,19 @@
 package mod.surviving_the_aftermath.event;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.capability.RaidData;
+import mod.surviving_the_aftermath.init.ModStructures;
 import mod.surviving_the_aftermath.init.ModTags;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.LevelEvent.CreateSpawnPosition;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -24,30 +21,19 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 @EventBusSubscriber(modid = Main.MODID, bus = Bus.FORGE)
 public class ForgeEventSubscriber {
-
-	private static final Set<Integer> RAIDS = new HashSet<>();
-
 	@SubscribeEvent
-	public static void raidCompleted(TickEvent.PlayerTickEvent event) {
-		var player = event.player;
-		if (player.level() instanceof ServerLevel level) {
-			var raid = level.getRaidAt(player.blockPosition());
-			if (raid != null && raid.isVictory() && !RAIDS.contains(raid.getId())) {
-				var villager = EntityType.VILLAGER.create(level);
-				var allay = EntityType.ALLAY.create(level);
-				villager.moveTo(player.position());
-				allay.moveTo(player.position());
-				level.addFreshEntity(villager);
-				level.addFreshEntity(allay);
-				RAIDS.add(raid.getId());
-			}
+	public static void netherRaid(EntityTravelToDimensionEvent event) {
+		Entity entity = event.getEntity();
+		Level level = entity.level();
+		BlockPos pos = entity.blockPosition();
+		if (level instanceof ServerLevel serverLevel){
+			event.setCanceled(serverLevel.structureManager().getAllStructuresAt(pos).containsKey(level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID)));
 		}
 	}
 
 	@SubscribeEvent
-	public static void netherRaid(EntityTravelToDimensionEvent event) {
-		event.setCanceled(
-				RaidData.get(event.getEntity().level()).map(c -> c.enterPortal(event.getEntity())).orElse(false));
+	public static void onBlock(BlockEvent.PortalSpawnEvent event) {
+		new Thread(() -> RaidData.get((Level) event.getLevel()).ifPresent(data -> data.Create(event.getPos()))).start();
 	}
 
 	@SubscribeEvent
@@ -74,12 +60,5 @@ public class ForgeEventSubscriber {
 		}
 	}
 
-	public static final ResourceLocation RAID_DATA_LOCATION = new ResourceLocation(Main.MODID, "raiddata");
-
-	@SubscribeEvent
-	public static void attachCapability(AttachCapabilitiesEvent<Level> event) {
-		if (event.getObject().dimension() == Level.OVERWORLD && event.getObject() instanceof ServerLevel level)
-			event.addCapability(RAID_DATA_LOCATION, new RaidData.Provider(level));
-	}
 
 }

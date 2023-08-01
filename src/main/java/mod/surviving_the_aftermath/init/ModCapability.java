@@ -2,8 +2,10 @@ package mod.surviving_the_aftermath.init;
 
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.capability.RaidData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -20,5 +22,11 @@ public class ModCapability {
     @SubscribeEvent
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.register(RaidData.class);
+    }
+
+    @SubscribeEvent
+    public static void attachCapability(AttachCapabilitiesEvent<Level> event) {
+        if (event.getObject().dimension() == Level.OVERWORLD && event.getObject() instanceof ServerLevel level)
+            event.addCapability(Main.asResource("raiddata"), new RaidData.Provider(level));
     }
 }

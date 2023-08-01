@@ -1,12 +1,6 @@
 package mod.surviving_the_aftermath.raid;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
@@ -57,6 +51,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -221,14 +216,15 @@ public class NetherRaid {
 
 	private void spawnRewards(ServerLevel level) {
 		MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players, level));
-		for (int i = 0; i < 5; i++) {
-			BlockPos pos = spawn.get(level.random.nextInt(spawn.size()));
-			Direction dir = freeDirection(level, pos);
-			Vec3 vec = Vec3.atCenterOf(pos);
-			REWARDS.getRandomValue(level.random).ifPresent(reward ->
-					level.addFreshEntity(new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
-					dir.getStepX() * 0.2, 0.2, dir.getStepZ() * 0.2f)));
-		}
+//		for (int i = 0; i < 5; i++) {
+//
+//		}
+		BlockPos pos = spawn.get(level.random.nextInt(spawn.size()));
+		Direction dir = freeDirection(level, pos);
+		Vec3 vec = Vec3.atCenterOf(pos);
+		REWARDS.getRandomValue(level.random).ifPresent(reward ->
+				level.addFreshEntity(new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
+						dir.getStepX() * 0.2, 0.2, dir.getStepZ() * 0.2f)));
 	}
 
 	private Direction freeDirection(ServerLevel level, BlockPos pos) {
@@ -268,8 +264,7 @@ public class NetherRaid {
 	}
 
 	private void updateStructure(ServerLevel level) {
-		StructureStart start = level.structureManager().getStructureAt(spawn.get(0),
-				level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID));
+		StructureStart start = level.structureManager().getStructureAt(spawn.get(0), Objects.requireNonNull(level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID)));
 		if (start != StructureStart.INVALID_START) {
 			var template = level.getStructureManager().get(NetherRaidStructure.STRUCTURE_TRANSFORMED);
 			template.ifPresent(t -> {
@@ -277,7 +272,7 @@ public class NetherRaid {
 					var pos = piece.templatePosition();
 					var settings = new StructurePlaceSettings().setRotation(piece.getRotation()).setMirror(Mirror.NONE)
 							.addProcessor(new BlockIgnoreProcessor(
-									ImmutableList.of(Blocks.AIR, Blocks.STRUCTURE_BLOCK, Blocks.NETHER_PORTAL)))
+									ImmutableList.of(Blocks.AIR, Blocks.STRUCTURE_BLOCK, Blocks.NETHER_PORTAL,Blocks.OBSIDIAN)))
 							.addProcessor(new StructureProcessor() {
 
 								@Override
@@ -285,22 +280,25 @@ public class NetherRaid {
 									return null;
 								}
 
+								@Nullable
 								@Override
-								@SuppressWarnings("deprecation")
-								public StructureTemplate.StructureBlockInfo processBlock(LevelReader pLevel,
-										BlockPos p_74300_, BlockPos pPos,
-										StructureTemplate.StructureBlockInfo pBlockInfo,
-										StructureTemplate.StructureBlockInfo pRelativeBlockInfo,
-										StructurePlaceSettings pSettings) {
-									return level.random.nextFloat() < 0.9
-											? new StructureTemplate.StructureBlockInfo(pRelativeBlockInfo.pos(),
-													pLevel.getBlockState(pRelativeBlockInfo.pos()), null)
-											: pRelativeBlockInfo;
+								public StructureTemplate.StructureBlockInfo process(LevelReader p_74140_,
+										BlockPos p_74141_, BlockPos p_74142_,
+										StructureTemplate.StructureBlockInfo p_74143_,
+										StructureTemplate.StructureBlockInfo p_74144_,
+										StructurePlaceSettings p_74145_,
+										@Nullable StructureTemplate template) {
+									if (level.getRandom().nextFloat() < 0.9) {
+										return new StructureTemplate.StructureBlockInfo(p_74144_.pos(),
+												p_74140_.getBlockState(p_74144_.pos()), p_74144_.nbt());
+									} else {
+										return p_74144_;
+									}
 								}
 							});
 					t.placeInWorld(level, pos, pos, settings, level.random, 2);
-					progress.setName(wave == WAVES.size() ? Component.translatable(NAME + ".victory")
-							: Component.translatable(NAME + ".wave", wave));
+//					progress.setName(wave == WAVES.size() ? Component.translatable(NAME + ".victory")
+//							: Component.translatable(NAME + ".wave", wave));
 				}
 			});
 		}

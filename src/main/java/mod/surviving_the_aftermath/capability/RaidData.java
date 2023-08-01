@@ -32,16 +32,10 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 		this.level = level;
 	}
 
-	public boolean enterPortal(Entity entity) {
-		var pos = entity.blockPosition();
-		if (level.structureManager().getAllStructuresAt(pos).containsKey(
-				level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID))) {
-			if (entity instanceof Player && noRaidAt(pos)) {
-				raids.add(new NetherRaid(pos, level));
-			}
-			return true;
+	public void Create(BlockPos pos) {
+		if (level.structureManager().getAllStructuresAt(pos).containsKey(level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID)) && noRaidAt(pos)) {
+			raids.add(new NetherRaid(pos, level));
 		}
-		return false;
 	}
 
 	private boolean noRaidAt(BlockPos pos) {
