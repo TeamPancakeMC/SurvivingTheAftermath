@@ -6,8 +6,10 @@ import mod.surviving_the_aftermath.init.ModTags;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
+import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.data.tags.StructureTagsProvider;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
@@ -28,8 +30,8 @@ public class ModTagProviders {
 		@Override
 		protected void addTags(Provider provider) {
 			tag(ModTags.HAS_CITY).add(Biomes.PLAINS);
-			tag(ModTags.HAS_HOUSE_OF_SAKURA).add(Biomes.CHERRY_GROVE);
 			tag(ModTags.HAS_NETHER_RAID).add(Biomes.PLAINS);
+			tag(ModTags.HAS_HOUSE_OF_SAKURA).add(Biomes.CHERRY_GROVE);
 			tag(ModTags.HAS_EXPANSION_BUILD).addTag(BiomeTags.IS_FOREST).add(Biomes.PLAINS);
 			tag(ModTags.HAS_BURNT_STRUCTURE).addTag(BiomeTags.IS_BADLANDS).addTag(BiomeTags.HAS_DESERT_PYRAMID);
 		}
@@ -46,6 +48,22 @@ public class ModTagProviders {
 		@Override
 		protected void addTags(Provider provider) {
 			tag(ModTags.NETHER_RAID).addOptional(ModStructures.NETHER_RAID.location());
+		}
+
+	}
+
+	public static class ModEntityTypeTagsProvider extends EntityTypeTagsProvider {
+
+		public ModEntityTypeTagsProvider(PackOutput output, CompletableFuture<Provider> provider,
+				@Nullable ExistingFileHelper existingFileHelper) {
+			super(output, provider, Main.MODID, existingFileHelper);
+		}
+
+		@Override
+		protected void addTags(Provider provider) {
+			this.tag(ModTags.NETHER_MOB).add(EntityType.ZOMBIFIED_PIGLIN, EntityType.GHAST, EntityType.MAGMA_CUBE,
+					EntityType.BLAZE, EntityType.SKELETON, EntityType.WITHER_SKELETON, EntityType.ENDERMAN,
+					EntityType.HOGLIN, EntityType.PIGLIN, EntityType.PIGLIN_BRUTE, EntityType.STRIDER);
 		}
 
 	}

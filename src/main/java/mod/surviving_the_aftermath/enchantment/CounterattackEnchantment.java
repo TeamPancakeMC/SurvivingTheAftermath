@@ -35,8 +35,7 @@ public class CounterattackEnchantment extends BaseEnchantment {
         if (target instanceof Player player && entity.isAttackable()) {
             float f = player.getAttackStrengthScale(0.5F);
             float i = (float)player.getAttributeValue(Attributes.ATTACK_KNOCKBACK) + level;
-            i += player.isSprinting() && f > 0.9F ? 1.0F : 0.0F;
-            if (i > 0) {
+            if ((i += player.isSprinting() && f > 0.9F ? 1.0F : 0.0F) > 0) {
                 if (entity instanceof LivingEntity livingEntity) {
                     double x = Mth.sin(player.getYRot() * ((float)Math.PI / 180F));
                     double z = -Mth.cos(player.getYRot() * ((float)Math.PI / 180F));

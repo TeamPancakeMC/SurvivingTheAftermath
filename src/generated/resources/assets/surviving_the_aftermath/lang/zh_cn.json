@@ -21,7 +21,5 @@
   "message.surviving_the_aftermath.nether_raid.personal_fail": "你虽然失败了但是可以继续相信你的队友",
   "message.surviving_the_aftermath.nether_raid.start": "你感受到空气愈发炎热......",
   "message.surviving_the_aftermath.nether_raid.victory": "望着最后一颗火星熄灭，你感觉它们不会再回来了，暂时......",
-  "surviving_the_aftermath.nether_raid": "",
-  "surviving_the_aftermath.nether_raid.victory": "地狱突袭 胜利",
-  "surviving_the_aftermath.nether_raid.wave": "地狱突袭 第%s波"
+  "surviving_the_aftermath.nether_raid": ""
 }

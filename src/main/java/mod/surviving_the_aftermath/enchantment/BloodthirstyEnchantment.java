@@ -7,12 +7,17 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 public class BloodthirstyEnchantment extends BaseEnchantment {
 
     public BloodthirstyEnchantment() {
-        super(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
     }
 
     @Override
     public int getMaxLevel() {
         return 3;
+    }
+
+    @Override
+    protected boolean hasDamageBonus() {
+        return true;
     }
 
 }

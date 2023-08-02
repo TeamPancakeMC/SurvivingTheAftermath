@@ -1,5 +1,8 @@
 package mod.surviving_the_aftermath.event;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.init.ModEnchantments;
@@ -8,26 +11,31 @@ import mod.surviving_the_aftermath.init.ModVillagers;
 import mod.surviving_the_aftermath.util.ModCommonUtils;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -35,14 +43,14 @@ import java.util.function.Supplier;
 @EventBusSubscriber(modid = Main.MODID)
 public class ModEventSubscriber {
 
-    private static MerchantOffer newOffer(ItemStack baseCostA, ItemStack result) {
-        return new MerchantOffer(baseCostA, result, 12, 30, 1.0F);
-    }
-
     @SubscribeEvent
     public static void addCustomTrades(VillagerTradesEvent event) {
         final ItemStack emerald = new ItemStack(Items.EMERALD, 2);
         final ItemStack diamond = new ItemStack(Items.DIAMOND, 1);
+        if (event.getType() == ModVillagers.RELIC_DEALER.get()) {
+            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
+            trades.get(1).add((trader, random) -> EnchantBookForNetherCore(random));
+        }
         if (event.getType() == VillagerProfession.BUTCHER) {
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
             ItemStack rawFalukorv = new ItemStack(ModItems.RAW_FALUKORV.get(), 1);
@@ -59,9 +67,20 @@ public class ModEventSubscriber {
                 }
             }
         }
-        if (event.getType() == ModVillagers.RELIC_DEALER.get()) {
-            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-        }
+    }
+
+    private static MerchantOffer newOffer(ItemStack baseCostA, ItemStack result) {
+        return new MerchantOffer(baseCostA, result, 12, 30, 1.0F);
+    }
+
+    private static MerchantOffer EnchantBookForNetherCore(RandomSource random) {
+        List<RegistryObject<Enchantment>> list = ModEnchantments.ENCHANTMENTS.getEntries().stream().toList();
+        Enchantment enchantment = list.get(random.nextInt(list.size())).get();
+        int i = Mth.nextInt(random, enchantment.getMinLevel(), enchantment.getMaxLevel());
+        int j = 2 + random.nextInt(5 + i * 10) + 3 * i;
+        ItemStack netherCore = new ItemStack(ModItems.NETHER_CORE.get(), Math.min(j, 64));
+        ItemStack enchantedBook = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, i));
+        return new MerchantOffer(netherCore, new ItemStack(Items.BOOK), enchantedBook, 12, 30, 0.2F);
     }
 
     @SubscribeEvent
@@ -83,6 +102,41 @@ public class ModEventSubscriber {
             healthBoost.showIcon = false;
             player.addEffect(healthBoost);
         }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDeath(LivingDeathEvent event) {
+        if (event.getSource().getEntity() instanceof Player player) {
+            ItemStack itemInHand = player.getItemInHand(player.getUsedItemHand());
+            if (!itemInHand.isEmpty()) {
+                int enchantmentLevel = itemInHand.getEnchantmentLevel(ModEnchantments.DEVOURED.get());
+                double attackDamage = player.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
+                if (player.getRandom().nextInt(10) < enchantmentLevel) {
+                    if (itemInHand.getItem() instanceof SwordItem swordItem) {
+                        Multimap<Attribute, AttributeModifier> multimap = swordItem.defaultModifiers;
+                        Multimap<Attribute, AttributeModifier> multimap1 = ArrayListMultimap.create(multimap);
+                        swordItem.defaultModifiers = attributeModifierBuilder(attackDamage, multimap1, "Weapon modifier");
+                    } else if (itemInHand.getItem() instanceof DiggerItem diggerItem) {
+                        Multimap<Attribute, AttributeModifier> multimap = diggerItem.defaultModifiers;
+                        Multimap<Attribute, AttributeModifier> multimap1 = ArrayListMultimap.create(multimap);
+                        diggerItem.defaultModifiers = attributeModifierBuilder(attackDamage, multimap1, "Tool modifier");
+                    }
+                }
+            }
+        }
+    }
+
+    private static Multimap<Attribute, AttributeModifier> attributeModifierBuilder(double amount, Multimap<Attribute, AttributeModifier> multimap, String name) {
+        AttributeModifier.Operation operation = AttributeModifier.Operation.ADDITION;
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+        for (AttributeModifier modifier1 : multimap.values()) {
+            amount += modifier1.getAmount();
+        }
+        amount += 0.1D;
+        AttributeModifier modifier = new AttributeModifier(Item.BASE_ATTACK_DAMAGE_UUID, name, amount, operation);
+        multimap.removeAll(Attributes.ATTACK_DAMAGE);
+        builder.put(Attributes.ATTACK_DAMAGE, modifier);
+        return builder.build();
     }
 
     @SubscribeEvent
