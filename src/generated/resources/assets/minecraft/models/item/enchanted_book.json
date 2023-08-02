@@ -2,55 +2,55 @@
   "parent": "minecraft:item/generated",
   "overrides": [
     {
-      "model": "surviving_the_aftermath:item/enchanted_book_counter_attack",
+      "model": "surviving_the_aftermath:item/counter_attack",
       "predicate": {
         "surviving_the_aftermath:special": 0.1
       }
     },
     {
-      "model": "surviving_the_aftermath:item/enchanted_book_bloodthirsty",
+      "model": "surviving_the_aftermath:item/bloodthirsty",
       "predicate": {
         "surviving_the_aftermath:special": 0.2
       }
     },
     {
-      "model": "surviving_the_aftermath:item/enchanted_book_clean_water",
+      "model": "surviving_the_aftermath:item/clean_water",
       "predicate": {
         "surviving_the_aftermath:special": 0.3
       }
     },
     {
-      "model": "surviving_the_aftermath:item/enchanted_book_life_tree",
+      "model": "surviving_the_aftermath:item/life_tree",
       "predicate": {
         "surviving_the_aftermath:special": 0.4
       }
     },
     {
-      "model": "surviving_the_aftermath:item/enchanted_book_devoured",
+      "model": "surviving_the_aftermath:item/devoured",
       "predicate": {
         "surviving_the_aftermath:special": 0.5
       }
     },
     {
-      "model": "surviving_the_aftermath:item/enchanted_book_frantic",
+      "model": "surviving_the_aftermath:item/frantic",
       "predicate": {
         "surviving_the_aftermath:special": 0.6
       }
     },
     {
-      "model": "surviving_the_aftermath:item/enchanted_book_execute",
+      "model": "surviving_the_aftermath:item/execute",
       "predicate": {
         "surviving_the_aftermath:special": 0.7
       }
     },
     {
-      "model": "surviving_the_aftermath:item/enchanted_book_moon",
+      "model": "surviving_the_aftermath:item/moon",
       "predicate": {
         "surviving_the_aftermath:special": 0.8
       }
     },
     {
-      "model": "surviving_the_aftermath:item/enchanted_book_sun",
+      "model": "surviving_the_aftermath:item/sun",
       "predicate": {
         "surviving_the_aftermath:special": 0.9
       }

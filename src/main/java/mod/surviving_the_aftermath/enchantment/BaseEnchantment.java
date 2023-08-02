@@ -30,7 +30,7 @@ public class BaseEnchantment extends Enchantment {
 
     @Override
     public boolean isTradeable() {
-        return false;
+        return true;
     }
 
     protected boolean hasDamageBonus() {

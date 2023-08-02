@@ -10,7 +10,6 @@ import mod.surviving_the_aftermath.init.ModItems;
 import mod.surviving_the_aftermath.init.ModVillagers;
 import mod.surviving_the_aftermath.util.ModCommonUtils;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -38,7 +37,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Map;
+
+import static mod.surviving_the_aftermath.datagen.ModItemModelProvider.ENCHANTMENTS;
 
 @EventBusSubscriber(modid = Main.MODID)
 public class ModEventSubscriber {
@@ -140,20 +141,13 @@ public class ModEventSubscriber {
     }
 
     @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("unused")
     public static void onFMLClientSetup(FMLClientSetupEvent event) {
-        ResourceLocation name = Main.asResource("special");
-        Supplier<Enchantment>[] enchantments = ModCommonUtils.ENCHANTMENTS;
-        ItemProperties.register(Items.ENCHANTED_BOOK, name, (stack, level, entity, seed) -> {
-            for (int i = 1; i < enchantments.length; i++) {
-                int enchantmentCount = EnchantmentHelper.getEnchantments(stack).keySet().size();
-                if (stack.getEnchantmentLevel(enchantments[i].get()) > 0) {
-                    return i / 10.0F;
-                }
-            }
-            return 0.0F;
+        ItemProperties.register(Items.ENCHANTED_BOOK, Main.asResource("special"), (stack, world, entity, i) -> {
+            Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(stack);
+            if (map.isEmpty()) return 0.0F;
+            String key = map.entrySet().iterator().next().getKey().getDescriptionId();
+            return ENCHANTMENTS.getOrDefault(key, 0.0F);
         });
     }
-
 }

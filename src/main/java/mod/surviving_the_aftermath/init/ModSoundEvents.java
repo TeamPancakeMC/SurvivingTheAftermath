@@ -2,7 +2,6 @@ package mod.surviving_the_aftermath.init;
 
 import mod.surviving_the_aftermath.Main;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;

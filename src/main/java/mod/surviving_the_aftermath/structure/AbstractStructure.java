@@ -1,7 +1,5 @@
 package mod.surviving_the_aftermath.structure;
 
-import java.util.Optional;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +25,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnorePr
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+
+import java.util.Optional;
 
 public abstract class AbstractStructure extends Structure {
 

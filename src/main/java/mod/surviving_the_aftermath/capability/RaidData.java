@@ -1,13 +1,7 @@
 package mod.surviving_the_aftermath.capability;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
-
 import mod.surviving_the_aftermath.init.ModCapability;
 import mod.surviving_the_aftermath.init.ModStructures;
 import mod.surviving_the_aftermath.raid.NetherRaid;
@@ -23,6 +17,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class RaidData implements INBTSerializable<CompoundTag> {
 	public static final Codec<List<NetherRaid>> RAIDS_CODEC = Codec.list(NetherRaid.CODEC);

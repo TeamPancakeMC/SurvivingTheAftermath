@@ -1,7 +1,6 @@
 package mod.surviving_the_aftermath.datagen.loot;
 
 import mod.surviving_the_aftermath.util.ModCommonUtils;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.packs.VanillaBlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -9,7 +8,6 @@ import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiConsumer;
 

@@ -1,17 +1,16 @@
 package mod.surviving_the_aftermath.datagen;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.init.ModItems;
-import mod.surviving_the_aftermath.util.ModCommonUtils;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
+import net.minecraft.server.packs.PackType;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.Map;
 
 public class ModItemModelProvider extends ItemModelProvider {
 
@@ -29,22 +28,37 @@ public class ModItemModelProvider extends ItemModelProvider {
         this.basicItem(ModItems.TIANJIN_PANCAKE.get());
         this.basicItem(ModItems.NETHER_CORE.get());
         this.basicItem(ModItems.MUSIC_DISK_ORCHELIAS_VOX.get());
-        ResourceLocation enchantedBookTexture = this.mcLoc("item/" + Items.ENCHANTED_BOOK);
-        ItemModelBuilder builder0 = this.getBuilder(this.mcLoc("enchanted_book").toString());
-        ItemModelBuilder builder1 = builder0.parent(new ModelFile.UncheckedModelFile("item/generated"));
-        ItemModelBuilder builder2 = builder1.texture("layer0", enchantedBookTexture);
-        for (Enchantment enchantment : ModCommonUtils.getKnownEnchantments()) {
-            ResourceLocation key = ForgeRegistries.ENCHANTMENTS.getKey(enchantment);
-            ResourceLocation texture = this.modLoc("item/" + key.getPath());
-            String path = key.getNamespace() + ":enchanted_book_" + key.getPath();
-            ModelFile modelFile = new ModelFile.UncheckedModelFile("item/generated");
-            this.getBuilder(path).parent(modelFile).texture("layer0", texture);
-        }
-        for (int i = 1; i < ModCommonUtils.ENCHANTMENTS.length; i++) {
-            ResourceLocation key = ForgeRegistries.ENCHANTMENTS.getKey(ModCommonUtils.ENCHANTMENTS[i].get());
-            ModelFile modelFile = new ModelFile.UncheckedModelFile(this.modLoc("item/enchanted_book_" + key.getPath()));
-            builder2.override().predicate(this.modLoc("special"), i / 10.0F).model(modelFile).end();
+        for (Map.Entry<String, Float> entry : ENCHANTMENTS.entrySet()) {
+            getBuilder("minecraft:item/enchanted_book")
+                    .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                    .texture("layer0", mcLoc("item/enchanted_book")).override()
+                    .predicate(modLoc("special"), entry.getValue())
+                    .model(generateModel(entry.getKey().split("\\.")[2]))
+                    .end();
         }
     }
 
+    public ModelFile generateModel(String name) {
+        ResourceLocation location = modLoc("item/" + name);
+        if (!existingFileHelper.exists(location, PackType.CLIENT_RESOURCES, ".png", "textures")) {
+            location = mcLoc("item/enchanted_book");
+        }
+
+        return getBuilder(name).parent(new ModelFile.UncheckedModelFile("item/generated")).texture("layer0", location);
+    }
+
+    public static Map<String, Float> ENCHANTMENTS = new Object2FloatOpenHashMap<>();
+
+    static {
+        String e = "enchantment." + Main.MODID + ".";
+        ENCHANTMENTS.put(e + "counter_attack", 0.1F);
+        ENCHANTMENTS.put(e + "bloodthirsty", 0.2F);
+        ENCHANTMENTS.put(e + "clean_water", 0.3F);
+        ENCHANTMENTS.put(e + "life_tree", 0.4F);
+        ENCHANTMENTS.put(e + "devoured", 0.5F);
+        ENCHANTMENTS.put(e + "frantic", 0.6F);
+        ENCHANTMENTS.put(e + "execute", 0.7F);
+        ENCHANTMENTS.put(e + "moon", 0.8F);
+        ENCHANTMENTS.put(e + "sun", 0.9F);
+    }
 }
