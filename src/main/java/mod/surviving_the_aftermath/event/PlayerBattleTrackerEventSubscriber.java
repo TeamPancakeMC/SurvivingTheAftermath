@@ -1,9 +1,7 @@
 package mod.surviving_the_aftermath.event;
 
-
 import com.google.common.collect.Maps;
 import mod.surviving_the_aftermath.capability.RaidData;
-import mod.surviving_the_aftermath.init.ModCapability;
 import mod.surviving_the_aftermath.init.ModMobEffects;
 import mod.surviving_the_aftermath.raid.NetherRaid;
 import mod.surviving_the_aftermath.raid.RaidState;
@@ -22,6 +20,7 @@ import org.apache.commons.compress.utils.Lists;
 import java.util.*;
 
 public class PlayerBattleTrackerEventSubscriber {
+
     public static final String PLAYER_BATTLE_PERSONAL_FAIL = "message.surviving_the_aftermath.nether_raid.personal_fail";
     public static final String PLAYER_BATTLE_ESCAPE = "message.surviving_the_aftermath.nether_raid.escape";
     private static final int MAX_DEATH_COUNT = 3;
@@ -29,7 +28,6 @@ public class PlayerBattleTrackerEventSubscriber {
     private Map<UUID,Integer> deathMap = Maps.newHashMap();
     private Map<UUID,Long> escapeMap = Maps.newHashMap();
     private Map<UUID, List<UUID>> spectatorMap = new HashMap<>();
-
     private UUID currentRaidId;
 
     public PlayerBattleTrackerEventSubscriber(UUID currentRaidId) {
@@ -51,7 +49,7 @@ public class PlayerBattleTrackerEventSubscriber {
             Player player = level.getPlayerByUUID(uuid);
             if (player != null){
                 escapeMap.put(uuid,level.getGameTime());
-            }else {
+            } else {
                 deathMap.put(uuid, deathMap.getOrDefault(uuid,0) + 1);
             }
         }
@@ -60,9 +58,7 @@ public class PlayerBattleTrackerEventSubscriber {
             if (!players.contains(uuid)) {
                 Player player = level.getPlayerByUUID(uuid);
                 if (player instanceof ServerPlayer serverPlayer && serverPlayer.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) {
-                    if (escapeMap.containsKey(uuid)) {
-                        escapeMap.remove(uuid);
-                    }
+                    escapeMap.remove(uuid);
                     players.add(uuid);
                 }
             }
@@ -73,8 +69,7 @@ public class PlayerBattleTrackerEventSubscriber {
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         Player player = event.getEntity();
         Level level = player.level();
-        if (level.isClientSide) return;
-        if (player instanceof ServerPlayer serverPlayer) {
+        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             if (deathMap.containsKey(serverPlayer.getUUID())) {
                 if (!players.isEmpty()){
                     player.displayClientMessage(Component.translatable(PLAYER_BATTLE_PERSONAL_FAIL), true);
@@ -98,14 +93,13 @@ public class PlayerBattleTrackerEventSubscriber {
         Player player = event.player;
         Level level = player.level();
         UUID uuid = player.getUUID();
-        if (level.isClientSide()) return;
-        if (escapeMap.containsKey(uuid)){
+        if (!level.isClientSide && escapeMap.containsKey(uuid)){
             Long lastEscapeTime = escapeMap.get(uuid);
             long time = level.getGameTime() - lastEscapeTime;
             if (lastEscapeTime != 0L && time > 20 * 5) {
                 player.addEffect(new MobEffectInstance(ModMobEffects.COWARDICE.get(), 45 * 60 * 20));
                 escapeMap.remove(uuid);
-            }else {
+            } else {
                 player.displayClientMessage(Component.translatable(PLAYER_BATTLE_ESCAPE, 20 * 5 - time), true);
             }
         }
@@ -116,7 +110,6 @@ public class PlayerBattleTrackerEventSubscriber {
         UUID uuid = players.get(level.random.nextInt(players.size()));
         Player target = level.getPlayerByUUID(uuid);
         if (!(target instanceof ServerPlayer serverTarget)) return;
-
 
         if (spectatorMap.containsKey(player.getUUID())){
             List<UUID> uuids = spectatorMap.get(serverTarget.getUUID());
@@ -149,4 +142,5 @@ public class PlayerBattleTrackerEventSubscriber {
                     }
                 });
     }
+
 }
