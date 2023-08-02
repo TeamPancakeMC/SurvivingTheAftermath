@@ -5,6 +5,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.RecordItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -32,6 +34,8 @@ public class ModItems {
 					.effect(() -> new MobEffectInstance(MobEffects.SATURATION, 4800), 1.0F)
 					.effect(() -> new MobEffectInstance(MobEffects.LUCK, 2400), 1.0F).build())));
 	public static final RegistryObject<Item> NETHER_CORE = ITEMS.register("nether_core", () -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> MUSIC_DISK_ORCHELIAS_VOX = ITEMS.register("music_disk_orchelias_vox", () -> new RecordItem(
+					14, ModSoundEvents.ORCHELIAS_VOX, (new Item.Properties()).stacksTo(1).rarity(Rarity.RARE), 269));
 
 	static {
 		ModBlocks.BLOCK_ITEMS.forEach(ITEMS::register);

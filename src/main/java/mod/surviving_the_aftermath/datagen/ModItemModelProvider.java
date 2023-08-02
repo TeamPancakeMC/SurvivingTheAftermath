@@ -28,6 +28,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         this.basicItem(ModItems.HAMBURGER.get());
         this.basicItem(ModItems.TIANJIN_PANCAKE.get());
         this.basicItem(ModItems.NETHER_CORE.get());
+        this.basicItem(ModItems.MUSIC_DISK_ORCHELIAS_VOX.get());
         ResourceLocation enchantedBookTexture = this.mcLoc("item/" + Items.ENCHANTED_BOOK);
         ItemModelBuilder builder0 = this.getBuilder(this.mcLoc("enchanted_book").toString());
         ItemModelBuilder builder1 = builder0.parent(new ModelFile.UncheckedModelFile("item/generated"));
