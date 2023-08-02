@@ -108,18 +108,18 @@ public class ModEventSubscriber {
     public static void onLivingDeath(LivingDeathEvent event) {
         if (event.getSource().getEntity() instanceof Player player) {
             ItemStack itemInHand = player.getItemInHand(player.getUsedItemHand());
-            if (!itemInHand.isEmpty()) {
+            if (!player.level().isClientSide && !itemInHand.isEmpty()) {
                 int enchantmentLevel = itemInHand.getEnchantmentLevel(ModEnchantments.DEVOURED.get());
                 double attackDamage = player.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
-                if (player.getRandom().nextInt(10) < enchantmentLevel) {
+                if (enchantmentLevel > 0 && player.getRandom().nextInt(10) < enchantmentLevel) {
                     if (itemInHand.getItem() instanceof SwordItem swordItem) {
                         Multimap<Attribute, AttributeModifier> multimap = swordItem.defaultModifiers;
                         Multimap<Attribute, AttributeModifier> multimap1 = ArrayListMultimap.create(multimap);
-                        swordItem.defaultModifiers = attributeModifierBuilder(attackDamage, multimap1, "Weapon modifier");
+                        swordItem.defaultModifiers = ImmutableMultimap.copyOf(attributeModifierBuilder(attackDamage, multimap1, "Weapon modifier"));
                     } else if (itemInHand.getItem() instanceof DiggerItem diggerItem) {
                         Multimap<Attribute, AttributeModifier> multimap = diggerItem.defaultModifiers;
                         Multimap<Attribute, AttributeModifier> multimap1 = ArrayListMultimap.create(multimap);
-                        diggerItem.defaultModifiers = attributeModifierBuilder(attackDamage, multimap1, "Tool modifier");
+                        diggerItem.defaultModifiers = ImmutableMultimap.copyOf(attributeModifierBuilder(attackDamage, multimap1, "Tool modifier"));
                     }
                 }
             }
@@ -132,7 +132,7 @@ public class ModEventSubscriber {
         for (AttributeModifier modifier1 : multimap.values()) {
             amount += modifier1.getAmount();
         }
-        amount += 0.1D;
+        amount += 0.05D;
         AttributeModifier modifier = new AttributeModifier(Item.BASE_ATTACK_DAMAGE_UUID, name, amount, operation);
         multimap.removeAll(Attributes.ATTACK_DAMAGE);
         builder.put(Attributes.ATTACK_DAMAGE, modifier);
