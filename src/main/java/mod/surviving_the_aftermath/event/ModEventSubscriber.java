@@ -1,9 +1,6 @@
 package mod.surviving_the_aftermath.event;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.init.ModEnchantments;
@@ -13,10 +10,10 @@ import mod.surviving_the_aftermath.util.ModCommonUtils;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -27,6 +24,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -37,6 +35,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.function.Function;
 
 import static mod.surviving_the_aftermath.datagen.ModItemModelProvider.ENCHANTMENTS;
 
@@ -110,35 +110,32 @@ public class ModEventSubscriber {
     public static void onLivingDeath(LivingDeathEvent event) {
         if (event.getSource().getEntity() instanceof Player player) {
             ItemStack itemInHand = player.getItemInHand(player.getUsedItemHand());
-            if (!player.level().isClientSide && !itemInHand.isEmpty()) {
+            if (!player.level().isClientSide && (itemInHand.getItem() instanceof SwordItem || itemInHand.getItem() instanceof DiggerItem)) {
                 int enchantmentLevel = itemInHand.getEnchantmentLevel(ModEnchantments.DEVOURED.get());
-                double attackDamage = player.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
                 if (enchantmentLevel > 0 && player.getRandom().nextInt(10) < enchantmentLevel) {
-                    if (itemInHand.getItem() instanceof SwordItem swordItem) {
-                        Multimap<Attribute, AttributeModifier> multimap = swordItem.defaultModifiers;
-                        Multimap<Attribute, AttributeModifier> multimap1 = ArrayListMultimap.create(multimap);
-                        swordItem.defaultModifiers = ImmutableMultimap.copyOf(attributeModifierBuilder(attackDamage, multimap1, "Weapon modifier"));
-                    } else if (itemInHand.getItem() instanceof DiggerItem diggerItem) {
-                        Multimap<Attribute, AttributeModifier> multimap = diggerItem.defaultModifiers;
-                        Multimap<Attribute, AttributeModifier> multimap1 = ArrayListMultimap.create(multimap);
-                        diggerItem.defaultModifiers = ImmutableMultimap.copyOf(attributeModifierBuilder(attackDamage, multimap1, "Tool modifier"));
+                    var tag = itemInHand.getOrCreateTag();
+                    float addition = tag.contains("surviving_the_aftermath.devoured")? tag.getFloat("surviving_the_aftermath.devoured") : 0;
+                    if(addition<enchantmentLevel+1){
+                        tag.putFloat("surviving_the_aftermath.devoured",addition+0.1F);
+                        // Sync
+                        player.setItemInHand(InteractionHand.MAIN_HAND,itemInHand);
                     }
                 }
             }
         }
     }
 
-    private static Multimap<Attribute, AttributeModifier> attributeModifierBuilder(double amount, Multimap<Attribute, AttributeModifier> multimap, String name) {
-        AttributeModifier.Operation operation = AttributeModifier.Operation.ADDITION;
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        for (AttributeModifier modifier1 : multimap.values()) {
-            amount += modifier1.getAmount();
+    private final static Function<Float,AttributeModifier> DEVOURED_ATTRIBUTE = (addition) ->
+            new AttributeModifier(UUID.fromString("412C831F-22EA-43B8-B74B-D172019AD3D2"),"devoured_enchantment",addition,AttributeModifier.Operation.ADDITION);
+
+    @SubscribeEvent
+    public static void onAttributeGet(ItemAttributeModifierEvent event) {
+        if(event.getSlotType()==EquipmentSlot.MAINHAND){
+            var tag = event.getItemStack().getOrCreateTag();
+            if(tag.contains("surviving_the_aftermath.devoured")){
+                event.addModifier(Attributes.ATTACK_DAMAGE,DEVOURED_ATTRIBUTE.apply(tag.getFloat("surviving_the_aftermath.devoured")));
+            }
         }
-        amount += 0.05D;
-        AttributeModifier modifier = new AttributeModifier(Item.BASE_ATTACK_DAMAGE_UUID, name, amount, operation);
-        multimap.removeAll(Attributes.ATTACK_DAMAGE);
-        builder.put(Attributes.ATTACK_DAMAGE, modifier);
-        return builder.build();
     }
 
     @SuppressWarnings("unused")
