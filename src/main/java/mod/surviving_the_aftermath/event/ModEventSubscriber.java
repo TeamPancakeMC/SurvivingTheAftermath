@@ -2,6 +2,7 @@ package mod.surviving_the_aftermath.event;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import mod.surviving_the_aftermath.Main;
@@ -73,7 +74,7 @@ public class ModEventSubscriber {
     }
 
     private static MerchantOffer EnchantBookForNetherCore(RandomSource random) {
-        List<RegistryObject<Enchantment>> list = ModEnchantments.ENCHANTMENTS.getEntries().stream().toList();
+        List<RegistryObject<Enchantment>> list = Lists.newArrayList(ModEnchantments.ENCHANTMENTS.getEntries());
         Enchantment enchantment = list.get(random.nextInt(list.size())).get();
         int i = Mth.nextInt(random, enchantment.getMinLevel(), enchantment.getMaxLevel());
         int j = 2 + random.nextInt(5 + i * 10) + 3 * i;
@@ -82,11 +83,13 @@ public class ModEventSubscriber {
         return new MerchantOffer(netherCore, new ItemStack(Items.BOOK), enchantedBook, 12, 30, 0.2F);
     }
 
+    private static final EquipmentSlot[] EQUIPMENT_SLOTS = EquipmentSlot.values();
+
     @SubscribeEvent
     public static void onPlayerTicking(TickEvent.PlayerTickEvent event) {
         int totalLifeTreeLevel = 0;
         Player player = event.player;
-        for (EquipmentSlot slots : EquipmentSlot.values()) {
+        for (EquipmentSlot slots : EQUIPMENT_SLOTS) {
             Item slotItems = player.getItemBySlot(slots).getItem();
             ItemStack slotStacks = slotItems.getDefaultInstance();
             int lifeTreeLevel = slotStacks.getEnchantmentLevel(ModEnchantments.LIFE_TREE.get());
