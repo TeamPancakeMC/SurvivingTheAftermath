@@ -27,6 +27,7 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -83,13 +84,11 @@ public class ModEventSubscriber {
         return new MerchantOffer(netherCore, new ItemStack(Items.BOOK), enchantedBook, 12, 30, 0.2F);
     }
 
-    private static final EquipmentSlot[] EQUIPMENT_SLOTS = EquipmentSlot.values();
-
     @SubscribeEvent
     public static void onPlayerTicking(TickEvent.PlayerTickEvent event) {
         int totalLifeTreeLevel = 0;
         Player player = event.player;
-        for (EquipmentSlot slots : EQUIPMENT_SLOTS) {
+        for (EquipmentSlot slots : EquipmentSlot.values()) {
             Item slotItems = player.getItemBySlot(slots).getItem();
             ItemStack slotStacks = slotItems.getDefaultInstance();
             int lifeTreeLevel = slotStacks.getEnchantmentLevel(ModEnchantments.LIFE_TREE.get());
@@ -103,6 +102,17 @@ public class ModEventSubscriber {
             healthBoost.visible = false;
             healthBoost.showIcon = false;
             player.addEffect(healthBoost);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingHurtEvent event) {
+        if (event.getSource().getEntity() instanceof Player player) {
+            ItemStack itemInHand = player.getItemInHand(player.getUsedItemHand());
+            int enchantmentLevel = itemInHand.getEnchantmentLevel(ModEnchantments.BLOODTHIRSTY.get());
+            if (!player.level().isClientSide && !itemInHand.isEmpty() && enchantmentLevel > 0) {
+                player.heal(event.getAmount() * 0.05F * enchantmentLevel);
+            }
         }
     }
 
@@ -147,4 +157,5 @@ public class ModEventSubscriber {
             return ENCHANTMENTS.getOrDefault(key, 0.0F);
         });
     }
+
 }

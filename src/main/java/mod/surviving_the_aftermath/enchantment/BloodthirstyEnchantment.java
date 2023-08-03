@@ -15,9 +15,4 @@ public class BloodthirstyEnchantment extends BaseEnchantment {
         return 3;
     }
 
-    @Override
-    protected boolean hasDamageBonus() {
-        return true;
-    }
-
 }

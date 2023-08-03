@@ -9,7 +9,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 public class LifeTreeEnchantment extends BaseEnchantment {
 
     public LifeTreeEnchantment() {
-        super(Enchantment.Rarity.RARE, EnchantmentCategory.ARMOR_CHEST, Enchantments.ARMOR_SLOTS);
+        super(Enchantment.Rarity.RARE, EnchantmentCategory.ARMOR, Enchantments.ARMOR_SLOTS);
     }
 
     @Override

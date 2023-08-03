@@ -61,25 +61,18 @@ public class BaseEnchantment extends Enchantment {
                     ItemStack itemInHand = player.getItemInHand(InteractionHand.MAIN_HAND);
                     flag3 = itemInHand.canPerformAction(ToolActions.SWORD_SWEEP);
                 }
-                if (target.hurt(player.damageSources().playerAttack(player), f)) {
-                    player.heal(this instanceof BloodthirstyEnchantment ? f * 0.05F * level : 0.0F);
-                    if (flag3) {
-                        float f3 = 1.0F + EnchantmentHelper.getSweepingDamageRatio(player) * f;
-                        AABB sweepHitBox = player.getItemInHand(InteractionHand.MAIN_HAND).getSweepHitBox(player, target);
-                        for (LivingEntity livingEntity : player.level().getEntitiesOfClass(LivingEntity.class, sweepHitBox)) {
-                            double entityReachSq = Mth.square(player.getEntityReach());
-                            double x = Mth.sin(player.getYRot() * ((float)Math.PI / 180F));
-                            double z = -Mth.cos(player.getYRot() * ((float)Math.PI / 180F));
-                            boolean flag4 = player.distanceToSqr(livingEntity) < entityReachSq;
-                            boolean flag5 = (!(livingEntity instanceof ArmorStand) || !((ArmorStand)livingEntity).isMarker());
-                            if (livingEntity != player && livingEntity != target && !player.isAlliedTo(livingEntity) && flag4 && flag5) {
-                                if (this instanceof BloodthirstyEnchantment) {
-                                    player.heal(f3 * 0.05F * level);
-                                } else {
-                                    livingEntity.knockback(0.4F, x, z);
-                                    livingEntity.hurt(player.damageSources().playerAttack(player), f3);
-                                }
-                            }
+                if (target.hurt(player.damageSources().playerAttack(player), f) && flag3) {
+                    float f3 = 1.0F + EnchantmentHelper.getSweepingDamageRatio(player) * f;
+                    AABB sweepHitBox = player.getItemInHand(InteractionHand.MAIN_HAND).getSweepHitBox(player, target);
+                    for (LivingEntity livingEntity : player.level().getEntitiesOfClass(LivingEntity.class, sweepHitBox)) {
+                        double entityReachSq = Mth.square(player.getEntityReach());
+                        double x = Mth.sin(player.getYRot() * ((float)Math.PI / 180F));
+                        double z = -Mth.cos(player.getYRot() * ((float)Math.PI / 180F));
+                        boolean flag4 = player.distanceToSqr(livingEntity) < entityReachSq;
+                        boolean flag5 = (!(livingEntity instanceof ArmorStand) || !((ArmorStand)livingEntity).isMarker());
+                        if (livingEntity != player && livingEntity != target && !player.isAlliedTo(livingEntity) && flag4 && flag5) {
+                            livingEntity.knockback(0.4F, x, z);
+                            livingEntity.hurt(player.damageSources().playerAttack(player), f3);
                         }
                     }
                 }
