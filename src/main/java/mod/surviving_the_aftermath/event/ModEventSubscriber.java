@@ -26,8 +26,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -140,12 +138,11 @@ public class ModEventSubscriber {
         return builder.build();
     }
 
-    @SubscribeEvent
     @SuppressWarnings("unused")
     public static void onFMLClientSetup(FMLClientSetupEvent event) {
         ItemProperties.register(Items.ENCHANTED_BOOK, Main.asResource("special"), (stack, world, entity, i) -> {
             Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(stack);
-            if (map.isEmpty()) return 0.0F;
+            if (map.size() != 1) return 0.0F;
             String key = map.entrySet().iterator().next().getKey().getDescriptionId();
             return ENCHANTMENTS.getOrDefault(key, 0.0F);
         });
