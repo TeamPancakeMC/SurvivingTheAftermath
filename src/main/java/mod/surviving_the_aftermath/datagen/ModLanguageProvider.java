@@ -25,7 +25,8 @@ public class ModLanguageProvider extends LanguageProvider {
 		add(ModItems.HAMBURGER.get(), "Hamburger");
 		add(ModItems.TIANJIN_PANCAKE.get(), "Tianjin Pancake");
 		add(ModItems.NETHER_CORE.get(), "Nether Core");
-		add(ModItems.MUSIC_DISK_ORCHELIAS_VOX.get(), "Hagali - Orchelia's vox (offvocal ver_)");
+		add(ModItems.MUSIC_DISK_ORCHELIAS_VOX.get(), "Orchelia's vox (offvocal ver_)");
+		add(ModItems.MUSIC_DISK_ORCHELIAS_VOX.get().getDescriptionId() + ".desc", "Hagali");
 		add(ModMobEffects.COWARDICE.get(),"Cowardice");
 		add(ModEnchantments.COUNTER_ATTACK.get(), "Counter Attack");
 		add(ModEnchantments.BLOODTHIRSTY.get(), "Bloodthirsty");
