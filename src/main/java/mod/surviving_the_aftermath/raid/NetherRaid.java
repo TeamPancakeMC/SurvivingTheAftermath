@@ -151,6 +151,8 @@ public class NetherRaid {
 	private static int REWARD_TIME = 20 * 10;
 	private static final UUID RAID_ID = UUID.randomUUID();
 
+	private static final PlayerBattleTrackerEventSubscriber playerBattleTrackerEventSubscriber = new PlayerBattleTrackerEventSubscriber(RAID_ID);
+
 	public NetherRaid(int wave, List<BlockPos> spawn, HashSet<UUID> enemies, int totalEnemyCount) {
 		this.wave = wave;
 		this.spawn = spawn;
@@ -158,8 +160,8 @@ public class NetherRaid {
 		this.totalEnemyCount = totalEnemyCount;
 		this.delay = 100;
 		this.state = RaidState.START;
-		MinecraftForge.EVENT_BUS.register(new PlayerBattleTrackerEventSubscriber(RAID_ID));
-		RaidData.registryTracker(RAID_ID,this);
+		MinecraftForge.EVENT_BUS.register(playerBattleTrackerEventSubscriber);
+		RaidData.registryTracker(RAID_ID,playerBattleTrackerEventSubscriber);
 	}
 
 	public NetherRaid(BlockPos pos, ServerLevel level) {
@@ -168,8 +170,8 @@ public class NetherRaid {
 		this.state = RaidState.START;
 		MinecraftForge.EVENT_BUS.post(new RaidEvent.Start(players, level));
 		updateProgress(level);
-		MinecraftForge.EVENT_BUS.register(new PlayerBattleTrackerEventSubscriber(RAID_ID));
-		RaidData.registryTracker(RAID_ID,this);
+		MinecraftForge.EVENT_BUS.register(playerBattleTrackerEventSubscriber);
+		RaidData.registryTracker(RAID_ID,playerBattleTrackerEventSubscriber);
 	}
 
 	public UUID getRaidId() {
@@ -199,6 +201,10 @@ public class NetherRaid {
 	}
 
 	public void tick(ServerLevel level) {
+		if (loseOrEnd()) {
+			progress.removeAllPlayers();
+			return;
+		}
 		progress.setVisible(this.state == RaidState.ONGOING);
 		if (delay > 0) {
 			delay--;
@@ -226,10 +232,6 @@ public class NetherRaid {
 	private void spawnRewards(ServerLevel level) {
 		setState(RaidState.CELEBRATING);
 		MinecraftForge.EVENT_BUS.post(new RaidEvent.Celebrating(players, level));
-//		for (int i = 0; i < 5; i++) {
-//
-//		}
-
 		BlockPos pos = spawn.get(level.random.nextInt(spawn.size()));
 		Direction dir = freeDirection(level, pos);
 		Vec3 vec = Vec3.atCenterOf(pos);

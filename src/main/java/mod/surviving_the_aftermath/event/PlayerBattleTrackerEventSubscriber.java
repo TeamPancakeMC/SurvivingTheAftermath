@@ -5,6 +5,7 @@ import mod.surviving_the_aftermath.capability.RaidData;
 import mod.surviving_the_aftermath.init.ModMobEffects;
 import mod.surviving_the_aftermath.raid.NetherRaid;
 import mod.surviving_the_aftermath.raid.RaidState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -71,18 +72,19 @@ public class PlayerBattleTrackerEventSubscriber {
         Level level = player.level();
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             if (deathMap.containsKey(serverPlayer.getUUID())) {
-                if (!players.isEmpty()){
+
+                Integer deathCount = deathMap.get(serverPlayer.getUUID());
+                if (!players.isEmpty()) {
                     player.displayClientMessage(Component.translatable(PLAYER_BATTLE_PERSONAL_FAIL), true);
                     setSpectator(serverPlayer, level);
                     deathMap.remove(serverPlayer.getUUID());
                     return;
                 }
 
-                Integer deathCount = deathMap.get(serverPlayer.getUUID());
-                if (deathCount < MAX_DEATH_COUNT && players.isEmpty()) {
+                if (deathCount >= MAX_DEATH_COUNT || spectatorMap.containsKey(serverPlayer.getUUID())) {
                     NetherRaid netherRaid = RaidData.getNetherRaid(currentRaidId);
                     restorePlayerGameMode(level);
-                    netherRaid.setState(RaidState.LOSE);
+                    if (netherRaid != null) netherRaid.setState(RaidState.LOSE);
                 }
             }
         }
@@ -93,12 +95,12 @@ public class PlayerBattleTrackerEventSubscriber {
         Player player = event.player;
         Level level = player.level();
         UUID uuid = player.getUUID();
+
         if (!level.isClientSide && escapeMap.containsKey(uuid)){
             Long lastEscapeTime = escapeMap.get(uuid);
             long time = level.getGameTime() - lastEscapeTime;
             if (lastEscapeTime != 0L && time > 20 * 5) {
                 player.addEffect(new MobEffectInstance(ModMobEffects.COWARDICE.get(), 45 * 60 * 20));
-                escapeMap.remove(uuid);
             } else {
                 player.displayClientMessage(Component.translatable(PLAYER_BATTLE_ESCAPE, 20 * 5 - time), true);
             }
@@ -106,30 +108,32 @@ public class PlayerBattleTrackerEventSubscriber {
     }
 
     private void setSpectator(ServerPlayer player,Level level) {
-        player.setGameMode(GameType.SPECTATOR);
         UUID uuid = players.get(level.random.nextInt(players.size()));
         Player target = level.getPlayerByUUID(uuid);
         if (!(target instanceof ServerPlayer serverTarget)) return;
 
         if (spectatorMap.containsKey(player.getUUID())){
-            List<UUID> uuids = spectatorMap.get(serverTarget.getUUID());
-            uuids.add(player.getUUID());
-            uuids.forEach(uuid1 -> {
-                Player player1 = level.getPlayerByUUID(uuid1);
-                if (player1 instanceof ServerPlayer serverPlayer){
-                    if (!spectatorMap.containsKey(serverTarget.getUUID())) {
-                        spectatorMap.put(serverTarget.getUUID(), Lists.newArrayList());
+            List<UUID> uuids = spectatorMap.get(player.getUUID());
+            if (uuids != null) {
+                uuids.add(player.getUUID());
+                for (UUID uuid1 : uuids) {
+                    Player player1 = level.getPlayerByUUID(uuid1);
+                    if (player1 instanceof ServerPlayer serverPlayer) {
+                        if (!spectatorMap.containsKey(serverTarget.getUUID())) {
+                            spectatorMap.put(serverTarget.getUUID(), Lists.newArrayList());
+                        }
+                        spectatorMap.get(serverTarget.getUUID()).add(serverPlayer.getUUID());
+                        serverPlayer.setCamera(serverTarget);
                     }
-                    spectatorMap.get(serverTarget.getUUID()).add(serverPlayer.getUUID());
-                    serverPlayer.setCamera(serverTarget);
                 }
-            });
-            spectatorMap.remove(player.getUUID());
+                spectatorMap.remove(player.getUUID());
+            }
         } else {
             spectatorMap.put(serverTarget.getUUID(), Lists.newArrayList());
             spectatorMap.get(serverTarget.getUUID()).add(player.getUUID());
             player.setCamera(serverTarget);
         }
+        player.setGameMode(GameType.SPECTATOR);
     }
 
     private void restorePlayerGameMode(Level level) {
