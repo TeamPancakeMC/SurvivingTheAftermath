@@ -8,6 +8,7 @@ import mod.surviving_the_aftermath.init.ModItems;
 import mod.surviving_the_aftermath.init.ModVillagers;
 import mod.surviving_the_aftermath.util.ModCommonUtils;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -47,7 +48,7 @@ public class ModEventSubscriber {
         final ItemStack diamond = new ItemStack(Items.DIAMOND, 1);
         if (event.getType() == ModVillagers.RELIC_DEALER.get()) {
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-            trades.get(1).add((trader, random) -> EnchantBookForNetherCore(random));
+            trades.get(1).add((trader, random) -> enchantBookForNetherCore(random));
         }
         if (event.getType() == VillagerProfession.BUTCHER) {
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
@@ -71,7 +72,7 @@ public class ModEventSubscriber {
         return new MerchantOffer(baseCostA, result, 12, 30, 1.0F);
     }
 
-    private static MerchantOffer EnchantBookForNetherCore(RandomSource random) {
+    private static MerchantOffer enchantBookForNetherCore(RandomSource random) {
         List<RegistryObject<Enchantment>> list = Lists.newArrayList(ModEnchantments.ENCHANTMENTS.getEntries());
         Enchantment enchantment = list.get(random.nextInt(list.size())).get();
         int i = Mth.nextInt(random, enchantment.getMinLevel(), enchantment.getMaxLevel());
@@ -96,39 +97,39 @@ public class ModEventSubscriber {
     public static void onLivingDeath(LivingDeathEvent event) {
         if (event.getSource().getEntity() instanceof Player player) {
             ItemStack itemInHand = player.getItemInHand(player.getUsedItemHand());
-            if (!player.level().isClientSide && (itemInHand.getItem() instanceof SwordItem || itemInHand.getItem() instanceof DiggerItem)) {
+            if (!player.level().isClientSide && (itemInHand.getItem() instanceof TieredItem || itemInHand.getItem() instanceof TridentItem)) {
                 int enchantmentLevel = itemInHand.getEnchantmentLevel(ModEnchantments.DEVOURED.get());
                 if (enchantmentLevel > 0 && player.getRandom().nextInt(10) < enchantmentLevel) {
-                    var tag = itemInHand.getOrCreateTag();
-                    float addition = tag.contains("surviving_the_aftermath.devoured")? tag.getFloat("surviving_the_aftermath.devoured") : 0;
-                    if(addition<enchantmentLevel+1){
-                        tag.putFloat("surviving_the_aftermath.devoured",addition+0.1F);
-                        // Sync
-                        player.setItemInHand(InteractionHand.MAIN_HAND,itemInHand);
+                    CompoundTag tag = itemInHand.getOrCreateTag();
+                    float addition = tag.contains("surviving_the_aftermath.devoured") ? tag.getFloat("surviving_the_aftermath.devoured") : 0;
+                    if (addition < enchantmentLevel + 1) {
+                        tag.putFloat("surviving_the_aftermath.devoured", addition + 0.1F);
+                        player.setItemInHand(InteractionHand.MAIN_HAND, itemInHand); // Sync
                     }
                 }
             }
         }
     }
 
-    private final static Function<Float,AttributeModifier> DEVOURED_ATTRIBUTE = (addition) ->
-            new AttributeModifier(UUID.fromString("412C831F-22EA-43B8-B74B-D172019AD3D2"),"devoured_enchantment",addition,AttributeModifier.Operation.ADDITION);
+    private final static Function<Float, AttributeModifier> DEVOURED_ATTRIBUTE = (addition) ->
+            new AttributeModifier(UUID.fromString("412C831F-22EA-43B8-B74B-D172019AD3D2"),
+                    "devoured_enchantment", addition, AttributeModifier.Operation.ADDITION);
 
     private final static Function<Integer,AttributeModifier> LIFE_TREE_ATTRIBUTE = (addition) ->
-            new AttributeModifier(UUID.fromString("312C831F-22EA-43B8-B74B-D172019AD3D2"),"life_tree_enchantment",addition * 0.1,AttributeModifier.Operation.MULTIPLY_BASE);
+            new AttributeModifier(UUID.fromString("312C831F-22EA-43B8-B74B-D172019AD3D2"), "life_tree_enchantment", addition * 0.1, AttributeModifier.Operation.MULTIPLY_BASE);
 
     @SubscribeEvent
     public static void onAttributeGet(ItemAttributeModifierEvent event) {
-        if(event.getSlotType()==EquipmentSlot.MAINHAND){
-            var tag = event.getItemStack().getOrCreateTag();
-            if(tag.contains("surviving_the_aftermath.devoured")){
-                event.addModifier(Attributes.ATTACK_DAMAGE,DEVOURED_ATTRIBUTE.apply(tag.getFloat("surviving_the_aftermath.devoured")));
+        if (event.getSlotType() == EquipmentSlot.MAINHAND) {
+            CompoundTag tag = event.getItemStack().getOrCreateTag();
+            if (tag.contains("surviving_the_aftermath.devoured")) {
+                event.addModifier(Attributes.ATTACK_DAMAGE, DEVOURED_ATTRIBUTE.apply(tag.getFloat("surviving_the_aftermath.devoured")));
             }
         }
         if(event.getItemStack().getItem() instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == event.getSlotType()){
             int lifeTreeLevel = event.getItemStack().getEnchantmentLevel(ModEnchantments.LIFE_TREE.get());
-            if(lifeTreeLevel!=0){
-                event.addModifier(Attributes.MAX_HEALTH,LIFE_TREE_ATTRIBUTE.apply(lifeTreeLevel));
+            if (lifeTreeLevel != 0) {
+                event.addModifier(Attributes.MAX_HEALTH, LIFE_TREE_ATTRIBUTE.apply(lifeTreeLevel));
             }
         }
     }
