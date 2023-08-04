@@ -116,7 +116,8 @@ public class ModEventSubscriber {
                     "devoured_enchantment", addition, AttributeModifier.Operation.ADDITION);
 
     private final static Function<Integer,AttributeModifier> LIFE_TREE_ATTRIBUTE = (addition) ->
-            new AttributeModifier(UUID.fromString("312C831F-22EA-43B8-B74B-D172019AD3D2"), "life_tree_enchantment", addition * 0.1, AttributeModifier.Operation.MULTIPLY_BASE);
+            new AttributeModifier(UUID.fromString("312C831F-22EA-43B8-B74B-D172019AD3D2"),
+                    "life_tree_enchantment", addition * 0.1, AttributeModifier.Operation.MULTIPLY_BASE);
 
     @SubscribeEvent
     public static void onAttributeGet(ItemAttributeModifierEvent event) {
