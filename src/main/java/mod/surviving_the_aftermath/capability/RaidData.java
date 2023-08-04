@@ -23,11 +23,11 @@ import net.minecraftforge.common.util.LazyOptional;
 import java.util.*;
 
 public class RaidData implements INBTSerializable<CompoundTag> {
+
 	public static final Codec<List<NetherRaid>> RAIDS_CODEC = Codec.list(NetherRaid.CODEC);
 
-	private ServerLevel level;
+	private final ServerLevel level;
 	private static List<NetherRaid> raids = new ArrayList<>();
-
 	public static Map<UUID, PlayerBattleTrackerEventSubscriber> playerBattleTrackerManager = Maps.newHashMap();
 
 	public RaidData(ServerLevel level) {
@@ -37,13 +37,14 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 	public static void registryTracker(UUID raidId, PlayerBattleTrackerEventSubscriber tracker) {
 		playerBattleTrackerManager.put(raidId, tracker);
 	}
+
 	public static NetherRaid getNetherRaid(UUID raidId) {
 		return raids.stream().filter(netherRaid -> netherRaid.getRaidId().equals(raidId)).findFirst().orElse(null);
 	}
+
 	public static PlayerBattleTrackerEventSubscriber getPlayerBattleTracker(UUID raidId) {
 		return playerBattleTrackerManager.get(raidId);
 	}
-
 
 	public void Create(BlockPos pos) {
 		if (level.structureManager().getAllStructuresAt(pos).containsKey(level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID)) && noRaidAt(pos)) {
@@ -54,8 +55,9 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 	private boolean noRaidAt(BlockPos pos) {
 		for (var raid : raids) {
 			for (var p : raid.getSpawn()) {
-				if (p.distSqr(pos) < 25)
+				if (p.distSqr(pos) < 25) {
 					return false;
+				}
 			}
 		}
 		return true;
@@ -74,24 +76,24 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 	}
 
 	public void joinRaid(Entity entity) {
-		for (var raid : raids)
+		for (var raid : raids) {
 			raid.join(entity);
+		}
 	}
 
 	@Override
 	public CompoundTag serializeNBT() {
 		var tag = new CompoundTag();
-		tag.put("raids", RAIDS_CODEC.encodeStart(NbtOps.INSTANCE, raids).getOrThrow(false, s -> {
-		}));
+		tag.put("raids", RAIDS_CODEC.encodeStart(NbtOps.INSTANCE, raids).getOrThrow(false, s -> {}));
 		return tag;
 	}
 
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
-		if (nbt.contains("raids"))
+		if (nbt.contains("raids")) {
 			RAIDS_CODEC.parse(NbtOps.INSTANCE, nbt.get("raids")).result()
-					.ifPresentOrElse(r -> raids = new ArrayList<NetherRaid>(r), () -> {
-					});
+					.ifPresentOrElse(r -> raids = new ArrayList<>(r), () -> {});
+		}
 	}
 
 	public static LazyOptional<RaidData> get(Level level) {
@@ -100,7 +102,7 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 
 	public static class Provider implements ICapabilitySerializable<CompoundTag> {
 
-		private LazyOptional<RaidData> instance;
+		private final LazyOptional<RaidData> instance;
 
 		public Provider(ServerLevel level) {
 			instance = LazyOptional.of(() -> new RaidData(level));
@@ -113,15 +115,14 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 
 		@Override
 		public CompoundTag serializeNBT() {
-			return instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!"))
-					.serializeNBT();
+			return instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")).serializeNBT();
 		}
 
 		@Override
 		public void deserializeNBT(CompoundTag nbt) {
-			instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!"))
-					.deserializeNBT(nbt);
+			instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")).deserializeNBT(nbt);
 		}
 
 	}
+
 }

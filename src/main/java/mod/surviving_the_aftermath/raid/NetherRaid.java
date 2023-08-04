@@ -238,7 +238,6 @@ public class NetherRaid {
 		REWARDS.getRandomValue(level.random).ifPresent(reward ->
 				level.addFreshEntity(new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
 						dir.getStepX() * 0.2, 0.2, dir.getStepZ() * 0.2f)));
-		level.playLocalSound(pos, ModSoundEvents.ORCHELIAS_VOX.get(), SoundSource.MUSIC, 1.0F, 1.0F, false);
 		setState(RaidState.VICTORY);
 	}
 
@@ -269,9 +268,11 @@ public class NetherRaid {
 			updateStructure(level);
 			wave++;
 			level.playSeededSound(null, spawn.get(0).getX(), spawn.get(0).getY(), spawn.get(0).getZ(),
-					SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(2), SoundSource.NEUTRAL, 2, 1, level.random.nextLong());
+					SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(2), SoundSource.NEUTRAL, 2.0F, 1.0F, level.random.nextLong());
 			if (wave > WAVES.size()) {
 				setState(RaidState.VICTORY);
+				level.playSeededSound(null, this.spawn.get(0).getX(), this.spawn.get(0).getY(), this.spawn.get(0).getZ(),
+						ModSoundEvents.ORCHELIAS_VOX.get(), SoundSource.NEUTRAL, 3.0F, 1.0F, level.random.nextLong());
 				MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players, level));
 				return;
 			}

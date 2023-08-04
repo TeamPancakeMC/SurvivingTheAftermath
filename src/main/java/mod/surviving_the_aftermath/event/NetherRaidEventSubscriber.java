@@ -7,8 +7,10 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
 public class NetherRaidEventSubscriber {
+
     public static final String NETHER_RAID_START = "message.surviving_the_aftermath.nether_raid.start";
     public static final String NETHER_RAID_VICTORY = "message.surviving_the_aftermath.nether_raid.victory";
+
     @SubscribeEvent
     public static void onRaidStart(RaidEvent.Start event) {
         event.getPlayers().forEach(uuid -> {
@@ -28,4 +30,5 @@ public class NetherRaidEventSubscriber {
             }
         });
     }
+
 }

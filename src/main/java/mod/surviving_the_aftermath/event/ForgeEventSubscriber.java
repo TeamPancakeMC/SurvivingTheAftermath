@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
@@ -21,6 +22,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 @EventBusSubscriber(modid = Main.MODID, bus = Bus.FORGE)
 public class ForgeEventSubscriber {
+
 	@SubscribeEvent
 	public static void netherRaid(EntityTravelToDimensionEvent event) {
 		Entity entity = event.getEntity();
@@ -38,7 +40,7 @@ public class ForgeEventSubscriber {
 
 	@SubscribeEvent
 	public static void tickRaid(LevelTickEvent event) {
-		RaidData.get(event.level).ifPresent(c -> c.tick());
+		RaidData.get(event.level).ifPresent(RaidData::tick);
 	}
 
 	@SubscribeEvent
@@ -49,16 +51,14 @@ public class ForgeEventSubscriber {
 	@SubscribeEvent
 	public static void changeSpawn(CreateSpawnPosition event) {
 		if (event.getLevel() instanceof ServerLevel level) {
-			var settings = event.getSettings();
-			var pos = level.findNearestMapStructure(ModTags.NETHER_RAID,
+			ServerLevelData settings = event.getSettings();
+			BlockPos pos = level.findNearestMapStructure(ModTags.NETHER_RAID,
 					new BlockPos(settings.getXSpawn(), settings.getYSpawn(), settings.getZSpawn()), 100, false);
 			if (pos != null) {
-				settings.setSpawn(new BlockPos(pos.getX(),
-						level.getHeight(Heightmap.Types.WORLD_SURFACE, pos.getX(), pos.getZ()), pos.getZ()), 0);
+				settings.setSpawn(new BlockPos(pos.getX(), level.getHeight(Heightmap.Types.WORLD_SURFACE, pos.getX(), pos.getZ()), pos.getZ()), 0);
 				event.setCanceled(true);
 			}
 		}
 	}
-
 
 }
