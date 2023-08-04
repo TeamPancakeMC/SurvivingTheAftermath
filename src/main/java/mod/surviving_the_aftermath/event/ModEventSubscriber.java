@@ -11,8 +11,6 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -25,7 +23,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -85,27 +82,6 @@ public class ModEventSubscriber {
     }
 
     @SubscribeEvent
-    public static void onPlayerTicking(TickEvent.PlayerTickEvent event) {
-        int totalLifeTreeLevel = 0;
-        Player player = event.player;
-        for (EquipmentSlot slots : EquipmentSlot.values()) {
-            Item slotItems = player.getItemBySlot(slots).getItem();
-            ItemStack slotStacks = slotItems.getDefaultInstance();
-            int lifeTreeLevel = slotStacks.getEnchantmentLevel(ModEnchantments.LIFE_TREE.get());
-            boolean flag = slots.getType() == EquipmentSlot.Type.ARMOR && slotItems instanceof ArmorItem;
-            totalLifeTreeLevel += flag && lifeTreeLevel > 0 ? lifeTreeLevel : 0;
-        }
-        if (totalLifeTreeLevel > 0) {
-            MobEffectInstance healthBoost = new MobEffectInstance(MobEffects.HEALTH_BOOST, 100);
-            healthBoost.amplifier = totalLifeTreeLevel;
-            healthBoost.ambient = false;
-            healthBoost.visible = false;
-            healthBoost.showIcon = false;
-            player.addEffect(healthBoost);
-        }
-    }
-
-    @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent event) {
         if (event.getSource().getEntity() instanceof Player player) {
             ItemStack itemInHand = player.getItemInHand(player.getUsedItemHand());
@@ -138,12 +114,21 @@ public class ModEventSubscriber {
     private final static Function<Float,AttributeModifier> DEVOURED_ATTRIBUTE = (addition) ->
             new AttributeModifier(UUID.fromString("412C831F-22EA-43B8-B74B-D172019AD3D2"),"devoured_enchantment",addition,AttributeModifier.Operation.ADDITION);
 
+    private final static Function<Integer,AttributeModifier> LIFE_TREE_ATTRIBUTE = (addition) ->
+            new AttributeModifier(UUID.fromString("312C831F-22EA-43B8-B74B-D172019AD3D2"),"life_tree_enchantment",addition * 0.1,AttributeModifier.Operation.MULTIPLY_BASE);
+
     @SubscribeEvent
     public static void onAttributeGet(ItemAttributeModifierEvent event) {
         if(event.getSlotType()==EquipmentSlot.MAINHAND){
             var tag = event.getItemStack().getOrCreateTag();
             if(tag.contains("surviving_the_aftermath.devoured")){
                 event.addModifier(Attributes.ATTACK_DAMAGE,DEVOURED_ATTRIBUTE.apply(tag.getFloat("surviving_the_aftermath.devoured")));
+            }
+        }
+        if(event.getItemStack().getItem() instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == event.getSlotType()){
+            int lifeTreeLevel = event.getItemStack().getEnchantmentLevel(ModEnchantments.LIFE_TREE.get());
+            if(lifeTreeLevel!=0){
+                event.addModifier(Attributes.MAX_HEALTH,LIFE_TREE_ATTRIBUTE.apply(lifeTreeLevel));
             }
         }
     }
