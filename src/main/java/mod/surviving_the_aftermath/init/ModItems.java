@@ -35,7 +35,7 @@ public class ModItems {
 					.effect(() -> new MobEffectInstance(MobEffects.LUCK, 2400), 1.0F).build())));
 	public static final RegistryObject<Item> NETHER_CORE = ITEMS.register("nether_core", () -> new Item(new Item.Properties()));
 	public static final RegistryObject<Item> MUSIC_DISK_ORCHELIAS_VOX = ITEMS.register("music_disk_orchelias_vox", () -> new RecordItem(
-					14, ModSoundEvents.ORCHELIAS_VOX, (new Item.Properties()).stacksTo(1).rarity(Rarity.RARE), 269));
+					15, ModSoundEvents.ORCHELIAS_VOX, (new Item.Properties()).stacksTo(1).rarity(Rarity.RARE), 269 * 20));
 
 	static {
 		ModBlocks.BLOCK_ITEMS.forEach(ITEMS::register);

@@ -9,13 +9,19 @@ import net.minecraftforge.data.event.GatherDataEvent;
 import java.util.concurrent.CompletableFuture;
 
 public class EventSubscriber {
+
 	public static void onGatherData(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
 		PackOutput output = generator.getPackOutput();
 		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 		CompletableFuture<HolderLookup.Provider> provider = event.getLookupProvider();
-		generator.addProvider(event.includeServer(), new ModTagProviders.ModBiomeTagProvider(output, provider, existingFileHelper));
-		generator.addProvider(event.includeServer(), new ModTagProviders.ModStructureTagProvider(output, provider, existingFileHelper));
+		ModTagProviders.ModBlockTagsProvider blockTagsProvider =
+				new ModTagProviders.ModBlockTagsProvider(output, provider, existingFileHelper);
+		generator.addProvider(event.includeServer(), blockTagsProvider);
+		generator.addProvider(event.includeServer(), new ModTagProviders.ModItemTagsProvider(
+				output, provider, blockTagsProvider.contentsGetter(), existingFileHelper));
+		generator.addProvider(event.includeServer(), new ModTagProviders.ModBiomeTagsProvider(output, provider, existingFileHelper));
+		generator.addProvider(event.includeServer(), new ModTagProviders.ModStructureTagsProvider(output, provider, existingFileHelper));
 		generator.addProvider(event.includeServer(), new ModTagProviders.ModEntityTypeTagsProvider(output, provider, existingFileHelper));
 		generator.addProvider(event.includeClient(), new ModItemModelProvider(output, existingFileHelper));
 		generator.addProvider(event.includeClient(), new ModBlockStateProvider(output, existingFileHelper));

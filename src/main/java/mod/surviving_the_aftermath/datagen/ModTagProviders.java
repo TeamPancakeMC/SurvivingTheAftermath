@@ -1,16 +1,21 @@
 package mod.surviving_the_aftermath.datagen;
 
 import mod.surviving_the_aftermath.Main;
+import mod.surviving_the_aftermath.init.ModItems;
 import mod.surviving_the_aftermath.init.ModStructures;
 import mod.surviving_the_aftermath.init.ModTags;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.StructureTagsProvider;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,9 +25,37 @@ import java.util.concurrent.CompletableFuture;
 @ParametersAreNonnullByDefault
 public class ModTagProviders {
 
-	public static class ModBiomeTagProvider extends BiomeTagsProvider {
+	public static class ModBlockTagsProvider extends BlockTagsProvider {
 
-		public ModBiomeTagProvider(PackOutput output, CompletableFuture<Provider> lookupProvider,
+		public ModBlockTagsProvider(PackOutput output, CompletableFuture<Provider> lookupProvider,
+				@Nullable ExistingFileHelper existingFileHelper) {
+			super(output, lookupProvider, Main.MODID, existingFileHelper);
+		}
+
+		@Override
+		protected void addTags(Provider pProvider) {
+
+		}
+
+	}
+
+	public static class ModItemTagsProvider extends ItemTagsProvider {
+
+		public ModItemTagsProvider(PackOutput output, CompletableFuture<Provider> lookupProvider,
+				CompletableFuture<TagLookup<Block>> blockTags, @Nullable ExistingFileHelper existingFileHelper) {
+			super(output, lookupProvider, blockTags, Main.MODID, existingFileHelper);
+		}
+
+		@Override
+		protected void addTags(Provider provider) {
+			this.tag(ItemTags.MUSIC_DISCS).add(ModItems.MUSIC_DISK_ORCHELIAS_VOX.get());
+		}
+
+	}
+
+	public static class ModBiomeTagsProvider extends BiomeTagsProvider {
+
+		public ModBiomeTagsProvider(PackOutput output, CompletableFuture<Provider> lookupProvider,
 				@Nullable ExistingFileHelper existingFileHelper) {
 			super(output, lookupProvider, Main.MODID, existingFileHelper);
 		}
@@ -38,9 +71,9 @@ public class ModTagProviders {
 
 	}
 
-	public static class ModStructureTagProvider extends StructureTagsProvider {
+	public static class ModStructureTagsProvider extends StructureTagsProvider {
 
-		public ModStructureTagProvider(PackOutput output, CompletableFuture<Provider> provider,
+		public ModStructureTagsProvider(PackOutput output, CompletableFuture<Provider> provider,
 				@Nullable ExistingFileHelper existingFileHelper) {
 			super(output, provider, Main.MODID, existingFileHelper);
 		}

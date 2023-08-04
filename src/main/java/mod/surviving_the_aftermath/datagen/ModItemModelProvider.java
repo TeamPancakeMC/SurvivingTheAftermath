@@ -27,7 +27,9 @@ public class ModItemModelProvider extends ItemModelProvider {
         this.basicItem(ModItems.HAMBURGER.get());
         this.basicItem(ModItems.TIANJIN_PANCAKE.get());
         this.basicItem(ModItems.NETHER_CORE.get());
-        this.basicItem(ModItems.MUSIC_DISK_ORCHELIAS_VOX.get());
+        this.getBuilder(ModItems.MUSIC_DISK_ORCHELIAS_VOX.getId().toString())
+                .parent(new ModelFile.UncheckedModelFile("item/template_music_disc"))
+                .texture("layer0", this.modLoc("item/music_disk_orchelias_vox"));
         for (Map.Entry<String, Float> entry : ENCHANTMENTS.entrySet()) {
             getBuilder("minecraft:item/enchanted_book")
                     .parent(new ModelFile.UncheckedModelFile("item/generated"))

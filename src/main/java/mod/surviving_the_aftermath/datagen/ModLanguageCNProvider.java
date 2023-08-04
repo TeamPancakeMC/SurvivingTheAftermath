@@ -22,11 +22,13 @@ public class ModLanguageCNProvider extends LanguageProvider {
         add("itemGroup." + Main.MODID, "劫后余生");
         add(ModBlocks.PARTY_BONFIRE.get(), "派对篝火");
         add(ModItems.RAW_FALUKORV.get(), "生的法伦香肠");
+        add(ModItems.COOKED_FALUKORV.get(), "熟的法伦香肠");
         add(ModItems.EGG_TART.get(), "蛋挞");
         add(ModItems.STACK_OF_EGG_TARTS.get(), "蛋挞堆");
         add(ModItems.HAMBURGER.get(), "汉堡");
         add(ModItems.TIANJIN_PANCAKE.get(), "煎饼果子");
         add(ModItems.NETHER_CORE.get(), "下界核心");
+        add(ModItems.MUSIC_DISK_ORCHELIAS_VOX.get(), "音乐唱片");
         add(ModMobEffects.COWARDICE.get(),"懦弱");
         add(ModEnchantments.COUNTER_ATTACK.get(), "反击");
         add(ModEnchantments.BLOODTHIRSTY.get(), "渴血");
