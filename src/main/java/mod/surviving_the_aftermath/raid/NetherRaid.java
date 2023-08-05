@@ -273,6 +273,7 @@ public class NetherRaid {
 				setState(RaidState.VICTORY);
 				level.playSeededSound(null, this.spawn.get(0).getX(), this.spawn.get(0).getY(), this.spawn.get(0).getZ(),
 						ModSoundEvents.ORCHELIAS_VOX.get(), SoundSource.NEUTRAL, 3.0F, 1.0F, level.random.nextLong());
+				playerBattleTrackerEventSubscriber.restorePlayerGameMode(level);
 				MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players, level));
 				return;
 			}
