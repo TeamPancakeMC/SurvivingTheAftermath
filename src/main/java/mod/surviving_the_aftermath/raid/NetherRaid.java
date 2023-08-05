@@ -152,6 +152,7 @@ public class NetherRaid {
 	private static final UUID RAID_ID = UUID.randomUUID();
 	private final BlockPos centerPos;
 
+	private final static int RANGE = 50;
 	private static final PlayerBattleTrackerEventSubscriber playerBattleTrackerEventSubscriber = new PlayerBattleTrackerEventSubscriber(RAID_ID);
 
 	public NetherRaid(int wave, List<BlockPos> spawn, HashSet<UUID> enemies, int totalEnemyCount) {
@@ -326,7 +327,7 @@ public class NetherRaid {
 
 	public void join(Entity entity) {
 		if (entity.getType() == EntityType.MAGMA_CUBE && this.state == RaidState.ONGOING
-				&& entity.blockPosition().distSqr(spawn.get(0)) < 25 * 25 && enemies.add(entity.getUUID())) {
+				&& Math.sqrt(entity.blockPosition().distSqr(centerPos)) < RANGE && enemies.add(entity.getUUID())) {
 			totalEnemyCount++;
 			progress.setProgress(enemies.size() / (float) totalEnemyCount);
 		}
@@ -366,13 +367,9 @@ public class NetherRaid {
 						mob.setTarget(target);
 					}
 				}
-				if (isBlocked(level, enemy)) {
-					Direction.Plane.HORIZONTAL.stream().forEach(d -> {
-						if (level.isEmptyBlock(enemy.blockPosition().relative(d, 2))) {
-							enemy.moveTo(Vec3.atCenterOf(enemy.blockPosition().relative(d)));
-						}
-					});
-				}
+
+				moveToEmptyAdjacentBlock(level, enemy);
+
 				enemies.add(enemy.getUUID());
 				level.addFreshEntity(enemy);
 				totalEnemyCount++;
@@ -386,11 +383,22 @@ public class NetherRaid {
 		}
 		return false;
 	}
+	public void moveToEmptyAdjacentBlock(ServerLevel level, Entity entity) {
+		if (isBlocked(level, entity)) {
+			Direction.Plane.HORIZONTAL.stream().forEach(direction -> {
+				if (level.isEmptyBlock(entity.blockPosition().relative(direction, 4))) {
+
+					entity.moveTo(Vec3.atCenterOf(entity.blockPosition().relative(direction)));
+				}
+			});
+		}
+	}
 
 	private void updatePlayers(ServerLevel level) {
 		Set<UUID> updated = new HashSet<>();
 		for (var player : level.players()) {
-			if (player.distanceToSqr(Vec3.atCenterOf(spawn.get(0))) < 2500) {
+
+			if (Math.sqrt(player.distanceToSqr(Vec3.atCenterOf(centerPos))) < RANGE) {
 				updated.add(player.getUUID());
 			}
 		}
