@@ -136,7 +136,7 @@ public class PlayerBattleTrackerEventSubscriber {
         player.setGameMode(GameType.SPECTATOR);
     }
 
-    private void restorePlayerGameMode(Level level) {
+    public void restorePlayerGameMode(Level level) {
         spectatorMap.values().stream()
                 .flatMap(Collection::stream)
                 .forEach(uuid -> {
