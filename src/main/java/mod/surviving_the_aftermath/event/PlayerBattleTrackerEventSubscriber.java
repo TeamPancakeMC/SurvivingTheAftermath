@@ -1,6 +1,7 @@
 package mod.surviving_the_aftermath.event;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 import mod.surviving_the_aftermath.capability.RaidData;
 import mod.surviving_the_aftermath.init.ModMobEffects;
 import mod.surviving_the_aftermath.raid.NetherRaid;
@@ -19,7 +20,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.*;
 
