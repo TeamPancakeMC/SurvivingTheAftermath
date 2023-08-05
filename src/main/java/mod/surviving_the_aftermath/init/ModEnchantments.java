@@ -17,6 +17,7 @@ public class ModEnchantments {
     public static final RegistryObject<Enchantment> DEVOURED = ENCHANTMENTS.register("devoured", DevouredEnchantment::new);
     public static final RegistryObject<Enchantment> FRANTIC = ENCHANTMENTS.register("frantic", FranticEnchantment::new);
     public static final RegistryObject<Enchantment> EXECUTE = ENCHANTMENTS.register("execute", ExecuteEnchantment::new);
+    public static final RegistryObject<Enchantment> RANGER = ENCHANTMENTS.register("ranger", RangerEnchantment::new);
     public static final RegistryObject<Enchantment> MOON = ENCHANTMENTS.register("moon", () -> new SunAndMoonEnchantment(0));
     public static final RegistryObject<Enchantment> SUN = ENCHANTMENTS.register("sun", () -> new SunAndMoonEnchantment(1));
 

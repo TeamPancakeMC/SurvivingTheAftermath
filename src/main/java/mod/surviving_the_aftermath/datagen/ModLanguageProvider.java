@@ -36,6 +36,7 @@ public class ModLanguageProvider extends LanguageProvider {
 		add(ModEnchantments.DEVOURED.get(), "Devoured");
 		add(ModEnchantments.FRANTIC.get(), "Frantic");
 		add(ModEnchantments.EXECUTE.get(), "Execute");
+		add(ModEnchantments.RANGER.get(), "Ranger");
 		add(ModEnchantments.MOON.get(), "Moon");
 		add(ModEnchantments.SUN.get(), "Sun");
 		add(NetherRaid.NAME, "");

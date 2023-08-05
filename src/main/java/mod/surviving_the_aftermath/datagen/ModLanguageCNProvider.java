@@ -37,6 +37,7 @@ public class ModLanguageCNProvider extends LanguageProvider {
         add(ModEnchantments.DEVOURED.get(), "吞噬");
         add(ModEnchantments.FRANTIC.get(), "癫狂");
         add(ModEnchantments.EXECUTE.get(), "处决");
+        add(ModEnchantments.RANGER.get(), "游侠");
         add(ModEnchantments.MOON.get(), "皎月");
         add(ModEnchantments.SUN.get(), "烈阳");
         add(NetherRaidEventSubscriber.NETHER_RAID_START, "你感受到空气愈发炎热......");

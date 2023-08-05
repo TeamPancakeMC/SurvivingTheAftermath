@@ -25,6 +25,7 @@ import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -80,6 +81,14 @@ public class ModEventSubscriber {
         ItemStack netherCore = new ItemStack(ModItems.NETHER_CORE.get(), Math.min(j, 64));
         ItemStack enchantedBook = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, i));
         return new MerchantOffer(netherCore, new ItemStack(Items.BOOK), enchantedBook, 12, 30, 0.2F);
+    }
+
+    @SubscribeEvent
+    public static void onLivingUseItemTicking(LivingEntityUseItemEvent.Tick event) {
+        int rangerLevel = event.getItem().getEnchantmentLevel(ModEnchantments.RANGER.get());
+        if (rangerLevel > 0 && event.getDuration() > event.getItem().getUseDuration() - 20) {
+            event.setDuration(event.getDuration() - rangerLevel);
+        }
     }
 
     @SubscribeEvent
