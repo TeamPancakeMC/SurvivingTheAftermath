@@ -2,6 +2,7 @@ package mod.surviving_the_aftermath.capability;
 
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
+import mod.surviving_the_aftermath.event.MobBattleTrackerEventSubscriber;
 import mod.surviving_the_aftermath.event.PlayerBattleTrackerEventSubscriber;
 import mod.surviving_the_aftermath.init.ModCapability;
 import mod.surviving_the_aftermath.init.ModStructures;
@@ -29,13 +30,21 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 	private final ServerLevel level;
 	private static List<NetherRaid> raids = new ArrayList<>();
 	public static Map<UUID, PlayerBattleTrackerEventSubscriber> playerBattleTrackerManager = Maps.newHashMap();
+	public static Map<UUID, MobBattleTrackerEventSubscriber> mobBattleTrackerManager = Maps.newHashMap();
 
 	public RaidData(ServerLevel level) {
 		this.level = level;
 	}
 
-	public static void registryTracker(UUID raidId, PlayerBattleTrackerEventSubscriber tracker) {
+	public static void PlayerRegistryTracker(UUID raidId, PlayerBattleTrackerEventSubscriber tracker) {
 		playerBattleTrackerManager.put(raidId, tracker);
+	}
+	public static void MobRegistryTracker(UUID raidId, MobBattleTrackerEventSubscriber tracker) {
+		mobBattleTrackerManager.put(raidId, tracker);
+	}
+	public void unregister(UUID raidId) {
+		MinecraftForge.EVENT_BUS.unregister(playerBattleTrackerManager.get(raidId));
+		MinecraftForge.EVENT_BUS.unregister(mobBattleTrackerManager.get(raidId));
 	}
 
 	public static NetherRaid getNetherRaid(UUID raidId) {
@@ -44,6 +53,9 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 
 	public static PlayerBattleTrackerEventSubscriber getPlayerBattleTracker(UUID raidId) {
 		return playerBattleTrackerManager.get(raidId);
+	}
+	public static MobBattleTrackerEventSubscriber getMobBattleTracker(UUID raidId) {
+		return mobBattleTrackerManager.get(raidId);
 	}
 
 	public void Create(BlockPos pos) {
@@ -69,7 +81,7 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 			NetherRaid raid = iterator.next();
 			raid.tick(level);
 			if (raid.loseOrEnd()) {
-				MinecraftForge.EVENT_BUS.unregister(playerBattleTrackerManager.get(raid.getRaidId()));
+				unregister(raid.getRaidId());
 				iterator.remove();
 			}
 		}

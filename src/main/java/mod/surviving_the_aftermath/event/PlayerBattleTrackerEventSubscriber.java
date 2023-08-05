@@ -119,25 +119,6 @@ public class PlayerBattleTrackerEventSubscriber {
         }
     }
 
-    @SubscribeEvent
-    public void onLivingRestrictedRange(LivingEvent.LivingTickEvent event) {
-        NetherRaid netherRaid = RaidData.getNetherRaid(currentRaidId);
-        LivingEntity entity = event.getEntity();
-        Level level = entity.level();
-        if (level.isClientSide || netherRaid == null) return;
-        HashSet<UUID> enemies = netherRaid.getEnemies();
-        if (enemies.contains(entity.getUUID()) && entity instanceof Ghast) {
-            BlockPos centerPos = netherRaid.getCenterPos();
-            BlockPos pos = entity.blockPosition();
-            double distance = Math.sqrt(centerPos.distSqr(pos));
-            if (distance > 35) {
-                double value = level.random.nextInt(20);
-                entity.teleportTo(centerPos.getX() + value,centerPos.getY() + 20,centerPos.getZ() + value);
-            }
-        }
-
-    }
-
     private void setSpectator(ServerPlayer player,Level level) {
         UUID uuid = players.get(level.random.nextInt(players.size()));
         Player target = level.getPlayerByUUID(uuid);

@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.capability.RaidData;
+import mod.surviving_the_aftermath.event.MobBattleTrackerEventSubscriber;
 import mod.surviving_the_aftermath.event.PlayerBattleTrackerEventSubscriber;
 import mod.surviving_the_aftermath.event.RaidEvent;
 import mod.surviving_the_aftermath.init.ModItems;
@@ -154,6 +155,7 @@ public class NetherRaid {
 
 	private final static int RANGE = 50;
 	private static final PlayerBattleTrackerEventSubscriber playerBattleTrackerEventSubscriber = new PlayerBattleTrackerEventSubscriber(RAID_ID);
+	private static final MobBattleTrackerEventSubscriber mobBattleTrackerEventSubscriber = new MobBattleTrackerEventSubscriber(RAID_ID);
 
 	public NetherRaid(int wave, List<BlockPos> spawn, HashSet<UUID> enemies, int totalEnemyCount) {
 		this.wave = wave;
@@ -163,8 +165,7 @@ public class NetherRaid {
 		this.totalEnemyCount = totalEnemyCount;
 		this.delay = 100;
 		this.state = RaidState.START;
-		MinecraftForge.EVENT_BUS.register(playerBattleTrackerEventSubscriber);
-		RaidData.registryTracker(RAID_ID,playerBattleTrackerEventSubscriber);
+		registryTracker();
 	}
 
 	public NetherRaid(BlockPos pos, ServerLevel level) {
@@ -174,12 +175,20 @@ public class NetherRaid {
 		this.state = RaidState.START;
 		MinecraftForge.EVENT_BUS.post(new RaidEvent.Start(players, level));
 		updateProgress(level);
-		MinecraftForge.EVENT_BUS.register(playerBattleTrackerEventSubscriber);
-		RaidData.registryTracker(RAID_ID,playerBattleTrackerEventSubscriber);
+		registryTracker();
 	}
 
 	public UUID getRaidId() {
 		return RAID_ID;
+	}
+
+	private void registryTracker() {
+		MinecraftForge.EVENT_BUS.register(playerBattleTrackerEventSubscriber);
+		MinecraftForge.EVENT_BUS.register(mobBattleTrackerEventSubscriber);
+
+
+		RaidData.PlayerRegistryTracker(RAID_ID,playerBattleTrackerEventSubscriber);
+		RaidData.MobRegistryTracker(RAID_ID,mobBattleTrackerEventSubscriber);
 	}
 
 	private void setSpawn(BlockPos pos, ServerLevel level) {
