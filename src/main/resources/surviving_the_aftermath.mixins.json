@@ -4,9 +4,7 @@
   "package": "mod.surviving_the_aftermath.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "surviving_the_aftermath.refmap.json",
-  "mixins": [
-    "VillagerMixin"
-  ],
+  "mixins": [],
   "client": [
   ],
   "injectors": {
