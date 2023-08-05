@@ -112,6 +112,8 @@ public class PlayerBattleTrackerEventSubscriber {
                 if (distance  > 120) {
                     player.addEffect(new MobEffectInstance(ModMobEffects.COWARDICE.get(), 45 * 60 * 20,1));
                     escapeMap.remove(uuid);
+                    netherRaid.setState(RaidState.LOSE);
+                    restorePlayerGameMode(level);
                 }
             } else {
                 player.displayClientMessage(Component.translatable(PLAYER_BATTLE_ESCAPE, 20 * 5 - time), true);
