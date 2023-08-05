@@ -14,8 +14,8 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
 public class ModCapability {
-    public static final Capability<RaidData> RAID_DATA = CapabilityManager.get(new CapabilityToken<RaidData>() {
-    });
+
+    public static final Capability<RaidData> RAID_DATA = CapabilityManager.get(new CapabilityToken<>() {});
 
     @SubscribeEvent
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -24,7 +24,9 @@ public class ModCapability {
 
     @SubscribeEvent
     public static void attachCapability(AttachCapabilitiesEvent<Level> event) {
-        if (event.getObject().dimension() == Level.OVERWORLD && event.getObject() instanceof ServerLevel level)
+        if (event.getObject().dimension() == Level.OVERWORLD && event.getObject() instanceof ServerLevel level) {
             event.addCapability(Main.asResource("raiddata"), new RaidData.Provider(level));
+        }
     }
+
 }
