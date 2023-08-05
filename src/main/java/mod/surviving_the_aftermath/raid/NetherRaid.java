@@ -150,12 +150,14 @@ public class NetherRaid {
 
 	private static int REWARD_TIME = 20 * 10;
 	private static final UUID RAID_ID = UUID.randomUUID();
+	private final BlockPos centerPos;
 
 	private static final PlayerBattleTrackerEventSubscriber playerBattleTrackerEventSubscriber = new PlayerBattleTrackerEventSubscriber(RAID_ID);
 
 	public NetherRaid(int wave, List<BlockPos> spawn, HashSet<UUID> enemies, int totalEnemyCount) {
 		this.wave = wave;
 		this.spawn = spawn;
+		this.centerPos = spawn.get(0);
 		this.enemies = enemies;
 		this.totalEnemyCount = totalEnemyCount;
 		this.delay = 100;
@@ -165,6 +167,7 @@ public class NetherRaid {
 	}
 
 	public NetherRaid(BlockPos pos, ServerLevel level) {
+		this.centerPos = pos;
 		setSpawn(pos, level);
 		updatePlayers(level);
 		this.state = RaidState.START;
@@ -434,4 +437,7 @@ public class NetherRaid {
 		this.state = state;
 	}
 
+	public BlockPos getCenterPos() {
+		return centerPos;
+	}
 }

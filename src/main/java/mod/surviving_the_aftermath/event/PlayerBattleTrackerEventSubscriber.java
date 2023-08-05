@@ -31,6 +31,7 @@ public class PlayerBattleTrackerEventSubscriber {
     private Map<UUID, List<UUID>> spectatorMap = new HashMap<>();
     private UUID currentRaidId;
 
+
     public PlayerBattleTrackerEventSubscriber(UUID currentRaidId) {
         this.currentRaidId = currentRaidId;
     }
@@ -82,8 +83,8 @@ public class PlayerBattleTrackerEventSubscriber {
                 }
 
                 if (deathCount >= MAX_DEATH_COUNT || spectatorMap.containsKey(serverPlayer.getUUID())) {
-                    NetherRaid netherRaid = RaidData.getNetherRaid(currentRaidId);
                     restorePlayerGameMode(level);
+                    NetherRaid netherRaid = RaidData.getNetherRaid(currentRaidId);
                     if (netherRaid != null) netherRaid.setState(RaidState.LOSE);
                 }
             }
@@ -99,8 +100,17 @@ public class PlayerBattleTrackerEventSubscriber {
         if (!level.isClientSide && escapeMap.containsKey(uuid)){
             Long lastEscapeTime = escapeMap.get(uuid);
             long time = level.getGameTime() - lastEscapeTime;
+            NetherRaid netherRaid = RaidData.getNetherRaid(currentRaidId);
+            BlockPos centerPos = netherRaid.getCenterPos();
+            BlockPos pos = player.blockPosition();
+            double distance = Math.sqrt(centerPos.distSqr(pos));
+            System.out.println(distance);
             if (lastEscapeTime != 0L && time > 20 * 5) {
                 player.addEffect(new MobEffectInstance(ModMobEffects.COWARDICE.get(), 45 * 60 * 20));
+                if (distance  > 120) {
+                    player.addEffect(new MobEffectInstance(ModMobEffects.COWARDICE.get(), 45 * 60 * 20,1));
+                    escapeMap.remove(uuid);
+                }
             } else {
                 player.displayClientMessage(Component.translatable(PLAYER_BATTLE_ESCAPE, 20 * 5 - time), true);
             }
