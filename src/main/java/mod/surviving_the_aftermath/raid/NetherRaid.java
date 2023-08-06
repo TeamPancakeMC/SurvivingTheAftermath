@@ -5,6 +5,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mod.surviving_the_aftermath.Main;
 import mod.surviving_the_aftermath.capability.RaidData;
+import mod.surviving_the_aftermath.data.DifficultyLoader;
+import mod.surviving_the_aftermath.data.ModDifficultyLoader;
+import mod.surviving_the_aftermath.data.RaidInfo;
+import mod.surviving_the_aftermath.data.WaveEntry;
 import mod.surviving_the_aftermath.event.MobBattleTrackerEventSubscriber;
 import mod.surviving_the_aftermath.event.PlayerBattleTrackerEventSubscriber;
 import mod.surviving_the_aftermath.event.RaidEvent;
@@ -50,91 +54,101 @@ import java.util.*;
 
 @ParametersAreNonnullByDefault
 public class NetherRaid {
-
-	private record WaveEntry(EntityType<?> type, int min, int max, List<Item> gear) {
-
-	}
-
-	private static final SimpleWeightedRandomList<Item> REWARDS = SimpleWeightedRandomList.<Item>builder()
-			.add(Items.GOLD_INGOT, 100).add(Items.DIAMOND, 10).add(Items.EMERALD, 20)
-			.add(Items.ENCHANTED_GOLDEN_APPLE, 2).add(Items.NETHERITE_SCRAP, 2)
-			.add(ModItems.NETHER_CORE.get(), 1).build();
-
-	private static final List<List<WaveEntry>> WAVES = List.of(
-			List.of(new WaveEntry(EntityType.PIGLIN, 4, 5, List.of())),
-			List.of(new WaveEntry(EntityType.PIGLIN, 4, 5, List.of()),
-					new WaveEntry(EntityType.HOGLIN, 1, 1, List.of())),
-			List.of(new WaveEntry(EntityType.PIGLIN, 4, 5, List.of()),
-					new WaveEntry(EntityType.HOGLIN, 1, 2, List.of()),
-					new WaveEntry(EntityType.MAGMA_CUBE, 1, 1, List.of())),
-			List.of(new WaveEntry(EntityType.PIGLIN, 4, 5, List.of()),
-					new WaveEntry(EntityType.HOGLIN, 1, 2, List.of()),
-					new WaveEntry(EntityType.MAGMA_CUBE, 1, 1, List.of()),
-					new WaveEntry(EntityType.BLAZE, 1, 1, List.of())),
-			List.of(new WaveEntry(EntityType.PIGLIN, 3, 4, List.of()),
-					new WaveEntry(EntityType.HOGLIN, 1, 2, List.of()),
-					new WaveEntry(EntityType.MAGMA_CUBE, 1, 2, List.of()),
-					new WaveEntry(EntityType.BLAZE, 1, 1, List.of()),
-					new WaveEntry(EntityType.PIGLIN_BRUTE, 1, 1,
-							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
-			List.of(new WaveEntry(EntityType.PIGLIN, 3, 4,
-					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-							Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD)),
-					new WaveEntry(EntityType.HOGLIN, 2, 3, List.of()),
-					new WaveEntry(EntityType.MAGMA_CUBE, 1, 2, List.of()),
-					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
-					new WaveEntry(EntityType.BLAZE, 1, 1, List.of()),
-					new WaveEntry(EntityType.PIGLIN_BRUTE, 1, 1,
-							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
-			List.of(new WaveEntry(EntityType.PIGLIN, 3, 4,
-					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-							Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD)),
-					new WaveEntry(EntityType.HOGLIN, 2, 3, List.of()),
-					new WaveEntry(EntityType.MAGMA_CUBE, 2, 3, List.of()),
-					new WaveEntry(EntityType.BLAZE, 2, 2, List.of()),
-					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
-					new WaveEntry(EntityType.PIGLIN_BRUTE, 2, 2,
-							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
-			List.of(new WaveEntry(EntityType.PIGLIN, 2, 3,
-					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-							Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD)),
-					new WaveEntry(EntityType.HOGLIN, 2, 3, List.of()),
-					new WaveEntry(EntityType.MAGMA_CUBE, 2, 3, List.of()),
-					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
-					new WaveEntry(EntityType.BLAZE, 2, 3, List.of()),
-					new WaveEntry(EntityType.PIGLIN_BRUTE, 2, 3,
-							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
-			List.of(new WaveEntry(EntityType.PIGLIN, 2, 3,
-					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-							Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD)),
-					new WaveEntry(EntityType.HOGLIN, 3, 3, List.of()),
-					new WaveEntry(EntityType.MAGMA_CUBE, 3, 4, List.of()),
-					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
-					new WaveEntry(EntityType.BLAZE, 3, 4, List.of()),
-					new WaveEntry(EntityType.PIGLIN_BRUTE, 2, 3,
-							List.of(Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS,
-									Items.NETHERITE_BOOTS, Items.GOLDEN_SWORD))),
-			List.of(new WaveEntry(EntityType.PIGLIN, 2, 3,
-					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
-							Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD)),
-					new WaveEntry(EntityType.HOGLIN, 3, 4, List.of()),
-					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
-					new WaveEntry(EntityType.MAGMA_CUBE, 3, 4, List.of()),
-					new WaveEntry(EntityType.BLAZE, 3, 4, List.of()),
-					new WaveEntry(EntityType.PIGLIN_BRUTE, 3, 4,
-							List.of(Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS,
-									Items.NETHERITE_BOOTS, Items.GOLDEN_SWORD))));
+//
+//	private static final SimpleWeightedRandomList<Item> REWARDS = SimpleWeightedRandomList.<Item>builder()
+//			.add(Items.GOLD_INGOT, 100).add(Items.DIAMOND, 10).add(Items.EMERALD, 20)
+//			.add(Items.ENCHANTED_GOLDEN_APPLE, 2).add(Items.NETHERITE_SCRAP, 2)
+//			.add(ModItems.NETHER_CORE.get(), 1).build();
+//
+//	private static final List<List<WaveEntry>> WAVES = List.of(
+//			List.of(new WaveEntry(EntityType.PIGLIN, 4, 5, List.of())),
+//
+//			List.of(new WaveEntry(EntityType.PIGLIN, 4, 5, List.of()),
+//					new WaveEntry(EntityType.HOGLIN, 1, 1, List.of())),
+//
+//			List.of(new WaveEntry(EntityType.PIGLIN, 4, 5, List.of()),
+//					new WaveEntry(EntityType.HOGLIN, 1, 2, List.of()),
+//					new WaveEntry(EntityType.MAGMA_CUBE, 1, 1, List.of())),
+//
+//			List.of(new WaveEntry(EntityType.PIGLIN, 4, 5, List.of()),
+//					new WaveEntry(EntityType.HOGLIN, 1, 2, List.of()),
+//					new WaveEntry(EntityType.MAGMA_CUBE, 1, 1, List.of()),
+//					new WaveEntry(EntityType.BLAZE, 1, 1, List.of())),
+//
+//			List.of(new WaveEntry(EntityType.PIGLIN, 3, 4, List.of()),
+//					new WaveEntry(EntityType.HOGLIN, 1, 2, List.of()),
+//					new WaveEntry(EntityType.MAGMA_CUBE, 1, 2, List.of()),
+//					new WaveEntry(EntityType.BLAZE, 1, 1, List.of()),
+//					new WaveEntry(EntityType.PIGLIN_BRUTE, 1, 1,
+//							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
+//									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
+//
+//			List.of(new WaveEntry(EntityType.PIGLIN, 3, 4,
+//					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
+//							Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD)),
+//					new WaveEntry(EntityType.HOGLIN, 2, 3, List.of()),
+//					new WaveEntry(EntityType.MAGMA_CUBE, 1, 2, List.of()),
+//					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
+//					new WaveEntry(EntityType.BLAZE, 1, 1, List.of()),
+//					new WaveEntry(EntityType.PIGLIN_BRUTE, 1, 1,
+//							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
+//									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
+//
+//
+//			List.of(new WaveEntry(EntityType.PIGLIN, 3, 4,
+//					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
+//							Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD)),
+//					new WaveEntry(EntityType.HOGLIN, 2, 3, List.of()),
+//					new WaveEntry(EntityType.MAGMA_CUBE, 2, 3, List.of()),
+//					new WaveEntry(EntityType.BLAZE, 2, 2, List.of()),
+//					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
+//					new WaveEntry(EntityType.PIGLIN_BRUTE, 2, 2,
+//							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
+//									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
+//
+//			List.of(new WaveEntry(EntityType.PIGLIN, 2, 3,
+//					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
+//							Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD)),
+//					new WaveEntry(EntityType.HOGLIN, 2, 3, List.of()),
+//					new WaveEntry(EntityType.MAGMA_CUBE, 2, 3, List.of()),
+//					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
+//					new WaveEntry(EntityType.BLAZE, 2, 3, List.of()),
+//					new WaveEntry(EntityType.PIGLIN_BRUTE, 2, 3,
+//							List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
+//									Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD))),
+//
+//
+//			List.of(new WaveEntry(EntityType.PIGLIN, 2, 3,
+//					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
+//							Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD)),
+//					new WaveEntry(EntityType.HOGLIN, 3, 3, List.of()),
+//					new WaveEntry(EntityType.MAGMA_CUBE, 3, 4, List.of()),
+//					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
+//					new WaveEntry(EntityType.BLAZE, 3, 4, List.of()),
+//					new WaveEntry(EntityType.PIGLIN_BRUTE, 2, 3,
+//							List.of(Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS,
+//									Items.NETHERITE_BOOTS, Items.GOLDEN_SWORD))),
+//
+//
+//			List.of(new WaveEntry(EntityType.PIGLIN, 2, 3,
+//					List.of(Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS,
+//							Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD)),
+//					new WaveEntry(EntityType.HOGLIN, 3, 4, List.of()),
+//					new WaveEntry(EntityType.GHAST, 1, 3, List.of()),
+//					new WaveEntry(EntityType.MAGMA_CUBE, 3, 4, List.of()),
+//					new WaveEntry(EntityType.BLAZE, 3, 4, List.of()),
+//					new WaveEntry(EntityType.PIGLIN_BRUTE, 3, 4,
+//							List.of(Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS,
+//									Items.NETHERITE_BOOTS, Items.GOLDEN_SWORD))));
 
 	public static final Codec<NetherRaid> CODEC = RecordCodecBuilder.create(instance -> instance
 			.group(Codec.INT.fieldOf("wave").forGetter(NetherRaid::getWave),
 					Codec.list(BlockPos.CODEC).fieldOf("spawn").forGetter(NetherRaid::getSpawn),
 					Codec.list(UUIDUtil.CODEC).xmap(HashSet::new, ArrayList::new).fieldOf("enemies")
 							.forGetter(NetherRaid::getEnemies),
-					Codec.INT.fieldOf("totalEnemyCount").forGetter(NetherRaid::getTotalEnemyCount))
+					Codec.INT.fieldOf("totalEnemyCount").forGetter(NetherRaid::getTotalEnemyCount),
+					Codec.STRING.fieldOf("keyFoRaidInfo").forGetter(NetherRaid::getKeyFoRaidInfo)
+			)
 			.apply(instance, NetherRaid::new));
 
 	public static final String NAME = Main.MODID + "." + "nether_raid";
@@ -152,17 +166,21 @@ public class NetherRaid {
 	private static int REWARD_TIME = 20 * 10;
 	private static final UUID RAID_ID = UUID.randomUUID();
 	private final BlockPos centerPos;
-
 	private final static int RANGE = 50;
 	private static final PlayerBattleTrackerEventSubscriber playerBattleTrackerEventSubscriber = new PlayerBattleTrackerEventSubscriber(RAID_ID);
 	private static final MobBattleTrackerEventSubscriber mobBattleTrackerEventSubscriber = new MobBattleTrackerEventSubscriber(RAID_ID);
 
-	public NetherRaid(int wave, List<BlockPos> spawn, HashSet<UUID> enemies, int totalEnemyCount) {
+	private RaidInfo raidInfo;
+	private String keyFoRaidInfo;
+
+	public NetherRaid(int wave, List<BlockPos> spawn, HashSet<UUID> enemies, int totalEnemyCount,String keyFoRaidInfo) {
 		this.wave = wave;
 		this.spawn = spawn;
 		this.centerPos = spawn.get(0);
 		this.enemies = enemies;
 		this.totalEnemyCount = totalEnemyCount;
+		this.keyFoRaidInfo = keyFoRaidInfo;
+		this.raidInfo = DifficultyLoader.getRaidInfo(keyFoRaidInfo);
 		this.delay = 100;
 		this.state = RaidState.START;
 		registryTracker();
@@ -170,6 +188,9 @@ public class NetherRaid {
 
 	public NetherRaid(BlockPos pos, ServerLevel level) {
 		this.centerPos = pos;
+		List<RaidInfo> netherRaid = ModDifficultyLoader.getRaidInfoMap("nether_raid", level.getDifficulty().getId());
+        this.raidInfo = netherRaid.get(level.getRandom().nextInt(netherRaid.size()));
+		this.keyFoRaidInfo = DifficultyLoader.getKeyFoRaidInfo(raidInfo);
 		setSpawn(pos, level);
 		updatePlayers(level);
 		this.state = RaidState.START;
@@ -177,6 +198,7 @@ public class NetherRaid {
 		updateProgress(level);
 		registryTracker();
 	}
+
 
 	public UUID getRaidId() {
 		return RAID_ID;
@@ -248,7 +270,7 @@ public class NetherRaid {
 		BlockPos pos = spawn.get(level.random.nextInt(spawn.size()));
 		Direction dir = freeDirection(level, pos);
 		Vec3 vec = Vec3.atCenterOf(pos);
-		REWARDS.getRandomValue(level.random).ifPresent(reward ->
+		this.raidInfo.getRewards().getRandomValue(level.random).ifPresent(reward ->
 				level.addFreshEntity(new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
 						dir.getStepX() * 0.2, 0.2, dir.getStepZ() * 0.2f)));
 		setState(RaidState.VICTORY);
@@ -282,7 +304,8 @@ public class NetherRaid {
 			wave++;
 			level.playSeededSound(null, spawn.get(0).getX(), spawn.get(0).getY(), spawn.get(0).getZ(),
 					SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(2), SoundSource.NEUTRAL, 2.0F, 1.0F, level.random.nextLong());
-			if (wave > WAVES.size()) {
+			List<List<WaveEntry>> waves = this.raidInfo.getWaves();
+			if (wave > waves.size()) {
 				setState(RaidState.VICTORY);
 				level.playSeededSound(null, this.spawn.get(0).getX(), this.spawn.get(0).getY(), this.spawn.get(0).getZ(),
 						ModSoundEvents.ORCHELIAS_VOX.get(), SoundSource.NEUTRAL, 3.0F, 1.0F, level.random.nextLong());
@@ -290,7 +313,7 @@ public class NetherRaid {
 				MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players, level));
 				return;
 			}
-			spawnEnemies(level, WAVES.get(Math.min(WAVES.size() - 1, wave - 1)));
+			spawnEnemies(level, waves.get(Math.min(waves.size() - 1, wave - 1)));
 		}
 		progress.setProgress(enemies.size() / (float) totalEnemyCount);
 	}
@@ -345,8 +368,8 @@ public class NetherRaid {
 	private void spawnEnemies(ServerLevel level, List<WaveEntry> entries) {
 		totalEnemyCount = 0;
 		for (var entry : entries) {
-			for (int i = 0; i < level.random.nextInt(entry.min, entry.max + 1); i++) {
-				Entity enemy = entry.type.create(level);
+			for (int i = 0; i < level.random.nextInt(entry.getMin(), entry.getMax() + 1); i++) {
+				Entity enemy = entry.getType().create(level);
 				enemy.moveTo(Vec3.atCenterOf(spawn.get(level.getRandom().nextInt(spawn.size()))));
 				if (enemy instanceof AbstractPiglin piglin) {
 					piglin.setImmuneToZombification(true);
@@ -358,7 +381,7 @@ public class NetherRaid {
 					slime.finalizeSpawn(level, level.getCurrentDifficultyAt(enemy.blockPosition()), MobSpawnType.EVENT, null, null);
 				}
 				if (enemy instanceof Mob mob) {
-					for (var item : entry.gear) {
+					for (var item : entry.getGear()) {
 						if (level.random.nextFloat() < 0.5f) {
 							mob.equipItemIfPossible(new ItemStack(item));
 						}
@@ -456,5 +479,9 @@ public class NetherRaid {
 
 	public BlockPos getCenterPos() {
 		return centerPos;
+	}
+
+	public String getKeyFoRaidInfo() {
+		return keyFoRaidInfo;
 	}
 }

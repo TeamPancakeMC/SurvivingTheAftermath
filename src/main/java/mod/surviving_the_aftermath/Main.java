@@ -1,10 +1,12 @@
 package mod.surviving_the_aftermath;
 
+import mod.surviving_the_aftermath.data.ModDifficultyLoader;
 import mod.surviving_the_aftermath.datagen.EventSubscriber;
 import mod.surviving_the_aftermath.event.ModEventSubscriber;
 import mod.surviving_the_aftermath.init.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -29,10 +31,18 @@ public class Main {
 		bus.addListener(EventSubscriber::onGatherData);
 		bus.addListener(ModEventSubscriber::onFMLClientSetup);
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.addListener(this::onDataPackLoad);
 	}
 
 	public static ResourceLocation asResource(String name) {
 		return new ResourceLocation(MODID, name);
 	}
 
+
+	private void onDataPackLoad(AddReloadListenerEvent event) {
+		event.addListener(new ModDifficultyLoader.Peaceful());
+		event.addListener(new ModDifficultyLoader.Easy());
+		event.addListener(new ModDifficultyLoader.Normal());
+		event.addListener(new ModDifficultyLoader.Hard());
+	}
 }

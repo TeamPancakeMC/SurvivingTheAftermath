@@ -1,0 +1,437 @@
+{
+  "id": "nether_raid",
+  "waves": [
+    [
+      {
+        "type": "minecraft:piglin",
+        "min": 4,
+        "max": 5,
+        "gear": []
+      }
+    ],
+    [
+      {
+        "type": "minecraft:zombified_piglin",
+        "min": 4,
+        "max": 5,
+        "gear": []
+      },
+      {
+        "type": "minecraft:hoglin",
+        "min": 1,
+        "max": 1,
+        "gear": []
+      }
+    ],
+    [
+      {
+        "type": "minecraft:piglin",
+        "min": 4,
+        "max": 5,
+        "gear": []
+      },
+      {
+        "type": "minecraft:hoglin",
+        "min": 1,
+        "max": 1,
+        "gear": []
+      },
+      {
+        "type": "minecraft:magma_cube",
+        "min": 1,
+        "max": 1,
+        "gear": []
+      }
+    ],
+    [
+      {
+        "type": "minecraft:piglin",
+        "min": 4,
+        "max": 5,
+        "gear": []
+      },
+      {
+        "type": "minecraft:hoglin",
+        "min": 1,
+        "max": 2,
+        "gear": []
+      },
+      {
+        "type": "minecraft:magma_cube",
+        "min": 1,
+        "max": 1,
+        "gear": []
+      },
+      {
+        "type": "minecraft:blaze",
+        "min": 1,
+        "max": 1,
+        "gear": []
+      }
+    ],
+    [
+      {
+        "type": "minecraft:piglin",
+        "min": 3,
+        "max": 4,
+        "gear": []
+      },
+      {
+        "type": "minecraft:hoglin",
+        "min": 1,
+        "max": 2,
+        "gear": []
+      },
+      {
+        "type": "minecraft:magma_cube",
+        "min": 1,
+        "max": 2,
+        "gear": []
+      },
+      {
+        "type": "minecraft:blaze",
+        "min": 1,
+        "max": 1,
+        "gear": []
+      },
+      {
+        "type": "minecraft:piglin_brute",
+        "min": 1,
+        "max": 1,
+        "gear": [
+          "minecraft:golden_helmet",
+          "minecraft:golden_chestplate",
+          "minecraft:golden_leggings",
+          "minecraft:golden_boots",
+          "minecraft:golden_sword"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "minecraft:piglin",
+        "min": 3,
+        "max": 4,
+        "gear": [
+          "minecraft:golden_helmet",
+          "minecraft:golden_chestplate",
+          "minecraft:golden_leggings",
+          "minecraft:golden_boots",
+          "minecraft:golden_sword"
+        ]
+      },
+      {
+        "type": "minecraft:hoglin",
+        "min": 2,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:magma_cube",
+        "min": 1,
+        "max": 2,
+        "gear": []
+      },
+      {
+        "type": "minecraft:ghast",
+        "min": 1,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:blaze",
+        "min": 1,
+        "max": 1,
+        "gear": []
+      },
+      {
+        "type": "minecraft:piglin_brute",
+        "min": 1,
+        "max": 1,
+        "gear": [
+          "minecraft:golden_helmet",
+          "minecraft:golden_chestplate",
+          "minecraft:golden_leggings",
+          "minecraft:golden_boots",
+          "minecraft:golden_sword"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "minecraft:piglin",
+        "min": 3,
+        "max": 4,
+        "gear": [
+          "minecraft:golden_helmet",
+          "minecraft:golden_chestplate",
+          "minecraft:golden_leggings",
+          "minecraft:golden_boots",
+          "minecraft:golden_sword"
+        ]
+      },
+      {
+        "type": "minecraft:hoglin",
+        "min": 2,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:magma_cube",
+        "min": 1,
+        "max": 2,
+        "gear": []
+      },
+      {
+        "type": "minecraft:ghast",
+        "min": 1,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:blaze",
+        "min": 1,
+        "max": 1,
+        "gear": []
+      },
+      {
+        "type": "minecraft:piglin_brute",
+        "min": 1,
+        "max": 1,
+        "gear": [
+          "minecraft:golden_helmet",
+          "minecraft:golden_chestplate",
+          "minecraft:golden_leggings",
+          "minecraft:golden_boots",
+          "minecraft:golden_sword"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "minecraft:piglin",
+        "min": 3,
+        "max": 4,
+        "gear": [
+          "minecraft:golden_helmet",
+          "minecraft:golden_chestplate",
+          "minecraft:golden_leggings",
+          "minecraft:golden_boots",
+          "minecraft:golden_sword"
+        ]
+      },
+      {
+        "type": "minecraft:hoglin",
+        "min": 2,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:magma_cube",
+        "min": 2,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:ghast",
+        "min": 1,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:blaze",
+        "min": 2,
+        "max": 2,
+        "gear": []
+      },
+      {
+        "type": "minecraft:piglin_brute",
+        "min": 2,
+        "max": 2,
+        "gear": [
+          "minecraft:golden_helmet",
+          "minecraft:golden_chestplate",
+          "minecraft:golden_leggings",
+          "minecraft:golden_boots",
+          "minecraft:golden_sword"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "minecraft:piglin",
+        "min": 2,
+        "max": 3,
+        "gear": [
+          "minecraft:golden_helmet",
+          "minecraft:golden_chestplate",
+          "minecraft:golden_leggings",
+          "minecraft:golden_boots",
+          "minecraft:golden_sword"
+        ]
+      },
+      {
+        "type": "minecraft:hoglin",
+        "min": 2,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:magma_cube",
+        "min": 2,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:ghast",
+        "min": 1,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:blaze",
+        "min": 2,
+        "max": 2,
+        "gear": []
+      },
+      {
+        "type": "minecraft:piglin_brute",
+        "min": 2,
+        "max": 2,
+        "gear": [
+          "minecraft:golden_helmet",
+          "minecraft:golden_chestplate",
+          "minecraft:golden_leggings",
+          "minecraft:golden_boots",
+          "minecraft:golden_sword"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "minecraft:piglin",
+        "min": 2,
+        "max": 3,
+        "gear": [
+          "minecraft:golden_helmet",
+          "minecraft:golden_chestplate",
+          "minecraft:golden_leggings",
+          "minecraft:golden_boots",
+          "minecraft:golden_sword"
+        ]
+      },
+      {
+        "type": "minecraft:hoglin",
+        "min": 2,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:magma_cube",
+        "min": 2,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:ghast",
+        "min": 1,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:blaze",
+        "min": 2,
+        "max": 2,
+        "gear": []
+      },
+      {
+        "type": "minecraft:piglin_brute",
+        "min": 2,
+        "max": 3,
+        "gear": [
+          "minecraft:golden_helmet",
+          "minecraft:golden_chestplate",
+          "minecraft:golden_leggings",
+          "minecraft:golden_boots",
+          "minecraft:golden_sword"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "minecraft:piglin",
+        "min": 2,
+        "max": 3,
+        "gear": [
+          "minecraft:golden_helmet",
+          "minecraft:golden_chestplate",
+          "minecraft:golden_leggings",
+          "minecraft:golden_boots",
+          "minecraft:golden_sword"
+        ]
+      },
+      {
+        "type": "minecraft:hoglin",
+        "min": 3,
+        "max": 4,
+        "gear": []
+      },
+      {
+        "type": "minecraft:magma_cube",
+        "min": 3,
+        "max": 4,
+        "gear": []
+      },
+      {
+        "type": "minecraft:ghast",
+        "min": 1,
+        "max": 3,
+        "gear": []
+      },
+      {
+        "type": "minecraft:blaze",
+        "min": 3,
+        "max": 4,
+        "gear": []
+      },
+      {
+        "type": "minecraft:piglin_brute",
+        "min": 3,
+        "max": 4,
+        "gear": [
+          "minecraft:netherite_helmet",
+          "minecraft:netherite_chestplate",
+          "minecraft:netherite_leggings",
+          "minecraft:netherite_boots",
+          "minecraft:netherite_sword"
+        ]
+      }
+    ]
+  ],
+  "rewards": [
+    {
+      "id": "minecraft:gold_ingot",
+      "weighted": 100
+    },
+    {
+      "id": "minecraft:diamond",
+      "weighted": 10
+    },
+    {
+      "id": "minecraft:emerald",
+      "weighted": 20
+    },
+    {
+      "id": "minecraft:enchanted_golden_apple",
+      "weighted": 2
+    },
+    {
+      "id": "minecraft:nether_scrap",
+      "weighted": 2
+    },
+    {
+      "id": "surviving_the_aftermath:nether_core",
+      "weighted": 1
+    }
+  ]
+}
