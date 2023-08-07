@@ -87,10 +87,11 @@ public class ModDifficultyLoader {
             RaidInfo info = new RaidInfo(rewards, waves);
             if (raidMap.containsKey(id)) {
                 raidMap.get(id).add(info);
+                raidInfoMap.put(resourceLocation.toString(), info);
             } else {
                 raidMap.put(id, new ArrayList<>(List.of(info)));
+                raidInfoMap.put(resourceLocation.toString(), info);
             }
-            raidInfoMap.put(resourceLocation.toString(), info);
         });
     }
 
@@ -115,12 +116,28 @@ public class ModDifficultyLoader {
     }
 
 
-    public static String getRaidInfoString(RaidInfo raidInfo,int difficulty) {
+    public static String getRaidInfoString(RaidInfo raidInfo, int difficulty) {
         return switch (difficulty) {
-            case 0 -> Peaceful.RAID_INFO_MAP.entrySet().stream().filter(entry -> entry.getValue().equals(raidInfo)).findFirst().get().getKey();
-            case 1 -> Easy.RAID_INFO_MAP.entrySet().stream().filter(entry -> entry.getValue().equals(raidInfo)).findFirst().get().getKey();
-            case 2 -> Normal.RAID_INFO_MAP.entrySet().stream().filter(entry -> entry.getValue().equals(raidInfo)).findFirst().get().getKey();
-            case 3 -> Hard.RAID_INFO_MAP.entrySet().stream().filter(entry -> entry.getValue().equals(raidInfo)).findFirst().get().getKey();
+            case 0 -> Peaceful.RAID_INFO_MAP.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(raidInfo))
+                    .findFirst()
+                    .map(Map.Entry::getKey)
+                    .orElseThrow(() -> new IllegalStateException("No raid info found for difficulty: " + difficulty));
+            case 1 -> Easy.RAID_INFO_MAP.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(raidInfo))
+                    .findFirst()
+                    .map(Map.Entry::getKey)
+                    .orElseThrow(() -> new IllegalStateException("No raid info found for difficulty: " + difficulty));
+            case 2 -> Normal.RAID_INFO_MAP.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(raidInfo))
+                    .findFirst()
+                    .map(Map.Entry::getKey)
+                    .orElseThrow(() -> new IllegalStateException("No raid info found for difficulty: " + difficulty));
+            case 3 -> Hard.RAID_INFO_MAP.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(raidInfo))
+                    .findFirst()
+                    .map(Map.Entry::getKey)
+                    .orElseThrow(() -> new IllegalStateException("No raid info found for difficulty: " + difficulty));
             default -> throw new IllegalStateException("Unexpected value: " + difficulty);
         };
     }

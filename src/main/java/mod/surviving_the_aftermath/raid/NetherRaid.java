@@ -370,12 +370,7 @@ public class NetherRaid {
 			for (int i = 0; i < level.random.nextInt(entry.getMin(), entry.getMax() + 1); i++) {
 				Entity enemy = entry.getType().create(level);
 
-				Vec3 vec3 = Vec3.atCenterOf(centerPos);
-
-				vec3 = vec3.add(level.random.nextDouble() * 10 - (double) 10 / 2, 0, level.random.nextDouble() * 10 - (double) 10 / 2);
-				enemy.moveTo(vec3);
-
-
+				enemy.moveTo(Vec3.atCenterOf(spawn.get(level.getRandom().nextInt(spawn.size()))));
 				if (enemy instanceof AbstractPiglin piglin) {
 					piglin.setImmuneToZombification(true);
 				}
