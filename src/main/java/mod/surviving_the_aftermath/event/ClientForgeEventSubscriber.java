@@ -1,7 +1,7 @@
 package mod.surviving_the_aftermath.event;
 
 import mod.surviving_the_aftermath.Main;
-import mod.surviving_the_aftermath.raid.NetherRaid;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,16 +22,17 @@ public class ClientForgeEventSubscriber {
 
 	@SubscribeEvent
 	public static void netherRaidProgress(CustomizeGuiOverlayEvent.BossEventProgress event) {
-		// Nonideal way to find out this boss event belongs to nether raid
-		if (event.getBossEvent().getName().getContents() instanceof TranslatableContents contents
-				&& contents.getKey().equals(NetherRaid.NAME)) {
-			event.setCanceled(true);
-			var graphics = event.getGuiGraphics();
-			graphics.blit(BARS, (graphics.guiWidth() - FRAME_WIDTH) / 2, event.getY() - 9, 0, FRAME_V, FRAME_WIDTH,
-					FRAME_HEIGHT);
-			graphics.blit(BARS, (graphics.guiWidth() - BAR_WIDTH) / 2, event.getY() - 9 + 4, 0, 0,
-					(int) (BAR_WIDTH * event.getBossEvent().getProgress()), BAR_HEIGHT);
-			event.setIncrement(FRAME_HEIGHT);
+		ComponentContents contents = event.getBossEvent().getName().getContents();
+		if (contents instanceof TranslatableContents translatableContents) {
+			if (translatableContents.getKey().contains(Main.MODID + ".nether_raid")) {
+				event.setCanceled(true);
+				var graphics = event.getGuiGraphics();
+				graphics.blit(BARS, (graphics.guiWidth() - FRAME_WIDTH) / 2, event.getY() - 9, 0, FRAME_V, FRAME_WIDTH,
+						FRAME_HEIGHT);
+				graphics.blit(BARS, (graphics.guiWidth() - BAR_WIDTH) / 2, event.getY() - 9 + 4, 0, 0,
+						(int) (BAR_WIDTH * event.getBossEvent().getProgress()), BAR_HEIGHT);
+				event.setIncrement(FRAME_HEIGHT);
+			}
 		}
 	}
 }

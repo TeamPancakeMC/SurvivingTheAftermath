@@ -1,41 +1,38 @@
-package mod.surviving_the_aftermath.event;
+package mod.surviving_the_aftermath.event.battle_tracker;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Lists;
-import mod.surviving_the_aftermath.capability.RaidData;
+import com.google.common.collect.Maps;
+import mod.surviving_the_aftermath.event.RaidEvent;
 import mod.surviving_the_aftermath.init.ModMobEffects;
-import mod.surviving_the_aftermath.raid.NetherRaid;
+import mod.surviving_the_aftermath.raid.IRaid;
+import mod.surviving_the_aftermath.raid.RaidManager;
 import mod.surviving_the_aftermath.raid.RaidState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.*;
 
-public class PlayerBattleTrackerEventSubscriber {
-
+public class PlayerBattleTracker {
     public static final String PLAYER_BATTLE_PERSONAL_FAIL = "message.surviving_the_aftermath.nether_raid.personal_fail";
     public static final String PLAYER_BATTLE_ESCAPE = "message.surviving_the_aftermath.nether_raid.escape";
     private static final int MAX_DEATH_COUNT = 3;
-    private List<UUID> players = Lists.newArrayList();
-    private Map<UUID,Integer> deathMap = Maps.newHashMap();
-    private Map<UUID,Long> escapeMap = Maps.newHashMap();
-    private Map<UUID, List<UUID>> spectatorMap = new HashMap<>();
-    private UUID currentRaidId;
+    private final List<UUID> players = Lists.newArrayList();
+    private final Map<UUID, Integer> deathMap = Maps.newHashMap();
+    private final Map<UUID, Long> escapeMap = Maps.newHashMap();
+    private final Map<UUID, List<UUID>> spectatorMap = new HashMap<>();
+    private final UUID currentRaidId;
 
 
-    public PlayerBattleTrackerEventSubscriber(UUID currentRaidId) {
+    public PlayerBattleTracker(UUID currentRaidId) {
         this.currentRaidId = currentRaidId;
     }
 
@@ -52,10 +49,10 @@ public class PlayerBattleTrackerEventSubscriber {
         for (UUID uuid : uuids) {
             players.remove(uuid);
             Player player = level.getPlayerByUUID(uuid);
-            if (player != null){
-                escapeMap.put(uuid,level.getGameTime());
+            if (player != null) {
+                escapeMap.put(uuid, level.getGameTime());
             } else {
-                deathMap.put(uuid, deathMap.getOrDefault(uuid,0) + 1);
+                deathMap.put(uuid, deathMap.getOrDefault(uuid, 0) + 1);
             }
         }
 
@@ -87,8 +84,8 @@ public class PlayerBattleTrackerEventSubscriber {
 
                 if (deathCount >= MAX_DEATH_COUNT || spectatorMap.containsKey(serverPlayer.getUUID())) {
                     restorePlayerGameMode(level);
-                    NetherRaid netherRaid = RaidData.getNetherRaid(currentRaidId);
-                    if (netherRaid != null) netherRaid.setState(RaidState.LOSE);
+                    RaidManager.getInstance().getRaid(currentRaidId)
+                            .ifPresent(raid -> raid.setState(RaidState.LOSE));
                 }
             }
         }
@@ -100,33 +97,34 @@ public class PlayerBattleTrackerEventSubscriber {
         Level level = player.level();
         UUID uuid = player.getUUID();
 
-        if (!level.isClientSide && escapeMap.containsKey(uuid)){
+        if (!level.isClientSide && escapeMap.containsKey(uuid)) {
             Long lastEscapeTime = escapeMap.get(uuid);
             long time = level.getGameTime() - lastEscapeTime;
-            NetherRaid netherRaid = RaidData.getNetherRaid(currentRaidId);
-            BlockPos centerPos = netherRaid.getCenterPos();
-            BlockPos pos = player.blockPosition();
-            double distance = Math.sqrt(centerPos.distSqr(pos));
-            if (lastEscapeTime != 0L && time > 20 * 5) {
-                player.addEffect(new MobEffectInstance(ModMobEffects.COWARDICE.get(), 45 * 60 * 20));
-                if (distance  > 120) {
-                    player.addEffect(new MobEffectInstance(ModMobEffects.COWARDICE.get(), 45 * 60 * 20,1));
-                    escapeMap.remove(uuid);
-                    netherRaid.setState(RaidState.LOSE);
-                    restorePlayerGameMode(level);
+            RaidManager.getInstance().getRaid(currentRaidId).ifPresent(raid -> {
+                BlockPos centerPos = raid.getCenterPos();
+                BlockPos pos = player.blockPosition();
+                double distance = Math.sqrt(centerPos.distSqr(pos));
+                if (lastEscapeTime != 0L && time > 20 * 5) {
+                    player.addEffect(new MobEffectInstance(ModMobEffects.COWARDICE.get(), 45 * 60 * 20));
+                    if (distance > 120) {
+                        player.addEffect(new MobEffectInstance(ModMobEffects.COWARDICE.get(), 45 * 60 * 20, 1));
+                        escapeMap.remove(uuid);
+                        raid.setState(RaidState.LOSE);
+                        restorePlayerGameMode(level);
+                    }
+                } else {
+                    player.displayClientMessage(Component.translatable(PLAYER_BATTLE_ESCAPE, 20 * 5 - time), true);
                 }
-            } else {
-                player.displayClientMessage(Component.translatable(PLAYER_BATTLE_ESCAPE, 20 * 5 - time), true);
-            }
+            });
         }
     }
 
-    private void setSpectator(ServerPlayer player,Level level) {
+    private void setSpectator(ServerPlayer player, Level level) {
         UUID uuid = players.get(level.random.nextInt(players.size()));
         Player target = level.getPlayerByUUID(uuid);
         if (!(target instanceof ServerPlayer serverTarget)) return;
 
-        if (spectatorMap.containsKey(player.getUUID())){
+        if (spectatorMap.containsKey(player.getUUID())) {
             List<UUID> uuids = spectatorMap.get(player.getUUID());
             if (uuids != null) {
                 uuids.add(player.getUUID());
@@ -155,10 +153,9 @@ public class PlayerBattleTrackerEventSubscriber {
                 .flatMap(Collection::stream)
                 .forEach(uuid -> {
                     Player player = level.getPlayerByUUID(uuid);
-                    if (player instanceof ServerPlayer serverPlayer){
+                    if (player instanceof ServerPlayer serverPlayer) {
                         serverPlayer.setGameMode(GameType.SURVIVAL);
                     }
                 });
     }
-
 }

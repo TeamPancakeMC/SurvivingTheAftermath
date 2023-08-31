@@ -1,6 +1,9 @@
 package mod.surviving_the_aftermath;
 
-import mod.surviving_the_aftermath.data.ModDifficultyLoader;
+import mod.surviving_the_aftermath.data.Easy;
+import mod.surviving_the_aftermath.data.Hard;
+import mod.surviving_the_aftermath.data.Normal;
+import mod.surviving_the_aftermath.data.Peaceful;
 import mod.surviving_the_aftermath.datagen.EventSubscriber;
 import mod.surviving_the_aftermath.event.ModEventSubscriber;
 import mod.surviving_the_aftermath.init.*;
@@ -40,9 +43,9 @@ public class Main {
 
 
 	private void onDataPackLoad(AddReloadListenerEvent event) {
-		event.addListener(new ModDifficultyLoader.Peaceful());
-		event.addListener(new ModDifficultyLoader.Easy());
-		event.addListener(new ModDifficultyLoader.Normal());
-		event.addListener(new ModDifficultyLoader.Hard());
+		event.addListener(Peaceful.getInstance());
+		event.addListener(Easy.getInstance());
+		event.addListener(Normal.getInstance());
+		event.addListener(Hard.getInstance());
 	}
 }

@@ -25,7 +25,7 @@ public class ModCapability {
     @SubscribeEvent
     public static void attachCapability(AttachCapabilitiesEvent<Level> event) {
         if (event.getObject().dimension() == Level.OVERWORLD && event.getObject() instanceof ServerLevel level) {
-            event.addCapability(Main.asResource("raiddata"), new RaidData.Provider(level));
+            event.addCapability(Main.asResource("raid_data"), new RaidData.Provider(level));
         }
     }
 

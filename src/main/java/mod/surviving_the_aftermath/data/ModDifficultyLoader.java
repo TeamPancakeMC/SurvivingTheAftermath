@@ -1,7 +1,6 @@
 package mod.surviving_the_aftermath.data;
 
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import mod.surviving_the_aftermath.util.JsonUtil;
@@ -11,159 +10,51 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.item.Item;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ModDifficultyLoader {
-    public static class Hard extends SimpleJsonResourceReloadListener {
-        public static Map<String, List<RaidInfo>> RAID_MAP = Maps.newHashMap();
-        public static Map<String, RaidInfo> RAID_INFO_MAP = Maps.newHashMap();
-        public Hard() {
-            super(JsonUtil.GSON, "raid/hard");
-        }
+public class ModDifficultyLoader extends SimpleJsonResourceReloadListener {
+    private final Map<String, List<RaidEnemyInfo>> raidMap = Maps.newHashMap();
 
-        @Override
-        protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-            difficultyDeserialize(pObject, RAID_MAP, RAID_INFO_MAP);
-        }
-    }
-    public static class Normal extends SimpleJsonResourceReloadListener {
-        public static Map<String, List<RaidInfo>> RAID_MAP = Maps.newHashMap();
-        public static Map<String, RaidInfo> RAID_INFO_MAP = Maps.newHashMap();
-        public Normal() {
-            super(JsonUtil.GSON, "raid/normal");
-        }
-        @Override
-        protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-            difficultyDeserialize(pObject, RAID_MAP, RAID_INFO_MAP);
-        }
-
+    ModDifficultyLoader(String name) {
+        super(JsonUtil.GSON, name);
     }
 
-    public static class Easy extends SimpleJsonResourceReloadListener {
-        public static Map<String, List<RaidInfo>> RAID_MAP = Maps.newHashMap();
-        public static Map<String, RaidInfo> RAID_INFO_MAP = Maps.newHashMap();
-        public Easy() {
-            super(JsonUtil.GSON, "raid/easy");
-        }
-        @Override
-        protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-            difficultyDeserialize(pObject, RAID_MAP, RAID_INFO_MAP);
-        }
-
-    }
-
-    public static class Peaceful extends SimpleJsonResourceReloadListener {
-        public static Map<String, List<RaidInfo>> RAID_MAP = Maps.newHashMap();
-        public static Map<String, RaidInfo> RAID_INFO_MAP = Maps.newHashMap();
-        public Peaceful() {
-            super(JsonUtil.GSON, "raid/peaceful");
-        }
-        @Override
-        protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-            difficultyDeserialize(pObject, RAID_MAP, RAID_INFO_MAP);
-        }
-
-    }
-
-    private static void difficultyDeserialize(@NotNull Map<ResourceLocation, JsonElement> jsonElementMap, Map<String, List<RaidInfo>> raidMap, Map<String, RaidInfo> raidInfoMap) {
+    @Override
+    protected void apply(Map<ResourceLocation, JsonElement> jsonElementMap, ResourceManager p_10794_, ProfilerFiller p_10795_) {
         jsonElementMap.forEach((resourceLocation, jsonElement) -> {
-            System.out.println("resourceLocation" + resourceLocation);
             JsonObject asJsonObject = jsonElement.getAsJsonObject();
             String id = asJsonObject.get("id").getAsString();
             SimpleWeightedRandomList<Item> rewards = JsonUtil.GSON.fromJson(asJsonObject.get("rewards"), SimpleWeightedRandomList.class);
-            List<List<WaveEntry>> waves = asJsonObject.get("waves").getAsJsonArray().asList().stream()
+            List<List<RaidEnemyInfo.WaveEntry>> waves = asJsonObject.get("waves").getAsJsonArray().asList().stream()
                     .map(JsonElement::getAsJsonArray)
                     .map(jsonArray -> {
-                        List<WaveEntry> list = new ArrayList<>();
-                        jsonArray.forEach(element -> list.add(JsonUtil.GSON.fromJson(element, WaveEntry.class)));
+                        List<RaidEnemyInfo.WaveEntry> list = new ArrayList<>();
+                        jsonArray.forEach(element -> list.add(JsonUtil.GSON.fromJson(element, RaidEnemyInfo.WaveEntry.class)));
                         return list;
                     })
                     .collect(Collectors.toList());
-            RaidInfo info = new RaidInfo(rewards, waves);
+            RaidEnemyInfo info = new RaidEnemyInfo(rewards, waves);
             if (raidMap.containsKey(id)) {
                 raidMap.get(id).add(info);
-                raidInfoMap.put(resourceLocation.toString(), info);
             } else {
                 raidMap.put(id, new ArrayList<>(List.of(info)));
-                raidInfoMap.put(resourceLocation.toString(), info);
             }
         });
     }
 
-    public static Map<String, List<RaidInfo>> getRaidMap(int difficulty) {
-        return switch (difficulty) {
-            case 0 -> Peaceful.RAID_MAP;
-            case 1 -> Easy.RAID_MAP;
-            case 2 -> Normal.RAID_MAP;
-            case 3 -> Hard.RAID_MAP;
-            default -> throw new IllegalStateException("Unexpected value: " + difficulty);
-        };
+    public Map<String, List<RaidEnemyInfo>> getRaidMap() {
+        return raidMap;
     }
 
-    public static Map<String, RaidInfo> getRaidInfoMap(int difficulty) {
-        return switch (difficulty) {
-            case 0 -> Peaceful.RAID_INFO_MAP;
-            case 1 -> Easy.RAID_INFO_MAP;
-            case 2 -> Normal.RAID_INFO_MAP;
-            case 3 -> Hard.RAID_INFO_MAP;
-            default -> throw new IllegalStateException("Unexpected value: " + difficulty);
-        };
+    public List<RaidEnemyInfo> getRaidInfo(String identifier) {
+        return raidMap.get(identifier);
     }
 
-
-    public static String getRaidInfoString(RaidInfo raidInfo, int difficulty) {
-        return switch (difficulty) {
-            case 0 -> Peaceful.RAID_INFO_MAP.entrySet().stream()
-                    .filter(entry -> entry.getValue().equals(raidInfo))
-                    .findFirst()
-                    .map(Map.Entry::getKey)
-                    .orElseThrow(() -> new IllegalStateException("No raid info found for difficulty: " + difficulty));
-            case 1 -> Easy.RAID_INFO_MAP.entrySet().stream()
-                    .filter(entry -> entry.getValue().equals(raidInfo))
-                    .findFirst()
-                    .map(Map.Entry::getKey)
-                    .orElseThrow(() -> new IllegalStateException("No raid info found for difficulty: " + difficulty));
-            case 2 -> Normal.RAID_INFO_MAP.entrySet().stream()
-                    .filter(entry -> entry.getValue().equals(raidInfo))
-                    .findFirst()
-                    .map(Map.Entry::getKey)
-                    .orElseThrow(() -> new IllegalStateException("No raid info found for difficulty: " + difficulty));
-            case 3 -> Hard.RAID_INFO_MAP.entrySet().stream()
-                    .filter(entry -> entry.getValue().equals(raidInfo))
-                    .findFirst()
-                    .map(Map.Entry::getKey)
-                    .orElseThrow(() -> new IllegalStateException("No raid info found for difficulty: " + difficulty));
-            default -> throw new IllegalStateException("Unexpected value: " + difficulty);
-        };
+    public RaidEnemyInfo getRaidInfo(String identifier, int index) {
+        return raidMap.get(identifier).get(index);
     }
-
-
-    public static RaidInfo getRaidInfo(String id,int difficulty) {
-        return switch (difficulty) {
-            case 0 -> Peaceful.RAID_INFO_MAP.get(id);
-            case 1 -> Easy.RAID_INFO_MAP.get(id);
-            case 2 -> Normal.RAID_INFO_MAP.get(id);
-            case 3 -> Hard.RAID_INFO_MAP.get(id);
-            default -> throw new IllegalStateException("Unexpected value: " + difficulty);
-        };
-    }
-
-    public static List<RaidInfo> getRaidInfoList(String id,int difficulty) {
-        return switch (difficulty) {
-            case 0 -> Peaceful.RAID_MAP.get(id);
-            case 1 -> Easy.RAID_MAP.get(id);
-            case 2 -> Normal.RAID_MAP.get(id);
-            case 3 -> Hard.RAID_MAP.get(id);
-            default -> throw new IllegalStateException("Unexpected value: " + difficulty);
-        };
-    }
-
-
-
-
 }

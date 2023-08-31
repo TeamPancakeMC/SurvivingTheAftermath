@@ -22,32 +22,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 @EventBusSubscriber(modid = Main.MODID, bus = Bus.FORGE)
 public class ForgeEventSubscriber {
-
-	@SubscribeEvent
-	public static void netherRaid(EntityTravelToDimensionEvent event) {
-		Entity entity = event.getEntity();
-		Level level = entity.level();
-		BlockPos pos = entity.blockPosition();
-		if (level instanceof ServerLevel serverLevel){
-			event.setCanceled(serverLevel.structureManager().getAllStructuresAt(pos).containsKey(level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID)));
-		}
-	}
-
-	@SubscribeEvent
-	public static void onBlock(BlockEvent.PortalSpawnEvent event) {
-		new Thread(() -> RaidData.get((Level) event.getLevel()).ifPresent(data -> data.Create(event.getPos()))).start();
-	}
-
-	@SubscribeEvent
-	public static void tickRaid(LevelTickEvent event) {
-		RaidData.get(event.level).ifPresent(RaidData::tick);
-	}
-
-	@SubscribeEvent
-	public static void joinRaid(EntityJoinLevelEvent event) {
-		RaidData.get(event.getLevel()).ifPresent(c -> c.joinRaid(event.getEntity()));
-	}
-
 	@SubscribeEvent
 	public static void changeSpawn(CreateSpawnPosition event) {
 		if (event.getLevel() instanceof ServerLevel level) {
@@ -60,5 +34,4 @@ public class ForgeEventSubscriber {
 			}
 		}
 	}
-
 }

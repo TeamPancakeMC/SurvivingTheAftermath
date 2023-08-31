@@ -5,7 +5,6 @@ import mod.surviving_the_aftermath.init.ModBlocks;
 import mod.surviving_the_aftermath.init.ModEnchantments;
 import mod.surviving_the_aftermath.init.ModItems;
 import mod.surviving_the_aftermath.init.ModMobEffects;
-import mod.surviving_the_aftermath.raid.NetherRaid;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -39,7 +38,7 @@ public class ModLanguageProvider extends LanguageProvider {
 		add(ModEnchantments.RANGER.get(), "Ranger");
 		add(ModEnchantments.MOON.get(), "Moon");
 		add(ModEnchantments.SUN.get(), "Sun");
-		add(NetherRaid.NAME, "");
+//		add(NetherRaid.NAME, "");
 	}
 
 }

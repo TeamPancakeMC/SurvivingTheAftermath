@@ -1,7 +1,7 @@
 package mod.surviving_the_aftermath.util;
 
 import com.google.gson.*;
-import mod.surviving_the_aftermath.data.WaveEntry;
+import mod.surviving_the_aftermath.data.RaidEnemyInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.entity.EntityType;
@@ -14,14 +14,14 @@ import java.util.List;
 
 public class JsonUtil {
     public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(WaveEntry.class, new WaveEntryDeserializer())
+            .registerTypeAdapter(RaidEnemyInfo.WaveEntry.class, new WaveEntryDeserializer())
             .registerTypeAdapter(SimpleWeightedRandomList.class, new SimpleWeightedRandomListDeserializer())
             .setPrettyPrinting()
             .create();
 
-    public static class WaveEntryDeserializer implements JsonDeserializer<WaveEntry> {
+    public static class WaveEntryDeserializer implements JsonDeserializer<RaidEnemyInfo.WaveEntry> {
         @Override
-        public WaveEntry deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        public RaidEnemyInfo.WaveEntry deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject asJsonObject = json.getAsJsonObject();
             String type = asJsonObject.get("type").getAsString();
             int min = asJsonObject.get("min").getAsInt();
@@ -35,7 +35,7 @@ public class JsonUtil {
             }
             EntityType<?> value = ForgeRegistries.ENTITY_TYPES.getValue(ResourceLocation.tryParse(type));
             if (value == null) throw new JsonParseException("Unknown entity type: " + type);
-            return new WaveEntry(value, min, max, gear);
+            return new RaidEnemyInfo.WaveEntry(value, min, max, gear);
         }
     }
 
