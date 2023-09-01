@@ -2,7 +2,6 @@ package mod.surviving_the_aftermath.capability;
 
 import mod.surviving_the_aftermath.init.ModCapability;
 import mod.surviving_the_aftermath.raid.IRaid;
-import mod.surviving_the_aftermath.raid.RaidFactory;
 import mod.surviving_the_aftermath.raid.RaidManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -31,19 +30,12 @@ public class RaidData implements INBTSerializable<CompoundTag> {
 			IRaid raid = entry.getValue();
 			compoundTag.put(uuid.toString(), raid.serializeNBT());
 		}
-		System.out.println("RaidData serializeNBT");
-		System.out.println("compoundTag :" + compoundTag);
-
 		return compoundTag;
 	}
 
 	@Override
 	public void deserializeNBT(CompoundTag compoundTag) {
-		System.out.println("RaidData deserializeNBT");
-		System.out.println("compoundTag :" + compoundTag);
-		compoundTag.getAllKeys().forEach(key -> {
-			instance.create(level, compoundTag.getCompound(key));
-		});
+		compoundTag.getAllKeys().forEach(key -> instance.create(level, compoundTag.getCompound(key)));
 	}
 
 	public static LazyOptional<RaidData> get(Level level) {

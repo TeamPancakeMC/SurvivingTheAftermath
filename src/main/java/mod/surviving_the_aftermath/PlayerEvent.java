@@ -27,20 +27,12 @@ public class PlayerEvent {
         Map<UUID, PlayerBattleTracker> playerBattleTrackers = instance.getPlayerBattleTrackers();
         Map<UUID, IRaid> raids = instance.getRaids();
 
-        System.out.println("playerBattleTrackers:" + playerBattleTrackers.size());
-        System.out.println("raids:" + raids.size());
-
         raids.forEach((uuid, raid) -> {
             HashSet<UUID> enemies = raid.getEnemies();
             List<UUID> players = raid.getPlayers();
             RaidEnemyInfo raidEnemyInfo = raid.getRaidEnemyInfo();
             int wave = raid.getWave();
             int totalEnemyCount = raid.getTotalEnemyCount();
-            System.out.println("enemies:" + enemies.size());
-            System.out.println("players:" + players.size());
-            System.out.println("raidEnemyInfo:" + raidEnemyInfo);
-            System.out.println("wave:" + wave);
-            System.out.println("totalEnemyCount:" + totalEnemyCount);
         });
     }
 }

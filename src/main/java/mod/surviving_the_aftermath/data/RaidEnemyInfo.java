@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item;
 import java.util.List;
 
 public record RaidEnemyInfo (SimpleWeightedRandomList<Item> rewards, List<List<WaveEntry>> waves){
-        public static record WaveEntry(EntityType<?> type, int min, int max, List<Item> gear) {
+        public record WaveEntry(EntityType<?> type, int min, int max, List<Item> gear) {
         }
 }
 

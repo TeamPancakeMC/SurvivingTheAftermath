@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import mod.surviving_the_aftermath.event.RaidEvent;
 import mod.surviving_the_aftermath.init.ModMobEffects;
-import mod.surviving_the_aftermath.raid.IRaid;
 import mod.surviving_the_aftermath.raid.RaidManager;
 import mod.surviving_the_aftermath.raid.RaidState;
 import net.minecraft.core.BlockPos;

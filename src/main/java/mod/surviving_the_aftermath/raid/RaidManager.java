@@ -39,7 +39,6 @@ public class RaidManager {
 
     public void create(ServerLevel level, CompoundTag compound) {
         IRaid raid = RaidFactory.create(level, compound);
-        System.out.println("Raid create:" + raid);
         if (raid != null) {
             UUID uuid = raid.getUUID();
             raids.put(uuid, raid);
@@ -83,8 +82,6 @@ public class RaidManager {
     public void unregisterBattleTrackers(UUID raidId) {
         PlayerBattleTracker playerBattleTracker = playerBattleTrackers.get(raidId);
         MobBattleTracker mobBattleTracker = mobBattleTrackers.get(raidId);
-        System.out.println("注销战斗追踪器:" + playerBattleTracker);
-        System.out.println("注销战斗追踪器:" + mobBattleTracker);
         MinecraftForge.EVENT_BUS.unregister(playerBattleTracker);
         MinecraftForge.EVENT_BUS.unregister(mobBattleTracker);
     }
@@ -106,12 +103,12 @@ public class RaidManager {
     }
 
     public void tick(ServerLevel level) {
-        raids.values().forEach(raid -> {
+        for (IRaid raid : raids.values()) {
             raid.tick(level);
             if (raid.loseOrEnd()) {
                 remove(raid.getUUID());
             }
-        });
+        }
     }
 
     public void joinRaid(Entity entity) {

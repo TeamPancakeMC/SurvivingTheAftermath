@@ -1,10 +1,8 @@
 package mod.surviving_the_aftermath.enchantment;
 
 import mod.surviving_the_aftermath.init.ModTags;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.DamageEnchantment;
 import net.minecraft.world.item.enchantment.Enchantment;

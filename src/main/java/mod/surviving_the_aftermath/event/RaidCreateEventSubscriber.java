@@ -9,7 +9,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
@@ -27,15 +26,15 @@ public class RaidCreateEventSubscriber {
     //NetherRaid
     @SubscribeEvent
     public static void onBlock(BlockEvent.PortalSpawnEvent event) {
-        Level level = (Level) event.getLevel();
-        if (level instanceof ServerLevel serverLevel) {
-            NetherRaid netherRaid = new NetherRaid(serverLevel, UUID.randomUUID(), event.getPos());
-            if (netherRaid.create()) {
-                instance.create(netherRaid);
-            } else {
-                System.out.println("NetherRaid create failed");
+        new Thread(() -> {
+            Level level = (Level) event.getLevel();
+            if (level instanceof ServerLevel serverLevel) {
+                NetherRaid netherRaid = new NetherRaid(serverLevel, UUID.randomUUID(), event.getPos());
+                if (netherRaid.create()) {
+                    instance.create(netherRaid);
+                }
             }
-        }
+        }).start();
     }
 
     @SubscribeEvent
@@ -68,9 +67,7 @@ public class RaidCreateEventSubscriber {
 
     @SubscribeEvent
     public static void onLevel(LevelEvent.Unload event) {
-//        ServerLevel level = (ServerLevel) event.getLevel();
         if (event.getLevel().isClientSide()) return;
-        System.out.println("世界卸载");
         instance.clear();
     }
 }

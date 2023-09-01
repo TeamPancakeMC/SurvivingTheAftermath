@@ -20,9 +20,7 @@ public class PartyBonfireBlockEntity extends BlockEntity implements ITickingBloc
         if (level != null && !level.isClientSide) {
             AABB aabb = new AABB(getBlockPos()).inflate(RANGE);
             Stream<Player> players = level.getEntitiesOfClass(Player.class, aabb).stream().parallel();
-            players.forEach(player -> {
-                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 15, 0));
-            });
+            players.forEach(player -> player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 15, 0)));
         }
     }
 }

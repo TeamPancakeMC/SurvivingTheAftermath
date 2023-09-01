@@ -1,6 +1,5 @@
 package mod.surviving_the_aftermath.event.battle_tracker;
 
-import mod.surviving_the_aftermath.raid.IRaid;
 import mod.surviving_the_aftermath.raid.RaidManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;

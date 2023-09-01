@@ -26,10 +26,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class NetherRaid extends BaseRaid {
     public final static String IDENTIFIER = "nether_raid";
@@ -75,7 +72,7 @@ public class NetherRaid extends BaseRaid {
                                                                                     StructureTemplate.StructureBlockInfo relativeBlockInfo,
                                                                                     StructurePlaceSettings p_74145_,
                                                                                     @Nullable StructureTemplate template) {
-                                    if (NetherRaid.super.LEVEL.getRandom().nextFloat() < 0.9) {
+                                    if (NetherRaid.super.random.nextFloat() < 0.9) {
                                         return new StructureTemplate.StructureBlockInfo(relativeBlockInfo.pos(),
                                                 levelReader.getBlockState(relativeBlockInfo.pos()), relativeBlockInfo.nbt());
                                     } else {
@@ -93,11 +90,17 @@ public class NetherRaid extends BaseRaid {
     public void spawnEnemies(List<RaidEnemyInfo.WaveEntry> entries) {
         totalEnemyCount = 0;
         for (var entry : entries) {
-            for (int i = 0; i < this.LEVEL.random.nextInt(entry.min(), entry.max() + 1); i++) {
+            for (int i = 0; i < this.random.nextInt(entry.min(), entry.max() + 1); i++) {
                 Entity enemy = entry.type().create(this.LEVEL);
 
                 if (enemy != null) {
-                    enemy.moveTo(Vec3.atCenterOf(spawnPos.get(this.LEVEL.getRandom().nextInt(spawnPos.size()))));
+                    BlockPos pos;
+                    if (spawnPos.isEmpty()){
+                        pos = centerPos;
+                    }else {
+                        pos = spawnPos.get(this.random.nextInt(spawnPos.size()));
+                    }
+                    enemy.moveTo(Vec3.atCenterOf(pos));
                 }
                 if (enemy instanceof AbstractPiglin piglin) {
                     piglin.setImmuneToZombification(true);
@@ -110,7 +113,7 @@ public class NetherRaid extends BaseRaid {
                 }
                 if (enemy instanceof Mob mob) {
                     for (var item : entry.gear()) {
-                        if (this.LEVEL.random.nextFloat() < 0.5f) {
+                        if (this.random.nextFloat() < 0.5f) {
                             mob.equipItemIfPossible(new ItemStack(item));
                         }
                     }
@@ -122,7 +125,7 @@ public class NetherRaid extends BaseRaid {
                     }
 
                     if (!players.isEmpty()) {
-                        Player target = this.LEVEL.getPlayerByUUID(players.get(this.LEVEL.getRandom().nextInt(players.size())));
+                        Player target = this.LEVEL.getPlayerByUUID(players.get(this.random.nextInt(players.size())));
                         mob.getBrain().setMemory(MemoryModuleType.ANGRY_AT, target.getUUID());
                         mob.setTarget(target);
                     }
@@ -153,5 +156,30 @@ public class NetherRaid extends BaseRaid {
     @Override
     public boolean join(Entity entity) {
         return entity.getType() == EntityType.MAGMA_CUBE && super.join(entity);
+    }
+
+    @Override
+    public void setSpawnPos(ServerLevel level) {
+        Set<BlockPos> found = new HashSet<>();
+        Queue<BlockPos> queue = new LinkedList<>();
+        queue.add(centerPos);
+
+        while (!queue.isEmpty()) {
+            BlockPos currentPos = queue.poll();
+            if (found.contains(currentPos)) {
+                continue;
+            }
+            found.add(currentPos);
+
+            for (Direction direction : Direction.values()) {
+                BlockPos nearby = currentPos.relative(direction);
+                if (found.contains(nearby) || !level.getBlockState(nearby).is(Blocks.NETHER_PORTAL)) {
+                    continue;
+                }
+                queue.add(nearby);
+            }
+        }
+
+        spawnPos = new ArrayList<>(found);
     }
 }

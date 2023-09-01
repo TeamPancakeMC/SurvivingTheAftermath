@@ -28,7 +28,7 @@ public interface IRaid {
 
     int getRewardTime();
 
-    void setSpawnPos();
+    void setSpawnPos(ServerLevel level);
 
     void updatePlayers(ServerLevel level);
 

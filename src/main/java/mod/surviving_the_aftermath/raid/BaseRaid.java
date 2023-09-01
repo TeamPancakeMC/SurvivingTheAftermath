@@ -30,10 +30,11 @@ import java.util.*;
 public abstract class BaseRaid implements IRaid {
     protected final ServerLevel LEVEL;
     protected final HashSet<UUID> enemies = new HashSet<>();
-    protected final List<BlockPos> spawnPos = new ArrayList<>();
+    protected List<BlockPos> spawnPos = new ArrayList<>();
     protected String name = Main.MODID + "." + getIdentifier();
     protected final ServerBossEvent progress = new ServerBossEvent(Component.translatable(name), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
     protected List<UUID> players = new ArrayList<>();
+    public final Random random = new Random();
     protected UUID uuid;
     protected BlockPos centerPos;
     protected int totalEnemyCount;
@@ -50,7 +51,7 @@ public abstract class BaseRaid implements IRaid {
         this.raidEnemyInfo = RaidUtil.getRaidEnemyInfo(level.getDifficulty().getId(), getIdentifier());
         this.indexEnemyInfo = RaidUtil.getRaidEnemyInfoIndex(level.getDifficulty().getId(), getIdentifier(), raidEnemyInfo);
         this.rewardTime = getRewardTime();
-        setSpawnPos();
+        setSpawnPos(level);
         updatePlayers(level);
         updateProgress(level);
         this.state = RaidState.START;
@@ -70,29 +71,22 @@ public abstract class BaseRaid implements IRaid {
     public void tick(ServerLevel level) {
         if (loseOrEnd()) {
             progress.removeAllPlayers();
+            return;
         }
-
         progress.setVisible(this.state == RaidState.ONGOING);
-
-        if (this.state == RaidState.CELEBRATING) {
-            if (rewardTime > 0) {
-                rewardTime--;
-                setState(RaidState.VICTORY);
-                MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players, level));
-                spawnRewards(level);
-            } else {
-                setState(RaidState.END);
-                MinecraftForge.EVENT_BUS.post(new RaidEvent.End(players, level));
-            }
-        }
-
-        if (this.state != RaidState.VICTORY) {
+        if (this.state != RaidState.VICTORY && this.state != RaidState.CELEBRATING) {
             setState(RaidState.ONGOING);
             MinecraftForge.EVENT_BUS.post(new RaidEvent.Ongoing(players, level));
             updatePlayers(level);
             updateProgress(level);
         } else {
-            spawnRewards(level);
+            if (rewardTime > 0) {
+                rewardTime--;
+                spawnRewards(level);
+            } else {
+                setState(RaidState.END);
+                MinecraftForge.EVENT_BUS.post(new RaidEvent.End(players, level));
+            }
         }
     }
 
@@ -129,7 +123,7 @@ public abstract class BaseRaid implements IRaid {
     }
 
     @Override
-    public void setSpawnPos() {
+    public void setSpawnPos(ServerLevel level) {
         spawnPos.add(centerPos);
     }
 
@@ -138,13 +132,7 @@ public abstract class BaseRaid implements IRaid {
         Set<UUID> updated = new HashSet<>();
         for (var player : level.players()) {
 
-            boolean b = Math.sqrt(player.distanceToSqr(Vec3.atCenterOf(centerPos))) < getRadius();
-            System.out.println("玩家距离:" + player.distanceToSqr(Vec3.atCenterOf(centerPos)));
-            System.out.println("中心坐标：" + centerPos);
-            System.out.println("玩家距离:" + Math.sqrt(player.distanceToSqr(Vec3.atCenterOf(centerPos))));
-            System.out.println("玩家坐标:" + player.blockPosition());
-            System.out.println("附近玩家是否:" + b);
-            if (b) {
+            if (Math.sqrt(player.distanceToSqr(Vec3.atCenterOf(centerPos))) < getRadius()) {
                 updated.add(player.getUUID());
             }
         }
@@ -161,12 +149,10 @@ public abstract class BaseRaid implements IRaid {
             }
         }
         players = new ArrayList<>(updated);
-        System.out.println("当前players:" + players);
     }
 
     public void updateProgress(ServerLevel level) {
         if (players.isEmpty()) {
-            System.out.println("玩家为空");
             return;
         }
 
@@ -177,7 +163,7 @@ public abstract class BaseRaid implements IRaid {
             }
 
             if (entity instanceof Mob mob && mob.getTarget() == null && !players.isEmpty()) {
-                Player target = level.getPlayerByUUID(players.get(level.getRandom().nextInt(players.size())));
+                Player target = level.getPlayerByUUID(players.get(random.nextInt(players.size())));
                 if (target != null) {
                     mob.getBrain().setMemory(MemoryModuleType.ANGRY_AT, target.getUUID());
                 }
@@ -186,25 +172,22 @@ public abstract class BaseRaid implements IRaid {
             return false;
         });
 
-        System.out.println("enemies:" + enemies.isEmpty());
         if (enemies.isEmpty()) {
             progress.setName(wave == raidEnemyInfo.waves().size() ? Component.translatable(name + ".victory") : Component.translatable(name + ".wave", wave));
             updateStructure();
             wave++;
             level.playSeededSound(null, centerPos.getX(), centerPos.getY(), centerPos.getZ(),
-                    SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(2), SoundSource.NEUTRAL, 2.0F, 1.0F, level.random.nextLong());
+                    SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(2), SoundSource.NEUTRAL, 2.0F, 1.0F, random.nextLong());
             List<List<RaidEnemyInfo.WaveEntry>> waves = this.raidEnemyInfo.waves();
-            System.out.println("wave > waves.size() :" + (wave > waves.size()));
             if (wave > waves.size()) {
                 level.playSeededSound(null, centerPos.getX(), centerPos.getY(), centerPos.getZ(),
-                        ModSoundEvents.ORCHELIAS_VOX.get(), SoundSource.NEUTRAL, 3.0F, 1.0F, level.random.nextLong());
+                        ModSoundEvents.ORCHELIAS_VOX.get(), SoundSource.NEUTRAL, 3.0F, 1.0F, random.nextLong());
                 PlayerBattleTracker playerBattleTracker = RaidManager.getInstance().getPlayerBattleTracker(uuid);
                 playerBattleTracker.restorePlayerGameMode(level);
                 setState(RaidState.VICTORY);
                 MinecraftForge.EVENT_BUS.post(new RaidEvent.Victory(players, level));
                 return;
             }
-            System.out.println("生成敌人");
             spawnEnemies(waves.get(Math.min(waves.size() - 1, wave - 1)));
         }
         progress.setProgress(enemies.size() / (float) totalEnemyCount);
@@ -212,7 +195,12 @@ public abstract class BaseRaid implements IRaid {
 
     @Override
     public void spawnRewards(ServerLevel level) {
-        BlockPos pos = spawnPos.get(level.random.nextInt(spawnPos.size()));
+        BlockPos pos;
+        if (spawnPos.isEmpty()){
+            pos = centerPos;
+        }else {
+            pos = spawnPos.get(random.nextInt(spawnPos.size()));
+        }
         Direction dir = freeDirection(level, pos);
         Vec3 vec = Vec3.atCenterOf(pos);
         this.raidEnemyInfo.rewards().getRandomValue(level.random).ifPresent(reward ->
@@ -279,7 +267,6 @@ public abstract class BaseRaid implements IRaid {
         compoundTag.putString("identifier", getIdentifier());
         compoundTag.putUUID("uuid", uuid);
         compoundTag.put("centerPos", NbtUtils.writeBlockPos(centerPos));
-        System.out.println("serializeNBTCenterPos:" + centerPos);
         compoundTag.putInt("totalEnemyCount", totalEnemyCount);
         compoundTag.putInt("wave", wave);
         compoundTag.putInt("rewardTime", rewardTime);
@@ -287,9 +274,7 @@ public abstract class BaseRaid implements IRaid {
         compoundTag.putInt("indexEnemyInfo", indexEnemyInfo);
 
         ListTag enemiesTags = new ListTag();
-        enemies.forEach(uuid -> {
-            enemiesTags.add(NbtUtils.createUUID(uuid));
-        });
+        enemies.forEach(uuid -> enemiesTags.add(NbtUtils.createUUID(uuid)));
         compoundTag.put("enemies", enemiesTags);
 
         ListTag spawnPosTags = new ListTag();
@@ -302,7 +287,6 @@ public abstract class BaseRaid implements IRaid {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.centerPos = NbtUtils.readBlockPos(nbt.getCompound("centerPos"));
-        System.out.println("deserializeNBTCenterPos:" + centerPos);
         this.uuid = nbt.getUUID("uuid");
         this.totalEnemyCount = nbt.getInt("totalEnemyCount");
         this.wave = nbt.getInt("wave");
