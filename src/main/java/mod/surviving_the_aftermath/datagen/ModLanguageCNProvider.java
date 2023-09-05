@@ -20,7 +20,6 @@ public class ModLanguageCNProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         add("itemGroup." + Main.MODID, "劫后余生");
-        add(ModBlocks.PARTY_BONFIRE.get(), "派对篝火");
         add(ModItems.RAW_FALUKORV.get(), "生的法伦香肠");
         add(ModItems.COOKED_FALUKORV.get(), "熟的法伦香肠");
         add(ModItems.EGG_TART.get(), "蛋挞");

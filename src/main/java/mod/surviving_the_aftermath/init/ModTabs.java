@@ -18,7 +18,7 @@ public class ModTabs {
 
 	public static final RegistryObject<CreativeModeTab> TAB = TABS.register("tab",
 			() -> CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID))
-					.icon(() -> new ItemStack(ModBlocks.PARTY_BONFIRE.get()))
+					.icon(() -> new ItemStack(ModItems.NETHER_CORE.get()))
 					.displayItems((params, output) -> ModItems.ITEMS.getEntries()
 							.forEach(item -> output.accept(item.get()))).build());
 

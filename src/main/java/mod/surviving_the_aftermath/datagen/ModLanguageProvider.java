@@ -17,7 +17,6 @@ public class ModLanguageProvider extends LanguageProvider {
 	@Override
 	protected void addTranslations() {
 		add("itemGroup." + Main.MODID, "Surviving the Aftermath");
-		add(ModBlocks.PARTY_BONFIRE.get(), "Party Bonfire");
 		add(ModItems.RAW_FALUKORV.get(), "Raw Falukorv");
 		add(ModItems.EGG_TART.get(), "Egg Tart");
 		add(ModItems.STACK_OF_EGG_TARTS.get(), "Stack of Egg Tart");
@@ -38,7 +37,6 @@ public class ModLanguageProvider extends LanguageProvider {
 		add(ModEnchantments.RANGER.get(), "Ranger");
 		add(ModEnchantments.MOON.get(), "Moon");
 		add(ModEnchantments.SUN.get(), "Sun");
-//		add(NetherRaid.NAME, "");
 	}
 
 }
