@@ -18,7 +18,8 @@ public interface IRaid {
 
     UUID getUUID();
 
-    boolean create();
+    boolean isCreate(ServerLevel level);
+    void create(ServerLevel level);
 
     int getRadius();
 

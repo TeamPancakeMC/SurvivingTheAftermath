@@ -44,8 +44,9 @@ public class NetherRaid extends BaseRaid {
     }
 
     @Override
-    public boolean create() {
-        return true;
+    public boolean isCreate(ServerLevel level) {
+        return level.structureManager().getAllStructuresAt(this.centerPos)
+                .containsKey(level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID));
     }
 
     @Override

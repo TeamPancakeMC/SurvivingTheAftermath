@@ -30,8 +30,8 @@ public class RaidCreateEventSubscriber {
             Level level = (Level) event.getLevel();
             if (level instanceof ServerLevel serverLevel) {
                 NetherRaid netherRaid = new NetherRaid(serverLevel, UUID.randomUUID(), event.getPos());
-                if (netherRaid.create()) {
-                    instance.create(netherRaid);
+                if (netherRaid.isCreate(serverLevel)) {
+                    instance.create(netherRaid,serverLevel);
                 }
             }
         }).start();
@@ -48,8 +48,6 @@ public class RaidCreateEventSubscriber {
     }
 
 
-    //tick
-
     @SubscribeEvent
     public static void onTickLevelTick(TickEvent.LevelTickEvent event) {
         Level level = event.level;
@@ -58,7 +56,6 @@ public class RaidCreateEventSubscriber {
         }
     }
 
-    //EntityJoin
     @SubscribeEvent
     public static void joinRaid(EntityJoinLevelEvent event) {
         instance.joinRaid(event.getEntity());

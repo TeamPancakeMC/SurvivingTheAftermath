@@ -51,21 +51,21 @@ public abstract class BaseRaid implements IRaid {
         this.raidEnemyInfo = RaidUtil.getRaidEnemyInfo(level.getDifficulty().getId(), getIdentifier());
         this.indexEnemyInfo = RaidUtil.getRaidEnemyInfoIndex(level.getDifficulty().getId(), getIdentifier(), raidEnemyInfo);
         this.rewardTime = getRewardTime();
+    }
+
+    public BaseRaid(ServerLevel level, CompoundTag nbt) {
+        this.LEVEL = level;
+        this.deserializeNBT(nbt);
+    }
+
+    @Override
+    public void create(ServerLevel level) {
         setSpawnPos(level);
         updatePlayers(level);
         updateProgress(level);
         this.state = RaidState.START;
         MinecraftForge.EVENT_BUS.post(new RaidEvent.Start(players, level));
     }
-
-    public BaseRaid(ServerLevel level, CompoundTag nbt) {
-        this.LEVEL = level;
-        this.deserializeNBT(nbt);
-        this.state = RaidState.START;
-        updatePlayers(level);
-        updateProgress(level);
-    }
-
 
     @Override
     public void tick(ServerLevel level) {

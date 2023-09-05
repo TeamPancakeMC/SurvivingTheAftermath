@@ -27,32 +27,32 @@ public class RaidManager {
     }
 
 
-    public void create(IRaid raid) {
+    public void create(IRaid raid,ServerLevel level) {
         if (noRaidAt(raid.getCenterPos(), raid.getRadius())) {
-            UUID uuid = raid.getUUID();
-            raids.put(uuid, raid);
-            playerBattleTrackers.put(uuid, new PlayerBattleTracker(uuid));
-            mobBattleTrackers.put(uuid, new MobBattleTracker(uuid));
-            registerBattleTrackers(uuid);
+            raid.create(level);
+            add(raid);
         }
     }
 
     public void create(ServerLevel level, CompoundTag compound) {
         IRaid raid = RaidFactory.create(level, compound);
         if (raid != null) {
-            UUID uuid = raid.getUUID();
-            raids.put(uuid, raid);
-            playerBattleTrackers.put(uuid, new PlayerBattleTracker(uuid));
-            mobBattleTrackers.put(uuid, new MobBattleTracker(uuid));
-            registerBattleTrackers(uuid);
+            add(raid);
         }
+    }
+    public void add(IRaid raid) {
+        UUID uuid = raid.getUUID();
+        raids.put(uuid, raid);
+        playerBattleTrackers.put(uuid, new PlayerBattleTracker(uuid));
+        mobBattleTrackers.put(uuid, new MobBattleTracker(uuid));
+        registerBattleTrackers(uuid);
     }
 
     public void remove(UUID raidId) {
-        unregisterBattleTrackers(raidId);
         raids.remove(raidId);
         playerBattleTrackers.remove(raidId);
         mobBattleTrackers.remove(raidId);
+        unregisterBattleTrackers(raidId);
     }
 
     public Optional<IRaid> getRaid(UUID raidId) {

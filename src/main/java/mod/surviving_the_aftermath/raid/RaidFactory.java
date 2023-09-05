@@ -8,10 +8,14 @@ public class RaidFactory {
 
     public static IRaid create(ServerLevel level, CompoundTag nbt) {
         String identifier = nbt.getString("identifier");
-        return switch (identifier) {
-            case "nether_raid" -> new NetherRaid(level, nbt);
-            default -> null;
+        IRaid raid = null;
+        switch (identifier) {
+            case "nether_raid" -> raid = new NetherRaid(level, nbt);
         };
+        if (raid != null) {
+            raid.create(level);
+        }
+        return raid;
     }
 
     public static ModDifficultyLoader getDifficulty(int difficulty) {
