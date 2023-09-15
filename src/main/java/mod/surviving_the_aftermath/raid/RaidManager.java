@@ -82,6 +82,9 @@ public class RaidManager {
     public void unregisterBattleTrackers(UUID raidId) {
         PlayerBattleTracker playerBattleTracker = playerBattleTrackers.get(raidId);
         MobBattleTracker mobBattleTracker = mobBattleTrackers.get(raidId);
+        if (playerBattleTracker == null || mobBattleTracker == null) {
+            return;
+        }
         MinecraftForge.EVENT_BUS.unregister(playerBattleTracker);
         MinecraftForge.EVENT_BUS.unregister(mobBattleTracker);
     }
