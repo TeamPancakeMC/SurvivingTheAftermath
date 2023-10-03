@@ -1,6 +1,0 @@
-{
-  "type": "surviving_the_aftermath:construction2",
-  "biomes": "#surviving_the_aftermath:has_expansion_build",
-  "spawn_overrides": {},
-  "step": "surface_structures"
-}

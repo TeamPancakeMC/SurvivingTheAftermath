@@ -1,6 +1,0 @@
-{
-  "type": "surviving_the_aftermath:burnt_structure4",
-  "biomes": "#surviving_the_aftermath:has_burnt_structure",
-  "spawn_overrides": {},
-  "step": "surface_structures"
-}

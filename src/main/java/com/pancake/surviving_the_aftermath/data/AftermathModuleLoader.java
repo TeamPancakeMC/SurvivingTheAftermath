@@ -28,15 +28,12 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
     }
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> jsonElementMap, ResourceManager manager, ProfilerFiller filler) {
-        System.out.println("RaidLoader apply");
         AFTERMATH_MODULE_MAP.clear();
         AftermathAPI instance = AftermathAPI.getInstance();
         jsonElementMap.forEach((resourceLocation, jsonElement) -> {
             JsonObject asJsonObject = jsonElement.getAsJsonObject();
             String identifier = GsonHelper.getAsString(asJsonObject, "identifier");
-            System.out.println("identifier = " + identifier);
             IAftermathModule aftermathModule = instance.getAftermathModuleClass(identifier);
-            System.out.println("raidModule = " + aftermathModule);
             aftermathModule.deserialize(asJsonObject);
             if (!AFTERMATH_MODULE_MAP.containsKey(identifier)) {
                 AFTERMATH_MODULE_MAP.put(identifier, new ArrayList<>(List.of(aftermathModule)));
