@@ -1,6 +1,8 @@
-package com.pancake.surviving_the_aftermath.api;
+package com.pancake.surviving_the_aftermath.api.aftermath;
 
 import com.google.common.collect.Maps;
+import com.pancake.surviving_the_aftermath.api.IAftermath;
+import com.pancake.surviving_the_aftermath.api.IAftermathFactory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 
@@ -8,22 +10,17 @@ import java.util.Map;
 import java.util.UUID;
 
 public class AftermathManager {
-    private final Map<UUID,IAftermath> AFTERMATH_MAP = Maps.newHashMap();
-
+    private final Map<UUID, IAftermath> AFTERMATH_MAP = Maps.newHashMap();
     private static final AftermathManager INSTANCE = new AftermathManager();
-
-    public static AftermathManager getInstance() {
-        return INSTANCE;
-    }
-
+    public static AftermathManager getInstance() { return INSTANCE; }
     private AftermathManager() {}
 
     public void tick() {
         for (IAftermath raid : AFTERMATH_MAP.values()) {
-            raid.tick();
-            if (raid.loseOrEnd()) {
-                UUID uuid = raid.getUUID();
-                remove(uuid);
+            if (raid.isEnd()) {
+                remove(raid.getUUID());
+            } else {
+                raid.tick();
             }
         }
     }
@@ -31,6 +28,7 @@ public class AftermathManager {
     private void remove(UUID uuid) {
         AFTERMATH_MAP.remove(uuid);
     }
+
     private void add(IAftermath aftermath) {
         AFTERMATH_MAP.put(aftermath.getUUID(), aftermath);
     }
@@ -45,10 +43,10 @@ public class AftermathManager {
         }
     }
 
-    public void create(ServerLevel level, CompoundTag compound) {
-        IAftermathFactory aftermathFactory = AftermathAPI.getInstance().getAftermathFactory(compound.getString("identifier"));
-        IAftermath aftermath = aftermathFactory.create(level, compound);
-        aftermath.deserializeNBT(compound);
+    public void create(ServerLevel level, CompoundTag compoundTag) {
+        IAftermathFactory aftermathFactory = AftermathAPI.getInstance().getAftermathFactory(compoundTag.getString("identifier"));
+        IAftermath aftermath = aftermathFactory.create(level, compoundTag);
+        aftermath.deserializeNBT(compoundTag);
         add(aftermath);
     }
 }

@@ -1,8 +1,7 @@
-package com.pancake.surviving_the_aftermath.api.impl.weighted;
+package com.pancake.surviving_the_aftermath.api.module.impl.weighted;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.pancake.surviving_the_aftermath.api.IJsonDeserialization;
+import com.pancake.surviving_the_aftermath.api.IDeserializationJson;
 import com.pancake.surviving_the_aftermath.api.IIdentifier;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ItemWeightedListModule implements IWeightedListModule<Item>, IJsonDeserialization, INBTSerializable<CompoundTag>, IIdentifier {
+public class ItemWeightedListModule implements IWeightedListModule<Item>, IDeserializationJson, INBTSerializable<CompoundTag>, IIdentifier {
     public static final String IDENTIFIER = "ItemWeightedListModule";
 
     private SimpleWeightedRandomList<Item> weightedList;
@@ -23,7 +22,7 @@ public class ItemWeightedListModule implements IWeightedListModule<Item>, IJsonD
     }
 
     @Override
-    public void deserialize(JsonElement jsonElement) {
+    public void deserializeJson(JsonElement jsonElement) {
         SimpleWeightedRandomList.Builder<Item> builder = new SimpleWeightedRandomList.Builder<>();
         jsonElement.getAsJsonArray().asList().stream()
                 .map(JsonElement::getAsJsonObject)
@@ -63,7 +62,7 @@ public class ItemWeightedListModule implements IWeightedListModule<Item>, IJsonD
     }
 
     @Override
-    public String getIdentifier() {
+    public String getUniqueIdentifier() {
         return IDENTIFIER;
     }
 }

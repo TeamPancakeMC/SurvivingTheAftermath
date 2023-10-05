@@ -23,8 +23,9 @@ public class ModCapability {
 
     @SubscribeEvent
     public static void attachCapability(AttachCapabilitiesEvent<Level> event) {
-        if (event.getObject() instanceof ServerLevel level) {
+        if (event.getObject().dimension() == Level.OVERWORLD && event.getObject() instanceof ServerLevel level) {
             event.addCapability(SurvivingTheAftermath.asResource("aftermath_cap"), new AftermathCap.Provider(level));
         }
     }
 }
+

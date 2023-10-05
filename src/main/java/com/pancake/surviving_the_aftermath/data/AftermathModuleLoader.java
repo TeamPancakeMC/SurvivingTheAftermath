@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.pancake.surviving_the_aftermath.api.AftermathAPI;
+import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -33,8 +33,8 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
         jsonElementMap.forEach((resourceLocation, jsonElement) -> {
             JsonObject asJsonObject = jsonElement.getAsJsonObject();
             String identifier = GsonHelper.getAsString(asJsonObject, "identifier");
-            IAftermathModule aftermathModule = instance.getAftermathModuleClass(identifier);
-            aftermathModule.deserialize(asJsonObject);
+            IAftermathModule aftermathModule = instance.getAftermathModule(identifier);
+            aftermathModule.deserializeJson(asJsonObject);
             if (!AFTERMATH_MODULE_MAP.containsKey(identifier)) {
                 AFTERMATH_MODULE_MAP.put(identifier, new ArrayList<>(List.of(aftermathModule)));
             }

@@ -1,6 +1,9 @@
 package com.pancake.surviving_the_aftermath.event;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.world.item.Item;
+import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 import java.util.Set;
@@ -48,9 +51,19 @@ public class AftermathEvent extends Event {
             super(players,level);
         }
     }
+    @Cancelable
     public static class Celebrating extends AftermathEvent {
-        public Celebrating(Set<UUID> players, ServerLevel level) {
+        private SimpleWeightedRandomList<Item> rewardList;
+        public Celebrating(Set<UUID> players, SimpleWeightedRandomList<Item> rewardList, ServerLevel level) {
             super(players,level);
+        }
+
+        public SimpleWeightedRandomList<Item> getRewardList() {
+            return rewardList;
+        }
+
+        public void setRewardList(SimpleWeightedRandomList<Item> rewardList) {
+            this.rewardList = rewardList;
         }
     }
 }
