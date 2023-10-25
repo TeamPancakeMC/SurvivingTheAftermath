@@ -2,9 +2,13 @@ package com.pancake.surviving_the_aftermath;
 
 import com.mojang.logging.LogUtils;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
+import com.pancake.surviving_the_aftermath.api.module.impl.amount.FixedAmountModule;
+import com.pancake.surviving_the_aftermath.api.module.impl.amount.RandomAmountModule;
+import com.pancake.surviving_the_aftermath.api.module.impl.entity_info.BaseEntityInfoModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.weighted.EntityTypeWeightedListModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.weighted.ItemWeightedListModule;
 import com.pancake.surviving_the_aftermath.data.AftermathModuleLoader;
+import com.pancake.surviving_the_aftermath.tracker.PlayerBattleTracker;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -29,11 +33,19 @@ public class SurvivingTheAftermath {
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
     }
-
     private void commonSetup(final FMLCommonSetupEvent event) {
         AftermathAPI instance = AftermathAPI.getInstance();
         instance.registerWeightedListModule(EntityTypeWeightedListModule.IDENTIFIER, EntityTypeWeightedListModule.class);
         instance.registerWeightedListModule(ItemWeightedListModule.IDENTIFIER, ItemWeightedListModule.class);
+
+        instance.registerTracker(PlayerBattleTracker.IDENTIFIER,PlayerBattleTracker.class);
+
+
+        instance.registerAmountModule(FixedAmountModule.IDENTIFIER,FixedAmountModule.class);
+        instance.registerAmountModule(RandomAmountModule.IDENTIFIER,RandomAmountModule.class);
+
+        instance.registerEntityInfoModule(BaseEntityInfoModule.IDENTIFIER,BaseEntityInfoModule.class);
+
     }
 
     @SubscribeEvent

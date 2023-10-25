@@ -5,11 +5,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
 public interface IAftermath extends IIdentifier, INBTSerializable<CompoundTag> {
     void tick();
+
+    default void bindTrackers() {
+
+    }
+    List<ITracker> getTrackers();
+
     boolean isEnd();
     boolean isCreate();
     UUID getUUID();

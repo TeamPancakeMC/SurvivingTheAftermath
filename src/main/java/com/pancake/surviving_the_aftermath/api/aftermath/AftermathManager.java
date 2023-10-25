@@ -3,6 +3,7 @@ package com.pancake.surviving_the_aftermath.api.aftermath;
 import com.google.common.collect.Maps;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.IAftermathFactory;
+import com.pancake.surviving_the_aftermath.api.ITracker;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 
@@ -18,19 +19,21 @@ public class AftermathManager {
     public void tick() {
         for (IAftermath raid : AFTERMATH_MAP.values()) {
             if (raid.isEnd()) {
-                remove(raid.getUUID());
+                remove(raid);
             } else {
                 raid.tick();
             }
         }
     }
 
-    private void remove(UUID uuid) {
-        AFTERMATH_MAP.remove(uuid);
+    private void remove(IAftermath aftermath) {
+        AFTERMATH_MAP.remove(aftermath.getUUID());
+        aftermath.getTrackers().forEach(ITracker::unregister);
     }
 
     private void add(IAftermath aftermath) {
         AFTERMATH_MAP.put(aftermath.getUUID(), aftermath);
+        aftermath.getTrackers().forEach(ITracker::register);
     }
 
     public Map<UUID, IAftermath> getAftermathMap() {

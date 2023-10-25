@@ -1,18 +1,15 @@
 package com.pancake.surviving_the_aftermath.api.module.impl.weighted;
 
 import com.google.gson.JsonElement;
-import com.pancake.surviving_the_aftermath.api.IDeserializationJson;
-import com.pancake.surviving_the_aftermath.api.IIdentifier;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ItemWeightedListModule implements IWeightedListModule<Item>, IDeserializationJson, INBTSerializable<CompoundTag>, IIdentifier {
+public class ItemWeightedListModule implements IWeightedListModule<Item>{
     public static final String IDENTIFIER = "ItemWeightedListModule";
 
     private SimpleWeightedRandomList<Item> weightedList;
