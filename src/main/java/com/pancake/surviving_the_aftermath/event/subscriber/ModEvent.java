@@ -2,6 +2,8 @@ package com.pancake.surviving_the_aftermath.event.subscriber;
 
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathManager;
 import com.pancake.surviving_the_aftermath.capability.AftermathCap;;
+import com.pancake.surviving_the_aftermath.raid.NetherRaid;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
@@ -31,8 +33,8 @@ public class ModEvent {
         Level level = event.getLevel();
         InteractionHand hand = event.getHand();
         if (level.isClientSide() || hand != InteractionHand.MAIN_HAND) return;
-//        NetherRaid netherRaid = new NetherRaid((ServerLevel) level, event.getPos());
-//        AftermathManager instance = AftermathManager.getInstance();
-//        instance.create(netherRaid);
+        NetherRaid netherRaid = new NetherRaid((ServerLevel) level);
+        AftermathManager instance = AftermathManager.getInstance();
+        instance.create(netherRaid);
     }
 }

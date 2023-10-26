@@ -26,12 +26,12 @@ public class EntityTypeWeightedListModule implements IWeightedListModule<EntityT
                 builder.add(entityType, compoundTag.getInt(key));
             }
         });
-        weightedList = builder.build();
+        this.weightedList = builder.build();
     }
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
-        weightedList.unwrap().forEach(itemWeight -> {
+        this.weightedList.unwrap().forEach(itemWeight -> {
             ResourceLocation key = ForgeRegistries.ENTITY_TYPES.getKey(itemWeight.getData());
             if (key != null) {
                 compoundTag.putInt(key.toString(), itemWeight.getWeight().asInt());
@@ -52,7 +52,7 @@ public class EntityTypeWeightedListModule implements IWeightedListModule<EntityT
                         builder.add(entityType, weight);
                     }
                 });
-        weightedList = builder.build();
+        this.weightedList = builder.build();
     }
 
     @Override

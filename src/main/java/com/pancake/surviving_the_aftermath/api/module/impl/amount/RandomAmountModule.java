@@ -37,7 +37,7 @@ public class RandomAmountModule implements IAmountModule {
     }
     @Override
     public void deserializeJson(JsonElement jsonElement) {
-        this.min = jsonElement.getAsJsonArray().get(0).getAsInt();
-        this.max = jsonElement.getAsJsonArray().get(1).getAsInt();
+        this.min = jsonElement.getAsJsonObject().get("min").getAsInt();
+        this.max = jsonElement.getAsJsonObject().get("min").getAsInt();
     }
 }

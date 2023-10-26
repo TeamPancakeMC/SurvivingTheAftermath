@@ -31,6 +31,6 @@ public class FixedAmountModule implements IAmountModule {
     }
     @Override
     public void deserializeJson(JsonElement jsonElement) {
-        this.amount = jsonElement.getAsInt();
+        this.amount = jsonElement.getAsJsonObject().get("amount").getAsInt();
     }
 }

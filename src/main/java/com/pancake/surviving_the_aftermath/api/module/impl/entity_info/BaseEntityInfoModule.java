@@ -1,11 +1,14 @@
 package com.pancake.surviving_the_aftermath.api.module.impl.entity_info;
 
 import com.google.gson.JsonElement;
+import com.pancake.surviving_the_aftermath.api.Constant;
+import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.util.RegistryUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -24,19 +27,25 @@ public class BaseEntityInfoModule implements IEntityInfoModule {
         CompoundTag compoundTag = new CompoundTag();
         ResourceLocation key = ForgeRegistries.ENTITY_TYPES.getKey(entityType);
         assert key != null;
-        compoundTag.putString("entity_type", key.getPath());
-        compoundTag.put("amount_module", amountModule.serializeNBT());
+        compoundTag.putString(Constant.ENTITY_TYPE, key.getPath());
+        compoundTag.put(Constant.AMOUNT, amountModule.serializeNBT());
         return compoundTag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.entityType = RegistryUtil.getEntityTypeFromRegistryName(nbt.getString("entity_type"));
-        this.amountModule.deserializeNBT(nbt.getCompound("amount_module"));
+        this.entityType = RegistryUtil.getEntityTypeFromRegistryName(nbt.getString(Constant.ENTITY_TYPE));
+        CompoundTag compound = nbt.getCompound(Constant.AMOUNT);
+        IAmountModule amountModule = AftermathAPI.getInstance().getAmountModule(compound.getString(Constant.IDENTIFIER));
+        amountModule.deserializeNBT(compound);
+        this.amountModule = amountModule;
     }
     @Override
     public void deserializeJson(JsonElement jsonElement) {
-        this.entityType = RegistryUtil.getEntityTypeFromRegistryName(jsonElement.getAsJsonObject().get("entity_type").getAsString());
-        this.amountModule.deserializeJson(jsonElement.getAsJsonObject().get("amount_module"));
+        this.entityType = RegistryUtil.getEntityTypeFromRegistryName(jsonElement.getAsJsonObject().get(Constant.ENTITY_TYPE).getAsString());
+        JsonElement amountElement = jsonElement.getAsJsonObject().get(Constant.AMOUNT);
+        IAmountModule amountModule = AftermathAPI.getInstance().getAmountModule(amountElement.getAsJsonObject().get(Constant.IDENTIFIER).getAsString());
+        amountModule.deserializeJson(amountElement);
+        this.amountModule = amountModule;
     }
 }

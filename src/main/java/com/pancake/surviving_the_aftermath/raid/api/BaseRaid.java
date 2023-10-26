@@ -1,4 +1,4 @@
-package com.pancake.surviving_the_aftermath.raid;
+package com.pancake.surviving_the_aftermath.raid.api;
 
 
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
@@ -6,7 +6,7 @@ import com.pancake.surviving_the_aftermath.tracker.PlayerBattleTracker;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 
-public abstract class BaseRaid extends BaseAftermath {
+public abstract class BaseRaid extends BaseAftermath implements IRaid{
     public BaseRaid(ServerLevel level) {
         super(level);
     }

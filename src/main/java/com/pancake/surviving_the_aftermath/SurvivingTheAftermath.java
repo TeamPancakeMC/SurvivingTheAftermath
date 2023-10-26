@@ -5,9 +5,12 @@ import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.impl.amount.FixedAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.amount.RandomAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.entity_info.BaseEntityInfoModule;
+import com.pancake.surviving_the_aftermath.api.module.impl.entity_info.EntityInfoWithEquipmentModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.weighted.EntityTypeWeightedListModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.weighted.ItemWeightedListModule;
 import com.pancake.surviving_the_aftermath.data.AftermathModuleLoader;
+import com.pancake.surviving_the_aftermath.raid.NetherRaid;
+import com.pancake.surviving_the_aftermath.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.tracker.PlayerBattleTracker;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,7 +48,9 @@ public class SurvivingTheAftermath {
         instance.registerAmountModule(RandomAmountModule.IDENTIFIER,RandomAmountModule.class);
 
         instance.registerEntityInfoModule(BaseEntityInfoModule.IDENTIFIER,BaseEntityInfoModule.class);
+        instance.registerEntityInfoModule(EntityInfoWithEquipmentModule.IDENTIFIER,EntityInfoWithEquipmentModule.class);
 
+        instance.registerAftermathModule(NetherRaid.IDENTIFIER, BaseRaidModule.class);
     }
 
     @SubscribeEvent

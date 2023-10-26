@@ -1,0 +1,79 @@
+{
+  "identifier": "NetherRaid",
+  "waves": [
+    [
+      {
+      "identifier": "BaseEntityInfoModule",
+      "entity_type": "minecraft:zombie",
+      "amount": {
+        "identifier":"FixedAmountModule",
+        "amount": 10
+      }
+    },
+      {
+        "identifier": "BaseEntityInfoModule",
+        "entity_type": "minecraft:zombie",
+        "amount": {
+          "identifier":"RandomAmountModule",
+          "min": 10,
+          "max": 20
+        }
+      },
+      {
+        "identifier": "EntityInfoWithEquipmentModule",
+        "entity_type": "minecraft:zombie",
+        "amount": {
+          "identifier":"RandomAmountModule",
+          "min": 10,
+          "max": 20
+        },
+        "equipment": [
+          {
+            "item": "minecraft:diamond_sword",
+            "weight": 1
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "identifier": "BaseEntityInfoModule",
+        "entity_type": "minecraft:zombie",
+        "amount": {
+          "identifier":"FixedAmountModule",
+          "amount": 10
+        }
+      },
+      {
+        "identifier": "BaseEntityInfoModule",
+        "entity_type": "minecraft:zombie",
+        "amount": {
+          "identifier":"RandomAmountModule",
+          "min": 10,
+          "max": 20
+        }
+      },
+      {
+        "identifier": "EntityInfoWithEquipmentModule",
+        "entity_type": "minecraft:zombie",
+        "amount": {
+          "identifier":"RandomAmountModule",
+          "min": 10,
+          "max": 20
+        },
+        "equipment": [
+          {
+            "item": "minecraft:diamond_sword",
+            "weight": 1
+          }
+        ]
+      }
+    ]
+  ],
+  "rewards": [
+    {
+      "item": "minecraft:diamond",
+      "weight": 1
+    }
+  ]
+}
