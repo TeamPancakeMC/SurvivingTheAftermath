@@ -8,10 +8,13 @@ import com.pancake.surviving_the_aftermath.api.module.impl.entity_info.BaseEntit
 import com.pancake.surviving_the_aftermath.api.module.impl.entity_info.EntityInfoWithEquipmentModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.weighted.EntityTypeWeightedListModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.weighted.ItemWeightedListModule;
-import com.pancake.surviving_the_aftermath.data.AftermathModuleLoader;
-import com.pancake.surviving_the_aftermath.raid.NetherRaid;
-import com.pancake.surviving_the_aftermath.raid.module.BaseRaidModule;
-import com.pancake.surviving_the_aftermath.tracker.PlayerBattleTracker;
+import com.pancake.surviving_the_aftermath.common.data.datagen.EventSubscriber;
+import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoader;
+import com.pancake.surviving_the_aftermath.common.init.ModStructurePieceTypes;
+import com.pancake.surviving_the_aftermath.common.init.ModStructureTypes;
+import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
+import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
+import com.pancake.surviving_the_aftermath.common.tracker.PlayerBattleTracker;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -29,6 +32,9 @@ public class SurvivingTheAftermath {
     public SurvivingTheAftermath() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(EventSubscriber::onGatherData);
+        ModStructureTypes.STRUCTURE_TYPES.register(modEventBus);
+        ModStructurePieceTypes.STRUCTURE_PIECE_TYPES.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.addListener(this::onDataPackLoad);
     }
