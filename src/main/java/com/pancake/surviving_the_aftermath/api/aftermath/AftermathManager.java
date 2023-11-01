@@ -40,10 +40,12 @@ public class AftermathManager {
         return AFTERMATH_MAP;
     }
 
-    public void create(IAftermath aftermath) {
+    public boolean create(IAftermath aftermath) {
         if (aftermath.isCreate()) {
             add(aftermath);
+            return true;
         }
+        return false;
     }
 
     public void create(ServerLevel level, CompoundTag compoundTag) {

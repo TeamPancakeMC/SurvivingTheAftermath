@@ -9,5 +9,7 @@ public class Constant {
     public static final String PLAYERS = "players";
     public static final String WAVES = "waves";
     public static final String AMOUNT = "amount";
-    public static final String ENTITY_TYPE = "entity_type";
+    public static final String ENTITY_TYPE = "entityType";
+    public static final String CURRENT_WAVE = "currentWave";
+    public static final String READY_TIME = "readyTime";
 }

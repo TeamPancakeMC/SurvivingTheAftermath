@@ -1,15 +1,25 @@
 package com.pancake.surviving_the_aftermath.api.module.impl.entity_info;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.util.RegistryUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BaseEntityInfoModule implements IEntityInfoModule {
     public static final String IDENTIFIER = "BaseEntityInfoModule";
@@ -46,5 +56,15 @@ public class BaseEntityInfoModule implements IEntityInfoModule {
         IAmountModule amountModule = AftermathAPI.getInstance().getAmountModule(amountElement.getAsJsonObject().get(Constant.IDENTIFIER).getAsString());
         amountModule.deserializeJson(amountElement);
         this.amountModule = amountModule;
+    }
+
+    @Override
+    public List<LazyOptional<Entity>> spawnEntity(ServerLevel level) {
+        List<LazyOptional<Entity>> arrayList = Lists.newArrayList();
+        for (int i = 0; i < amountModule.getSpawnAmount(); i++) {
+            Entity entity = entityType.create(level);
+            arrayList.add(entity == null ? LazyOptional.empty() : LazyOptional.of(() -> entity));
+        }
+        return arrayList;
     }
 }

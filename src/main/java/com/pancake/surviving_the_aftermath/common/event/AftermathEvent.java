@@ -6,14 +6,15 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 public class AftermathEvent extends Event {
-    private Set<UUID> players;
+    private List<UUID> players;
     private ServerLevel level;
 
-    public Set<UUID> getPlayers() {
+    public List<UUID> getPlayers() {
         return players;
     }
 
@@ -21,40 +22,46 @@ public class AftermathEvent extends Event {
         return level;
     }
 
-    public AftermathEvent(Set<UUID> players, ServerLevel level) {
+    public AftermathEvent(List<UUID> players, ServerLevel level) {
         this.players = players;
         this.level = level;
     }
 
     public static class Start extends AftermathEvent {
-        public Start(Set<UUID> players, ServerLevel level) {
+        public Start(List<UUID> players, ServerLevel level) {
             super(players, level);
         }
     }
     public static class End extends AftermathEvent {
-        public End(Set<UUID> players, ServerLevel level) {
+        public End(List<UUID> players, ServerLevel level) {
             super(players,level);
         }
     }
+    public static class Ready extends AftermathEvent {
+        public Ready(List<UUID> players, ServerLevel level) {
+            super(players,level);
+        }
+    }
+
     public static class Ongoing extends AftermathEvent {
-        public Ongoing(Set<UUID> players, ServerLevel level) {
+        public Ongoing(List<UUID> players, ServerLevel level) {
             super(players,level);
         }
     }
     public static class Victory extends AftermathEvent {
-        public Victory(Set<UUID> players, ServerLevel level) {
+        public Victory(List<UUID> players, ServerLevel level) {
             super(players,level);
         }
     }
     public static class Lose extends AftermathEvent {
-        public Lose(Set<UUID> players, ServerLevel level) {
+        public Lose(List<UUID> players, ServerLevel level) {
             super(players,level);
         }
     }
     @Cancelable
     public static class Celebrating extends AftermathEvent {
         private SimpleWeightedRandomList<Item> rewardList;
-        public Celebrating(Set<UUID> players, SimpleWeightedRandomList<Item> rewardList, ServerLevel level) {
+        public Celebrating(List<UUID> players, SimpleWeightedRandomList<Item> rewardList, ServerLevel level) {
             super(players,level);
         }
 

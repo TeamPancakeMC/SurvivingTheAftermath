@@ -14,6 +14,7 @@ import com.pancake.surviving_the_aftermath.common.init.ModStructurePieceTypes;
 import com.pancake.surviving_the_aftermath.common.init.ModStructureTypes;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
+import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
 import com.pancake.surviving_the_aftermath.common.tracker.PlayerBattleTracker;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,6 +25,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
+
+import java.lang.reflect.Field;
 
 @Mod(SurvivingTheAftermath.MOD_ID)
 public class SurvivingTheAftermath {
@@ -56,11 +59,17 @@ public class SurvivingTheAftermath {
         instance.registerEntityInfoModule(BaseEntityInfoModule.IDENTIFIER,BaseEntityInfoModule.class);
         instance.registerEntityInfoModule(EntityInfoWithEquipmentModule.IDENTIFIER,EntityInfoWithEquipmentModule.class);
 
-        instance.registerAftermathModule(NetherRaid.IDENTIFIER, BaseRaidModule.class);
+        instance.registerAftermathModule(NetherRaid.IDENTIFIER, NetherRaidModule.class);
     }
 
     @SubscribeEvent
     public void onDataPackLoad(AddReloadListenerEvent event) {
         event.addListener(new AftermathModuleLoader());
+    }
+
+    public static  <T> T getPrivateField(Object object, String fieldName, Class<T> fieldType) throws NoSuchFieldException, IllegalAccessException {
+        Field field = object.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return fieldType.cast(field.get(object));
     }
 }

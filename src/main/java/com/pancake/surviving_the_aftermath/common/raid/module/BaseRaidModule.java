@@ -16,7 +16,7 @@ import net.minecraft.util.GsonHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseRaidModule extends BaseAftermathModule implements IRaidModule {
+public abstract class BaseRaidModule extends BaseAftermathModule implements IRaidModule {
     private List<List<IEntityInfoModule>> waves = Lists.newArrayList();
 
     @Override
@@ -66,12 +66,10 @@ public class BaseRaidModule extends BaseAftermathModule implements IRaidModule {
     }
 
     @Override
-    public String getUniqueIdentifier() {
-        return NetherRaid.IDENTIFIER;
-    }
-
-    @Override
     public List<List<IEntityInfoModule>> getWaves() {
         return waves;
     }
+
+    @Override
+    public abstract String getUniqueIdentifier();
 }

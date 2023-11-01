@@ -36,7 +36,7 @@ public abstract class BaseAftermath implements IAftermath {
     protected AftermathState state;
     protected UUID uuid;
     protected ServerLevel level;
-    protected Set<UUID> players = new HashSet<>();
+    protected List<UUID> players = Lists.newArrayList();
     protected IAftermathModule module;
     private final String NAME = Constant.MOD_NAME + "." + getUniqueIdentifier();
     protected final ServerBossEvent progress = new ServerBossEvent(Component.translatable(NAME), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
@@ -110,7 +110,12 @@ public abstract class BaseAftermath implements IAftermath {
 
     @Override
     public Predicate<? super ServerPlayer> validPlayer() {
-        return (player) -> !player.isSpectator();
+        return new Predicate<ServerPlayer>() {
+            @Override
+            public boolean test(ServerPlayer player) {
+                return !player.isSpectator();
+            }
+        };
     }
 
     @Override

@@ -264,7 +264,7 @@
 [3010月2023 18:51:11.700] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v47.2.1 Initialized
 [3010月2023 18:51:11.730] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Attempting to inject @EventBusSubscriber classes into the eventbus for surviving_the_aftermath
 [3010月2023 18:51:11.734] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.pancake.surviving_the_aftermath.common.event.subscriber.ClientForgeEvent to FORGE
-[3010月2023 18:51:11.744] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.pancake.surviving_the_aftermath.common.event.subscriber.ModEvent to FORGE
+[3010月2023 18:51:11.744] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.pancake.surviving_the_aftermath.common.event.subscriber.RaidEventSubscriber to FORGE
 [3010月2023 18:51:11.750] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.pancake.surviving_the_aftermath.common.init.ModCapability to FORGE
 [3010月2023 18:51:11.761] [modloading-worker-0/DEBUG] [io.netty.util.internal.PlatformDependent0/]: -Dio.netty.noUnsafe: false
 [3010月2023 18:51:11.761] [modloading-worker-0/DEBUG] [io.netty.util.internal.PlatformDependent0/]: Java version: 17
