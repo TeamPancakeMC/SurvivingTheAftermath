@@ -3,6 +3,7 @@ package com.pancake.surviving_the_aftermath.common.event.subscriber;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathManager;
+import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import net.minecraft.client.gui.components.LerpingBossEvent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,8 +20,8 @@ public class ClientForgeEvent {
     public static void netherRaidProgress(CustomizeGuiOverlayEvent.BossEventProgress event) {
         LerpingBossEvent bossEvent = event.getBossEvent();
         AftermathManager instance = AftermathManager.getInstance();
-        Map<UUID, IAftermath> aftermathMap = instance.getAftermathMap();
-        IAftermath aftermath = aftermathMap.get(bossEvent.getId());
+        Map<UUID, IAftermath<BaseAftermathModule>> aftermathMap = instance.getAftermathMap();
+        IAftermath<BaseAftermathModule> aftermath = aftermathMap.get(bossEvent.getId());
         event.setCanceled(true);
         var graphics = event.getGuiGraphics();
         ResourceLocation resource = aftermath.getBarsResource();

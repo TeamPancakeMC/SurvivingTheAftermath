@@ -4,18 +4,18 @@
   "waves": [
     [
       {
-      "identifier": "BaseEntityInfoModule",
-      "entityType": "minecraft:zombie",
-      "amount": {
-        "identifier":"FixedAmountModule",
-        "amount": 10
-      }
-    },
+        "identifier": "BaseEntityInfoModule",
+        "entityType": "minecraft:zombie",
+        "amount": {
+          "identifier": "FixedAmountModule",
+          "amount": 10
+        }
+      },
       {
         "identifier": "BaseEntityInfoModule",
         "entityType": "minecraft:zombie",
         "amount": {
-          "identifier":"RandomAmountModule",
+          "identifier": "RandomAmountModule",
           "min": 10,
           "max": 20
         }
@@ -24,7 +24,7 @@
         "identifier": "EntityInfoWithEquipmentModule",
         "entityType": "minecraft:zombie",
         "amount": {
-          "identifier":"RandomAmountModule",
+          "identifier": "RandomAmountModule",
           "min": 10,
           "max": 20
         },
@@ -41,7 +41,7 @@
         "identifier": "BaseEntityInfoModule",
         "entityType": "minecraft:creeper",
         "amount": {
-          "identifier":"FixedAmountModule",
+          "identifier": "FixedAmountModule",
           "amount": 10
         }
       },
@@ -49,25 +49,10 @@
         "identifier": "BaseEntityInfoModule",
         "entityType": "minecraft:creeper",
         "amount": {
-          "identifier":"RandomAmountModule",
+          "identifier": "RandomAmountModule",
           "min": 10,
           "max": 20
         }
-      },
-      {
-        "identifier": "EntityInfoWithEquipmentModule",
-        "entityType": "minecraft:creeper",
-        "amount": {
-          "identifier":"RandomAmountModule",
-          "min": 10,
-          "max": 20
-        },
-        "equipment": [
-          {
-            "item": "minecraft:diamond_sword",
-            "weight": 1
-          }
-        ]
       }
     ]
   ],

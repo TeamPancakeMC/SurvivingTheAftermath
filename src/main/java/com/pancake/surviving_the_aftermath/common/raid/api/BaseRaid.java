@@ -5,22 +5,22 @@ import com.google.common.collect.Lists;
 import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
+import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
+import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.common.tracker.PlayerBattleTracker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class BaseRaid extends BaseAftermath implements IRaid{
+public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<BaseRaidModule> implements IRaid{
     protected int currentWave = -1;
     protected BlockPos centerPos;
     protected final List<UUID> enemies = Lists.newArrayList();
@@ -40,7 +40,7 @@ public abstract class BaseRaid extends BaseAftermath implements IRaid{
 
     @Override
     public boolean isCreate() {
-        Map<UUID, IAftermath> aftermathMap = AFTERMATH_MANAGER.getAftermathMap();
+        Map<UUID, IAftermath<BaseAftermathModule>> aftermathMap = AFTERMATH_MANAGER.getAftermathMap();
         return aftermathMap.values().stream()
                 .filter(aftermath -> aftermath instanceof IRaid)
                 .map(aftermath -> (IRaid) aftermath)

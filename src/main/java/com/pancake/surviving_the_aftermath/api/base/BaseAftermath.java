@@ -11,6 +11,7 @@ import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.common.event.AftermathEvent;
+import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -28,7 +29,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public abstract class BaseAftermath implements IAftermath {
+public abstract class BaseAftermath<T extends BaseAftermathModule> implements IAftermath<BaseAftermathModule> {
     protected static final Logger LOGGER = LogUtils.getLogger();
     protected final AftermathAPI AFTERMATH_API = AftermathAPI.getInstance();
     protected final AftermathManager AFTERMATH_MANAGER = AftermathManager.getInstance();
@@ -37,14 +38,14 @@ public abstract class BaseAftermath implements IAftermath {
     protected UUID uuid;
     protected ServerLevel level;
     protected List<UUID> players = Lists.newArrayList();
-    protected IAftermathModule module;
+    protected T module;
     private final String NAME = Constant.MOD_NAME + "." + getUniqueIdentifier();
     protected final ServerBossEvent progress = new ServerBossEvent(Component.translatable(NAME), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
-
     public BaseAftermath(ServerLevel level) {
         this.level = level;
         this.uuid = progress.getId();
-        this.module = AFTERMATH_API.getRandomAftermathModule(getUniqueIdentifier()).orElseGet(() -> AFTERMATH_API.getAftermathMap().get(getUniqueIdentifier()).get(0));
+        this.module = (T) AFTERMATH_API.getRandomAftermathModule(getUniqueIdentifier())
+                .orElseGet(() -> AFTERMATH_API.getAftermathMap().get(getUniqueIdentifier()).get(0));
     }
     public BaseAftermath(ServerLevel level, CompoundTag compoundTag) {
         this.level = level;
@@ -60,6 +61,9 @@ public abstract class BaseAftermath implements IAftermath {
         }
         if (isEnd()) return;
         updateProgress();
+        if (state == AftermathState.VICTORY){
+            spawnRewards();
+        }
     }
 
     protected void addTracker(ITracker tracker) {
@@ -101,7 +105,7 @@ public abstract class BaseAftermath implements IAftermath {
         CompoundTag moduleTag = nbt.getCompound(Constant.MODULE);
         IAftermathModule aftermathModule = AFTERMATH_API.getAftermathModule(this.getUniqueIdentifier());
         aftermathModule.deserializeNBT(moduleTag);
-        this.module = aftermathModule;
+        this.module = (T) aftermathModule;
 
         ListTag tags = nbt.getList(Constant.PLAYERS, 11);
         players.clear();
@@ -144,8 +148,15 @@ public abstract class BaseAftermath implements IAftermath {
 
     @Override
     public void end() {
-        this.state = AftermathState.END;
-        MinecraftForge.EVENT_BUS.post(new AftermathEvent.End(players, level));
+        AftermathEventUtil.end(this, players, level);
         this.progress.removeAllPlayers();
+    }
+
+    public void setState(AftermathState aftermathState) {
+        this.state = aftermathState;
+    }
+
+    public AftermathState getState() {
+        return state;
     }
 }

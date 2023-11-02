@@ -2,6 +2,7 @@ package com.pancake.surviving_the_aftermath.common.capability;
 
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathManager;
+import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModCapability;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -26,9 +27,9 @@ public class AftermathCap implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
-        for (Map.Entry<UUID, IAftermath> entry : AFTERMATH_MANAGER.getAftermathMap().entrySet()) {
+        for (Map.Entry<UUID, IAftermath<BaseAftermathModule>> entry : AFTERMATH_MANAGER.getAftermathMap().entrySet()) {
             UUID uuid = entry.getKey();
-            IAftermath aftermath = entry.getValue();
+            IAftermath<BaseAftermathModule> aftermath = entry.getValue();
             compoundTag.put(uuid.toString(), aftermath.serializeNBT());
         }
         return compoundTag;

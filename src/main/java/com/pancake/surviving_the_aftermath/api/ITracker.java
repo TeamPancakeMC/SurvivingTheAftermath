@@ -3,10 +3,11 @@ package com.pancake.surviving_the_aftermath.api;
 import net.minecraftforge.common.MinecraftForge;
 
 public interface ITracker extends IIdentifier{
-    default void register() {
-        MinecraftForge.EVENT_BUS.register(this);
+    static void register(ITracker tracker) {
+        MinecraftForge.EVENT_BUS.register(tracker);
     }
-    default void unregister() {
-        MinecraftForge.EVENT_BUS.unregister(this);
+    static void unregister(ITracker tracker) {
+        MinecraftForge.EVENT_BUS.unregister(tracker);
     }
+
 }

@@ -2,11 +2,12 @@ package com.pancake.surviving_the_aftermath.api;
 
 public enum AftermathState {
     START("start", 0),
-    ONGOING("ongoing", 1),
-    VICTORY("victory", 2),
-    LOSE("lose", 3),
-    CELEBRATING("celebrating", 4),
-    END("end", 5);
+    READY("ready", 1),
+    ONGOING("ongoing", 2),
+    VICTORY("victory", 3),
+    LOSE("lose", 4),
+    CELEBRATING("celebrating", 5),
+    END("end", 6);
 
     private final String name;
     private final int index;

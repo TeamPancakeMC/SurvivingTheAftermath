@@ -1,5 +1,8 @@
 package com.pancake.surviving_the_aftermath.api;
 
+import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
+import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
+import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -9,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public interface IAftermath extends IIdentifier, INBTSerializable<CompoundTag> {
+public interface IAftermath<T extends BaseAftermathModule> extends IIdentifier, INBTSerializable<CompoundTag> {
     void tick();
 
     default void bindTrackers() {
@@ -33,4 +36,5 @@ public interface IAftermath extends IIdentifier, INBTSerializable<CompoundTag> {
     void spawnRewards();
 
     void end();
+     T getModule();
 }
