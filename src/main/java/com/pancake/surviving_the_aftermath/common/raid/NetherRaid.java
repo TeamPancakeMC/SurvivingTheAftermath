@@ -74,8 +74,6 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
             spawnRewards();
             rewardTime--;
         }
-        System.out.println(rewardTime);
-        System.out.println(state);
     }
 
     @Override
@@ -98,7 +96,8 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
     @Override
     public void spawnRewards() {
         BlockPos blockPos = spawnPos.get(level.random.nextInt(spawnPos.size()));
-        Direction dir = Direction.Plane.HORIZONTAL.getRandomDirection(level.random);
+        Direction dir = Direction.Plane.HORIZONTAL.stream().filter(d -> level.isEmptyBlock(blockPos.relative(d))
+                && !spawnPos.contains(blockPos.relative(d))).findFirst().orElse(Direction.UP);
         Vec3 vec = Vec3.atCenterOf(blockPos);
         module.getRewardList().getRandomValue(level.random).ifPresent(reward ->
                 level.addFreshEntity(new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
@@ -142,8 +141,9 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
                                                                                     StructurePlaceSettings p_74145_,
                                                                                     @Nullable StructureTemplate template) {
                                     if (level.random.nextFloat() < 0.9) {
-                                        return new StructureTemplate.StructureBlockInfo(relativeBlockInfo.pos(),
+                                        StructureTemplate.StructureBlockInfo structureBlockInfo = new StructureTemplate.StructureBlockInfo(relativeBlockInfo.pos(),
                                                 levelReader.getBlockState(relativeBlockInfo.pos()), relativeBlockInfo.nbt());
+                                        return structureBlockInfo;
                                     } else {
                                         return relativeBlockInfo;
                                     }
@@ -164,6 +164,7 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
     @Override
     public void updateProgress() {
         super.updateProgress();
+
         if (state == AftermathState.START){
             ready();
             return;
@@ -177,7 +178,6 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
             spawnWave();
             progress.setProgress(EnemyTotalHealthRatio());
         }
-
     }
 
     private void ready(){
@@ -208,7 +208,6 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
             lazyOptional.ifPresent(entity -> {
                 if (entity instanceof Mob mob){
                     BlockPos blockPos = spawnPos.get(level.random.nextInt(spawnPos.size()));
-                    System.out.println(blockPos);
                     mob.moveTo(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
                     mob.setPersistenceRequired();
                     mob.getBrain().setMemory(MemoryModuleType.ANGRY_AT, randomPlayersUnderAttack().getUUID());
@@ -220,16 +219,15 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         return arrayList;
     }
 
-    //waves
     protected void spawnWave() {
-        if (enemies.isEmpty()){
-            System.out.println("生成第" + currentWave + "波敌人");
+        if (enemies.isEmpty() && state == AftermathState.ONGOING){
+            LOGGER.info(getUniqueIdentifier() +": spawn wave " + currentWave);
             module.getWaves().get(currentWave).forEach(this::spawnEntities);
+            updateStructure();
         }
         enemies.removeIf(uuid -> level.getEntity(uuid) == null);
     }
 
-    //获取敌人总血量比值
     private float EnemyTotalHealthRatio(){
         if (enemies.isEmpty()) return 0;
         float healthCount = 0;
@@ -254,7 +252,6 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         }
     }
 
-    //设置生成点
     protected void setSpawnPos(PortalShape portalShape){
         spawnPos.clear();
         try {
@@ -269,6 +266,5 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         } catch (IllegalAccessException | NoSuchFieldException e) {
             LOGGER.error("NetherRaid setSpawnPos error: " + e);
         }
-        System.out.println(spawnPos);
     }
 }

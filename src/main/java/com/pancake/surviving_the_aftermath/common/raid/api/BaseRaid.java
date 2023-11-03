@@ -2,6 +2,7 @@ package com.pancake.surviving_the_aftermath.common.raid.api;
 
 
 import com.google.common.collect.Lists;
+import com.mojang.logging.LogUtils;
 import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
@@ -15,12 +16,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<BaseRaidModule> implements IRaid{
+    public static final Logger LOGGER = LogUtils.getLogger();
     protected int currentWave = -1;
     protected BlockPos centerPos;
     protected final List<UUID> enemies = Lists.newArrayList();

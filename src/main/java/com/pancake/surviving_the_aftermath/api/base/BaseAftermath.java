@@ -60,10 +60,18 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
             return;
         }
         if (isEnd()) return;
+
+
         updateProgress();
         if (state == AftermathState.VICTORY){
             spawnRewards();
         }
+
+//        long gameTime = level.getGameTime();
+//        if (gameTime % 20 == 0) {
+//
+//
+//        }
     }
 
     protected void addTracker(ITracker tracker) {
@@ -140,10 +148,7 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
 
     @Override
     public void updateProgress() {
-        long gameTime = level.getGameTime();
-        if (gameTime % 20 == 0) {
-            updatePlayers();
-        }
+        updatePlayers();
     }
 
     @Override
