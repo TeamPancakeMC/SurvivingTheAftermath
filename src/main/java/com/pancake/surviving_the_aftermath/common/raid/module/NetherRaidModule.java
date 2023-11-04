@@ -2,16 +2,10 @@ package com.pancake.surviving_the_aftermath.common.raid.module;
 
 import com.google.gson.JsonElement;
 import com.pancake.surviving_the_aftermath.api.Constant;
-import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
 import net.minecraft.nbt.CompoundTag;
 
-import java.util.List;
-
 public class NetherRaidModule extends BaseRaidModule {
-    private NetherRaidModule() {
-    }
-
     protected int readyTime;
     @Override
     public CompoundTag serializeNBT() {
@@ -48,7 +42,7 @@ public class NetherRaidModule extends BaseRaidModule {
         return readyTime;
     }
 
-    public void setReadyTime(int readyTime) {
+    protected void setReadyTime(int readyTime) {
         this.readyTime = readyTime;
     }
 
@@ -56,11 +50,14 @@ public class NetherRaidModule extends BaseRaidModule {
     public static class Builder extends BaseRaidModule.Builder<NetherRaidModule>{
         private int readyTime;
 
+        public Builder(String jsonName) {
+            super(new NetherRaidModule(), jsonName);
+        }
+
         public Builder setReadyTime(int readyTime) {
             this.readyTime = readyTime;
             return this;
         }
-
 
         @Override
         public NetherRaidModule build() {

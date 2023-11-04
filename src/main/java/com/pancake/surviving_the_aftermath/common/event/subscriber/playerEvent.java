@@ -1,33 +1,11 @@
 package com.pancake.surviving_the_aftermath.common.event.subscriber;
 
-import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
-import com.pancake.surviving_the_aftermath.common.init.ModStructures;
-import com.pancake.surviving_the_aftermath.common.structure.NetherRaidStructure;
-import com.pancake.surviving_the_aftermath.common.util.StructureUtil;
-import it.unimi.dsi.fastutil.longs.LongSet;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.SectionPos;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraft.world.level.portal.PortalShape;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Mod.EventBusSubscriber
 public class playerEvent {

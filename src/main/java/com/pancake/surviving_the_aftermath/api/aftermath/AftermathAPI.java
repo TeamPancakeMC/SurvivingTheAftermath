@@ -2,7 +2,6 @@ package com.pancake.surviving_the_aftermath.api.aftermath;
 
 import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
-import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.IAftermathFactory;
 import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;

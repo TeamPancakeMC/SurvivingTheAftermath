@@ -10,6 +10,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.util.GsonHelper;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,40 +23,35 @@ import java.util.concurrent.CompletableFuture;
 public abstract class AftermathModuleProviders<T extends BaseAftermathModule> implements DataProvider {
     private final PackOutput output;
     private final String modId;
-    private final String locale;
     private final List<T> modules = Lists.newArrayList();
 
 
-    public AftermathModuleProviders(PackOutput output, String modId, String locale) {
+    public AftermathModuleProviders(PackOutput output, String modId) {
         this.output = output;
         this.modId = modId;
-        this.locale = locale;
     }
 
     @Override
-    public CompletableFuture<?> run(CachedOutput output) {;
+    @NotNull
+    public  CompletableFuture<?> run(@NotNull CachedOutput output) {
         addModules();
-        return CompletableFuture.runAsync(() -> {
-            modules.forEach(module -> {
-                try {
-                    ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
-                    HashingOutputStream hashingoutputstream = new HashingOutputStream(Hashing.sha1(), bytearrayoutputstream);
+        return CompletableFuture.runAsync(() -> modules.forEach(module -> {
+            try {
+                ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
+                HashingOutputStream hashingoutputstream = new HashingOutputStream(Hashing.sha1(), bytearrayoutputstream);
 
-                    try (JsonWriter jsonwriter = new JsonWriter(new OutputStreamWriter(hashingoutputstream, StandardCharsets.UTF_8))) {
-                        jsonwriter.setSerializeNulls(false);
-                        jsonwriter.setIndent("  ");
-                        GsonHelper.writeValue(jsonwriter, module.serializeJson(), KEY_COMPARATOR);
-                    }
-                    Path path = this.output.getOutputFolder(PackOutput.Target.RESOURCE_PACK)
-                            .resolve(this.modId).resolve("lang").resolve(this.locale + ".json");
-                    output.writeIfNeeded(path, bytearrayoutputstream.toByteArray(), hashingoutputstream.hash());
-                } catch (IOException ioexception) {
-                    LOGGER.error("Failed to save file to {}", output, ioexception);
+                try (JsonWriter jsonwriter = new JsonWriter(new OutputStreamWriter(hashingoutputstream, StandardCharsets.UTF_8))) {
+                    jsonwriter.setSerializeNulls(false);
+                    jsonwriter.setIndent("  ");
+                    GsonHelper.writeValue(jsonwriter, module.serializeJson(), KEY_COMPARATOR);
                 }
-            });
-
-
-        }, Util.backgroundExecutor());
+                Path path = this.output.getOutputFolder(PackOutput.Target.DATA_PACK)
+                        .resolve(this.modId).resolve("aftermath").resolve(module.getJsonName().toLowerCase() + ".json");
+                output.writeIfNeeded(path, bytearrayoutputstream.toByteArray(), hashingoutputstream.hash());
+            } catch (IOException ioexception) {
+                LOGGER.error("Failed to save file to {}", output, ioexception);
+            }
+        }), Util.backgroundExecutor());
     }
     public void addModule(T module) {
         modules.add(module);
@@ -63,6 +59,7 @@ public abstract class AftermathModuleProviders<T extends BaseAftermathModule> im
     public abstract void addModules();
 
     @Override
+    @NotNull
     public String getName() {
         return "AftermathModuleProviders";
     }

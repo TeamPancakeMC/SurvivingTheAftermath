@@ -1,0 +1,37 @@
+{
+  "identifier": "nether_raid",
+  "readyTime": 100,
+  "rewards": [
+    {
+      "item": "minecraft:stone",
+      "weight": 1
+    },
+    {
+      "item": "minecraft:diamond",
+      "weight": 1
+    }
+  ],
+  "waves": [
+    [
+      {
+        "amount": {
+          "amount": 10,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:zombie",
+        "identifier": "entity_info"
+      }
+    ],
+    [
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 20,
+          "min": 10
+        },
+        "entityType": "minecraft:creeper",
+        "identifier": "entity_info"
+      }
+    ]
+  ]
+}

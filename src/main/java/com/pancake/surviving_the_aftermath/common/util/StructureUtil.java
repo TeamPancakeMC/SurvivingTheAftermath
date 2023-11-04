@@ -4,28 +4,27 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.*;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class StructureUtil {
-    //StructureTemplate
-    //获取模板尺寸
     public static int[] getSize(StructureTemplate structureTemplate) {
         return new int[]{structureTemplate.getSize().getX(), structureTemplate.getSize().getY(), structureTemplate.getSize().getZ()};
     }
-    //获取模板方块信息
     public static StructureModule getStructureModule(StructureTemplate structureTemplate) {
         CompoundTag template = structureTemplate.save(new CompoundTag());
         ListTag blocks = template.getList("blocks", 10);
-        List<StructureTemplate.StructureBlockInfo> structureBlockInfos = Lists.newArrayList();
+        List<StructureTemplate.StructureBlockInfo> structureBlockInfo = Lists.newArrayList();
         Map<Integer, BlockState> structurePalette = getStructurePalette(structureTemplate);
         blocks.stream()
                 .map(tag -> (CompoundTag)tag)
@@ -41,14 +40,13 @@ public class StructureUtil {
                     if (block.contains("nbt")) {
                         nbt = block.getCompound("nbt");
                     }
-                    structureBlockInfos.add(new StructureTemplate.StructureBlockInfo(new BlockPos(x, y, z), structurePalette.get(state), nbt));
+                    structureBlockInfo.add(new StructureTemplate.StructureBlockInfo(new BlockPos(x, y, z), structurePalette.get(state), nbt));
                 });
-        StructureModule structureModule = new StructureModule(structureBlockInfos, structurePalette, null);
+        StructureModule structureModule = new StructureModule(structureBlockInfo, structurePalette, null);
         System.out.println(structureModule.blocks.size());
         return structureModule;
     }
 
-    //获取模板调色板信息
     public static Map<Integer,BlockState> getStructurePalette(StructureTemplate structureTemplate) {
         CompoundTag template = structureTemplate.save(new CompoundTag());
         HashMap<Integer,BlockState> map = Maps.newHashMap();

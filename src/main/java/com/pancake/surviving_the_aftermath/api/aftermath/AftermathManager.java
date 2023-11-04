@@ -4,9 +4,7 @@ import com.google.common.collect.Maps;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.IAftermathFactory;
 import com.pancake.surviving_the_aftermath.api.ITracker;
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
-import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 
@@ -22,13 +20,11 @@ public class AftermathManager {
     public void tick() {
         for (IAftermath<BaseAftermathModule> raid : AFTERMATH_MAP.values()) {
             if (raid.isEnd()) {
-                System.out.println("删除aftermath: " + raid.getUUID());
                 remove(raid);
             } else {
                 raid.tick();
             }
         }
-        System.out.println("管理器中的aftermath数量: " + AFTERMATH_MAP.size());
     }
 
     private void remove(IAftermath<BaseAftermathModule> aftermath) {
@@ -39,7 +35,6 @@ public class AftermathManager {
     private void add(IAftermath<BaseAftermathModule> aftermath) {
         AFTERMATH_MAP.put(aftermath.getUUID(), aftermath);
         aftermath.getTrackers().forEach(ITracker::register);
-        System.out.println("add aftermath: " + aftermath.getUUID());
     }
 
     public Map<UUID, IAftermath<BaseAftermathModule>> getAftermathMap() {

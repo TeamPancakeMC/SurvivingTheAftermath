@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import java.util.List;
 
 public class EntityInfoWithEquipmentModule extends EntityInfoModule {
-    public static final String IDENTIFIER = "EntityInfoWithEquipmentModule";
+    public static final String IDENTIFIER = "entity_info_equipment";
     private ItemWeightedListModule equipment;
 
     @Override
@@ -55,9 +55,8 @@ public class EntityInfoWithEquipmentModule extends EntityInfoModule {
         for (LazyOptional<Entity> lazyOptional : arrayList) {
             lazyOptional.ifPresent(entity -> {
                 if (entity instanceof Mob mob){
-                    equipment.getWeightedList().getRandomValue(level.random).ifPresent(item -> {
-                        mob.equipItemIfPossible(item.getDefaultInstance());
-                    });
+                    equipment.getWeightedList().getRandomValue(level.random)
+                            .ifPresent(item -> mob.equipItemIfPossible(item.getDefaultInstance()));
                 }
             });
         }

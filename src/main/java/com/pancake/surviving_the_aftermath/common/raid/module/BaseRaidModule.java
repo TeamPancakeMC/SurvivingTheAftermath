@@ -7,7 +7,6 @@ import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
-import com.pancake.surviving_the_aftermath.api.module.impl.weighted.ItemWeightedListModule;
 import com.pancake.surviving_the_aftermath.common.raid.api.IRaidModule;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -94,8 +93,12 @@ public abstract class BaseRaidModule extends BaseAftermathModule implements IRai
     @Override
     public abstract String getUniqueIdentifier();
 
-    public static class Builder<T extends BaseAftermathModule>  extends BaseAftermathModule.Builder<T>{
+    public static class Builder<T extends BaseAftermathModule> extends BaseAftermathModule.Builder<T>{
         protected List<List<IEntityInfoModule>> waves = Lists.newArrayList();
+
+        public Builder(T module,String jsonName) {
+            super(module,jsonName);
+        }
 
         public Builder<T> addWave(Supplier<List<IEntityInfoModule>> wave) {
             this.waves.add(wave.get());

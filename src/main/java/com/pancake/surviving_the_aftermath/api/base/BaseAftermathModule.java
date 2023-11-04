@@ -7,7 +7,6 @@ import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.weighted.ItemWeightedListModule;
-import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.item.Item;
@@ -17,6 +16,7 @@ import java.util.function.Supplier;
 public abstract class BaseAftermathModule implements IAftermathModule {
     protected final AftermathAPI AFTERMATH_API = AftermathAPI.getInstance();
     protected ItemWeightedListModule Rewards;
+    protected String jsonName;
 
     @Override
     public SimpleWeightedRandomList<Item> getRewardList() {
@@ -63,8 +63,21 @@ public abstract class BaseAftermathModule implements IAftermathModule {
         Rewards = rewards;
     }
 
+    public String getJsonName() {
+        return jsonName == null ? getUniqueIdentifier().toLowerCase() : jsonName.toLowerCase();
+    }
+    public void setJsonName(String jsonName) {
+        this.jsonName = jsonName;
+    }
+
+
     public static class Builder<T extends BaseAftermathModule> {
         protected  T module;
+
+        public Builder(T module,String jsonName) {
+            this.module = module;
+            this.module.setJsonName(jsonName);
+        }
         protected ItemWeightedListModule Rewards;
         public Builder<T> setRewards(Supplier<ItemWeightedListModule> Rewards) {
             this.Rewards = Rewards.get();

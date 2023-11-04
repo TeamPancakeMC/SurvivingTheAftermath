@@ -2,7 +2,6 @@ package com.pancake.surviving_the_aftermath.common.level.biomes;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
-import net.minecraft.data.worldgen.biome.OverworldBiomes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;

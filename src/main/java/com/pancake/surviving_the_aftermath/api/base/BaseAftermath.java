@@ -10,7 +10,6 @@ import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
-import com.pancake.surviving_the_aftermath.common.event.AftermathEvent;
 import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -21,10 +20,8 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
-import net.minecraftforge.common.MinecraftForge;
 import org.slf4j.Logger;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -116,12 +113,7 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
 
     @Override
     public Predicate<? super ServerPlayer> validPlayer() {
-        return new Predicate<ServerPlayer>() {
-            @Override
-            public boolean test(ServerPlayer player) {
-                return !player.isSpectator();
-            }
-        };
+        return (Predicate<ServerPlayer>) player -> !player.isSpectator();
     }
 
     @Override
@@ -135,9 +127,7 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
         oldPlayers.stream()
                 .filter(player -> !newPlayers.contains(player))
                 .forEach(progress::removePlayer);
-        progress.getPlayers().forEach(player -> {
-            players.add(player.getUUID());
-        });
+        progress.getPlayers().forEach(player -> players.add(player.getUUID()));
     }
 
     @Override

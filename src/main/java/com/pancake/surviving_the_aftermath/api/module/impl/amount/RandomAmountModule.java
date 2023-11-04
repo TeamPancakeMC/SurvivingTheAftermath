@@ -9,11 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.Random;
 
 public class RandomAmountModule implements IAmountModule {
-    public static final String IDENTIFIER = "RandomAmountModule";
-
-    private RandomAmountModule() {
-    }
-
+    public static final String IDENTIFIER = "random_amount";
     protected final Random rand = new Random();
     protected int min;
     protected int max;
@@ -51,9 +47,9 @@ public class RandomAmountModule implements IAmountModule {
     @Override
     public JsonElement serializeJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(Constant.IDENTIFIER, IDENTIFIER);
-        jsonObject.addProperty(Constant.MIN, min);
         jsonObject.addProperty(Constant.MAX, max);
+        jsonObject.addProperty(Constant.MIN, min);
+        jsonObject.addProperty(Constant.IDENTIFIER, IDENTIFIER);
         return jsonObject;
     }
 

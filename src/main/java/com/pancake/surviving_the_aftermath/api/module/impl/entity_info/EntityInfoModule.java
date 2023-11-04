@@ -20,13 +20,9 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class EntityInfoModule implements IEntityInfoModule {
-    public static final String IDENTIFIER = "EntityInfoModule";
+    public static final String IDENTIFIER = "entity_info";
     protected EntityType<?> entityType;
     protected IAmountModule amountModule;
-
-    protected EntityInfoModule() {
-    }
-
     @Override
     public String getUniqueIdentifier() {
         return IDENTIFIER;
@@ -64,9 +60,9 @@ public class EntityInfoModule implements IEntityInfoModule {
     @Override
     public JsonElement serializeJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(Constant.IDENTIFIER, IDENTIFIER);
-        jsonObject.addProperty(Constant.ENTITY_TYPE, RegistryUtil.getRegistryNameFromEntityType(entityType).toString());
         jsonObject.add(Constant.AMOUNT, amountModule.serializeJson());
+        jsonObject.addProperty(Constant.ENTITY_TYPE, RegistryUtil.getRegistryNameFromEntityType(entityType).toString());
+        jsonObject.addProperty(Constant.IDENTIFIER, IDENTIFIER);
         return jsonObject;
     }
 

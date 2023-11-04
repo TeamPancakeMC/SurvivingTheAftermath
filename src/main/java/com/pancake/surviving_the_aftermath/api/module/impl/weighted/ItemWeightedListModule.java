@@ -1,5 +1,6 @@
 package com.pancake.surviving_the_aftermath.api.module.impl.weighted;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.pancake.surviving_the_aftermath.api.Constant;
@@ -13,10 +14,8 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemWeightedListModule implements IWeightedListModule<Item>{
-    private ItemWeightedListModule() {
-    }
 
-    public static final String IDENTIFIER = "ItemWeightedListModule";
+    public static final String IDENTIFIER = "item_weighted";
 
     private SimpleWeightedRandomList<Item> weightedList;
     @Override
@@ -42,14 +41,17 @@ public class ItemWeightedListModule implements IWeightedListModule<Item>{
 
     @Override
     public JsonElement serializeJson() {
-        JsonObject jsonObject = new JsonObject();
+        JsonArray jsonElements = new JsonArray();
         weightedList.unwrap().forEach(itemWeight -> {
+            JsonObject jsonObject = new JsonObject();
             ResourceLocation key = ForgeRegistries.ITEMS.getKey(itemWeight.getData());
             if (key != null) {
-                jsonObject.addProperty(key.toString(), itemWeight.getWeight().asInt());
+                jsonObject.addProperty(Constant.ITEM, key.toString());
+                jsonObject.addProperty(Constant.WEIGHT, itemWeight.getWeight().asInt());
             }
+            jsonElements.add(jsonObject);
         });
-        return jsonObject;
+        return jsonElements;
     }
 
     @Override
@@ -83,7 +85,7 @@ public class ItemWeightedListModule implements IWeightedListModule<Item>{
     }
 
     public static class Builder {
-        private SimpleWeightedRandomList.Builder<Item> builder = new SimpleWeightedRandomList.Builder<>();
+        private final SimpleWeightedRandomList.Builder<Item> builder = new SimpleWeightedRandomList.Builder<>();
 
         public Builder add(String itemStr, int weight) {
             Item item = RegistryUtil.getItemFromRegistryName(itemStr);

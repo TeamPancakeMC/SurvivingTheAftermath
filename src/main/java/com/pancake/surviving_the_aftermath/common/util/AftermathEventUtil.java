@@ -2,6 +2,7 @@ package com.pancake.surviving_the_aftermath.common.util;
 
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
+import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.common.event.AftermathEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.SimpleWeightedRandomList;
@@ -40,7 +41,7 @@ public class AftermathEventUtil {
         MinecraftForge.EVENT_BUS.post(new AftermathEvent.Celebrating(aftermath,players, level,rewardList));
     }
     //post lose
-    public static void lose(BaseAftermath aftermath, List<UUID> players, ServerLevel level) {
+    public static void lose(BaseAftermath<BaseAftermathModule> aftermath, List<UUID> players, ServerLevel level) {
         aftermath.setState(AftermathState.LOSE);
         MinecraftForge.EVENT_BUS.post(new AftermathEvent.Lose(aftermath,players, level));
     }

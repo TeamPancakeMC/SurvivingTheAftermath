@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 
 
 public class FixedAmountModule implements IAmountModule {
-    public static final String IDENTIFIER = "FixedAmountModule";
+    public static final String IDENTIFIER = "fixed_amount";
     protected int amount;
     @Override
     public String getUniqueIdentifier() {

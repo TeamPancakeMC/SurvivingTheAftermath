@@ -1,7 +1,8 @@
 package com.pancake.surviving_the_aftermath.common.structure.expansion;
+
+import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.common.init.ModStructurePieceTypes;
 import com.pancake.surviving_the_aftermath.common.init.ModStructureTypes;
-import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.common.structure.AbstractStructure;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;

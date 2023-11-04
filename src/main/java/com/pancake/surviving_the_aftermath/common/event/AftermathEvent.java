@@ -1,6 +1,7 @@
 package com.pancake.surviving_the_aftermath.common.event;
 
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
+import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.item.Item;
@@ -8,13 +9,12 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class AftermathEvent extends Event {
-    private BaseAftermath aftermath;
-    private List<UUID> players;
-    private ServerLevel level;
+    private final BaseAftermath<BaseAftermathModule> aftermath;
+    private final List<UUID> players;
+    private final ServerLevel level;
 
     public List<UUID> getPlayers() {
         return players;
@@ -24,45 +24,45 @@ public class AftermathEvent extends Event {
         return level;
     }
 
-    public AftermathEvent(BaseAftermath aftermath,List<UUID> players, ServerLevel level) {
+    public AftermathEvent(BaseAftermath<BaseAftermathModule> aftermath,List<UUID> players, ServerLevel level) {
         this.aftermath = aftermath;
         this.players = players;
         this.level = level;
     }
 
     public static class Start extends AftermathEvent {
-        public Start(BaseAftermath aftermath,List<UUID> players, ServerLevel level) {
+        public Start(BaseAftermath<BaseAftermathModule> aftermath,List<UUID> players, ServerLevel level) {
             super(aftermath,players, level);
         }
     }
     public static class End extends AftermathEvent {
 
-        public End(BaseAftermath aftermath, List<UUID> players, ServerLevel level) {
+        public End(BaseAftermath<BaseAftermathModule> aftermath, List<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
     public static class Ready extends AftermathEvent {
 
-        public Ready(BaseAftermath aftermath, List<UUID> players, ServerLevel level) {
+        public Ready(BaseAftermath<BaseAftermathModule> aftermath, List<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
 
     public static class Ongoing extends AftermathEvent {
 
-        public Ongoing(BaseAftermath aftermath, List<UUID> players, ServerLevel level) {
+        public Ongoing(BaseAftermath<BaseAftermathModule> aftermath, List<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
     public static class Victory extends AftermathEvent {
 
-        public Victory(BaseAftermath aftermath, List<UUID> players, ServerLevel level) {
+        public Victory(BaseAftermath<BaseAftermathModule> aftermath, List<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
     public static class Lose extends AftermathEvent {
 
-        public Lose(BaseAftermath aftermath, List<UUID> players, ServerLevel level) {
+        public Lose(BaseAftermath<BaseAftermathModule> aftermath, List<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
@@ -70,7 +70,7 @@ public class AftermathEvent extends Event {
     public static class Celebrating extends AftermathEvent {
         private SimpleWeightedRandomList<Item> rewardList;
 
-        public Celebrating(BaseAftermath aftermath, List<UUID> players, ServerLevel level,SimpleWeightedRandomList<Item> rewardList) {
+        public Celebrating(BaseAftermath<BaseAftermathModule> aftermath, List<UUID> players, ServerLevel level,SimpleWeightedRandomList<Item> rewardList) {
             super(aftermath, players, level);
             this.rewardList = rewardList;
         }

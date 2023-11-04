@@ -21,4 +21,5 @@ public class Constant {
     public static final String WEIGHT = "weight";
     public static final String CENTER_POS = "centerPos";
     public static final String PROGRESS = "progressPercent";
+    public static final String ITEM = "item";
 }

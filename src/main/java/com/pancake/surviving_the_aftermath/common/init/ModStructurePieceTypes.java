@@ -1,7 +1,10 @@
 package com.pancake.surviving_the_aftermath.common.init;
 
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
-import com.pancake.surviving_the_aftermath.common.structure.*;
+import com.pancake.surviving_the_aftermath.common.structure.BurntStructure;
+import com.pancake.surviving_the_aftermath.common.structure.CityStructure;
+import com.pancake.surviving_the_aftermath.common.structure.HouseOfSakura;
+import com.pancake.surviving_the_aftermath.common.structure.NetherRaidStructure;
 import com.pancake.surviving_the_aftermath.common.structure.expansion.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;

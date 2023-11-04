@@ -41,6 +41,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 import net.minecraft.world.level.portal.PortalShape;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -50,7 +51,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 public class NetherRaid extends BaseRaid<NetherRaidModule> {
-    public static final String IDENTIFIER = "NetherRaid";
+    public static final String IDENTIFIER = "nether_raid";
     private static final ResourceLocation BARS_RESOURCE = SurvivingTheAftermath.asResource("textures/gui/nether_raid_bars.png");
     protected List<BlockPos> spawnPos = Lists.newArrayList();
     private int readyTime;
@@ -78,29 +79,22 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         ListTag listTag = new ListTag();
         spawnPos.forEach(blockPos -> listTag.add(NbtUtils.writeBlockPos(blockPos)));
         compoundTag.put(Constant.SPAWN_POS, listTag);
-
-        System.out.println("serializeNBT spawnPos: " + spawnPos);
-        System.out.println("serializeNBT compoundTag: " + compoundTag);
         return compoundTag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        System.out.println("deserializeNBT compoundTag: " + nbt);
         super.deserializeNBT(nbt);
 
         this.readyTime = nbt.getInt(Constant.READY_TIME);
         this.rewardTime = nbt.getInt(Constant.REWARD_TIME);
 
         ListTag tags = nbt.getList(Constant.SPAWN_POS, Tag.TAG_COMPOUND);
-        System.out.println("deserializeNBT tags: " + tags);
         tags.forEach(tag -> {
             BlockPos blockPos = NbtUtils.readBlockPos((CompoundTag) tag);
-            System.out.println("deserializeNBT blockPos: " + blockPos);
             spawnPos.add(blockPos);
 
         });
-        System.out.println("deserializeNBT spawnPos: " + spawnPos);
     }
 
     @Override
@@ -169,21 +163,22 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
                             .addProcessor(new StructureProcessor() {
 
                                 @Override
+                                @NotNull
                                 protected StructureProcessorType<?> getType() {
                                     return null;
                                 }
 
                                 @Override
-                                public StructureTemplate.StructureBlockInfo process(LevelReader levelReader,
-                                                                                    BlockPos p_74141_, BlockPos p_74142_,
-                                                                                    StructureTemplate.StructureBlockInfo blockInfo,
-                                                                                    StructureTemplate.StructureBlockInfo relativeBlockInfo,
-                                                                                    StructurePlaceSettings p_74145_,
+                                public StructureTemplate.StructureBlockInfo process(@NotNull LevelReader levelReader,
+                                                                                    @NotNull BlockPos p_74141_,
+                                                                                    @NotNull BlockPos p_74142_,
+                                                                                    @NotNull StructureTemplate.StructureBlockInfo blockInfo,
+                                                                                    @NotNull StructureTemplate.StructureBlockInfo relativeBlockInfo,
+                                                                                    @NotNull StructurePlaceSettings p_74145_,
                                                                                     @Nullable StructureTemplate template) {
                                     if (level.random.nextFloat() < 0.9) {
-                                        StructureTemplate.StructureBlockInfo structureBlockInfo = new StructureTemplate.StructureBlockInfo(relativeBlockInfo.pos(),
+                                        return new StructureTemplate.StructureBlockInfo(relativeBlockInfo.pos(),
                                                 levelReader.getBlockState(relativeBlockInfo.pos()), relativeBlockInfo.nbt());
-                                        return structureBlockInfo;
                                     } else {
                                         return relativeBlockInfo;
                                     }
@@ -299,13 +294,11 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
             int height = SurvivingTheAftermath.getPrivateField(portalShape, "height", Integer.class);
             int width = SurvivingTheAftermath.getPrivateField(portalShape, "width", Integer.class);
             Direction rightDir = SurvivingTheAftermath.getPrivateField(portalShape, "rightDir", Direction.class);
-            BlockPos.betweenClosed(bottomLeft, bottomLeft.relative(Direction.UP, height - 1).relative(rightDir, width - 1)).forEach(blockPos -> {
-                spawnPos.add(new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
-            });
+            BlockPos.betweenClosed(bottomLeft, bottomLeft.relative(Direction.UP, height - 1).relative(rightDir, width - 1))
+                    .forEach(blockPos -> spawnPos.add(new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ())));
         } catch (IllegalAccessException | NoSuchFieldException e) {
             LOGGER.error("NetherRaid setSpawnPos error: " + e);
         }
-        System.out.println("setSpawnPos spawnPos: " + spawnPos);
     }
 
     public static class Factory implements IAftermathFactory {

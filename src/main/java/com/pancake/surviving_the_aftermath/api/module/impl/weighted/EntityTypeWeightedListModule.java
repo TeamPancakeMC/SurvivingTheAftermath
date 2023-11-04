@@ -13,7 +13,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 
 public class EntityTypeWeightedListModule implements IWeightedListModule<EntityType<?>> {
-    public static String IDENTIFIER = "EntityTypeWeightedListModule";
+    public static String IDENTIFIER = "entity_type_weighted";
     protected SimpleWeightedRandomList<EntityType<?>> weightedList;
     @Override
     public String getUniqueIdentifier() {
@@ -62,10 +62,9 @@ public class EntityTypeWeightedListModule implements IWeightedListModule<EntityT
     @Override
     public JsonElement serializeJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(Constant.IDENTIFIER, IDENTIFIER);
         this.weightedList.unwrap().forEach(itemWeight -> {
             JsonObject entry = new JsonObject();
-            entry.addProperty(Constant.ENTITY_TYPE, ForgeRegistries.ENTITY_TYPES.getKey(itemWeight.getData()).toString());
+            entry.addProperty(Constant.ENTITY_TYPE, RegistryUtil.getRegistryNameFromEntityType(itemWeight.getData()).toString());
             entry.addProperty(Constant.WEIGHT, itemWeight.getWeight().asInt());
             jsonObject.add(RegistryUtil.getRegistryNameFromEntityType(itemWeight.getData()).toString(), entry);
         });

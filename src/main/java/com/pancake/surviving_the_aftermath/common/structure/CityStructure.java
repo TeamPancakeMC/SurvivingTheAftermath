@@ -1,6 +1,8 @@
 package com.pancake.surviving_the_aftermath.common.structure;
 
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
+import com.pancake.surviving_the_aftermath.common.init.ModStructurePieceTypes;
+import com.pancake.surviving_the_aftermath.common.init.ModStructureTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -17,8 +19,6 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
-import com.pancake.surviving_the_aftermath.common.init.ModStructurePieceTypes;
-import com.pancake.surviving_the_aftermath.common.init.ModStructureTypes;
 
 public class CityStructure extends AbstractStructure {
 

@@ -1,6 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.data.datagen.raid;
 
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
+import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.amount.FixedAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.amount.RandomAmountModule;
@@ -11,18 +11,18 @@ import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
 import net.minecraft.data.PackOutput;
 import org.apache.commons.compress.utils.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NetherRaidModuleProvider extends AftermathModuleProviders<NetherRaidModule> {
+    private static final AftermathAPI AFTERMATH_API = AftermathAPI.getInstance();
     public NetherRaidModuleProvider(PackOutput output) {
-        super(output, "surviving_the_aftermath","nether");
+        super(output, "surviving_the_aftermath");
     }
 
 
     @Override
     public void addModules() {
-        NetherRaidModule netherRaidModule = new NetherRaidModule.Builder()
+        NetherRaidModule netherRaidModule = new NetherRaidModule.Builder("common")
                 .setReadyTime(100)
                 .addWave(() -> {
                     List<IEntityInfoModule> infoModules = Lists.newArrayList();
