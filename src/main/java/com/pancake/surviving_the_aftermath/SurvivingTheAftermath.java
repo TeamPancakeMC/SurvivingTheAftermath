@@ -52,7 +52,6 @@ public class SurvivingTheAftermath {
 
         instance.registerTracker(PlayerBattleTracker.IDENTIFIER,PlayerBattleTracker.class);
 
-
         instance.registerAmountModule(FixedAmountModule.IDENTIFIER,FixedAmountModule.class);
         instance.registerAmountModule(RandomAmountModule.IDENTIFIER,RandomAmountModule.class);
 
@@ -60,6 +59,7 @@ public class SurvivingTheAftermath {
         instance.registerEntityInfoModule(EntityInfoWithEquipmentModule.IDENTIFIER,EntityInfoWithEquipmentModule.class);
 
         instance.registerAftermathModule(NetherRaid.IDENTIFIER, NetherRaidModule.class);
+        instance.registerAftermathFactory(NetherRaid.IDENTIFIER, NetherRaid.Factory.class);
     }
 
     @SubscribeEvent

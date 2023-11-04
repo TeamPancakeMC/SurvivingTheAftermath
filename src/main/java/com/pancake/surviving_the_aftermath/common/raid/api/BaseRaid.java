@@ -12,6 +12,9 @@ import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.common.tracker.PlayerBattleTracker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -26,14 +29,14 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
     public static final Logger LOGGER = LogUtils.getLogger();
     protected int currentWave = -1;
     protected BlockPos centerPos;
-    protected final List<UUID> enemies = Lists.newArrayList();
+    protected List<UUID> enemies = Lists.newArrayList();
     public BaseRaid(ServerLevel level, BlockPos centerPos) {
         super(level);
         this.centerPos = centerPos;
     }
 
-    public BaseRaid(ServerLevel level, CompoundTag compoundTag) {
-        super(level, compoundTag);
+    public BaseRaid(ServerLevel level) {
+        super(level);
     }
 
     @Override
@@ -66,6 +69,13 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = super.serializeNBT();
         compoundTag.putInt(Constant.CURRENT_WAVE, currentWave);
+        compoundTag.put(Constant.CENTER_POS, NbtUtils.writeBlockPos(centerPos));
+
+
+        ListTag tags = new ListTag();
+        enemies.forEach(uuid -> tags.add(NbtUtils.createUUID(uuid)));
+        compoundTag.put(Constant.ENEMIES, tags);
+
         return compoundTag;
     }
 
@@ -73,6 +83,11 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
         this.currentWave = nbt.getInt(Constant.CURRENT_WAVE);
+        this.centerPos = NbtUtils.readBlockPos(nbt.getCompound(Constant.CENTER_POS));
+
+
+        ListTag tags = nbt.getList(Constant.ENEMIES, Tag.TAG_INT_ARRAY);
+        tags.forEach(tag -> enemies.add(NbtUtils.loadUUID(tag)));
     }
 
 

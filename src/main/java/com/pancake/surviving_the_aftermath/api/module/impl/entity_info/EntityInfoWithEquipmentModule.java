@@ -1,6 +1,7 @@
 package com.pancake.surviving_the_aftermath.api.module.impl.entity_info;
 
 import com.google.gson.JsonElement;
+import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.weighted.ItemWeightedListModule;
@@ -25,6 +26,7 @@ public class EntityInfoWithEquipmentModule extends BaseEntityInfoModule {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = super.serializeNBT();
+        compoundTag.putString(Constant.IDENTIFIER, IDENTIFIER);
         compoundTag.put("equipment", equipment.serializeNBT());
         return compoundTag;
     }
@@ -33,14 +35,14 @@ public class EntityInfoWithEquipmentModule extends BaseEntityInfoModule {
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
         IWeightedListModule<?> weightedListModule = AftermathAPI.getInstance().getWeightedListModule(ItemWeightedListModule.IDENTIFIER);
-        weightedListModule.deserializeNBT(nbt.getCompound("equipment"));
+        weightedListModule.deserializeNBT(nbt.getCompound(Constant.EQUIPMENT));
         this.equipment = (ItemWeightedListModule) weightedListModule;
     }
     @Override
     public void deserializeJson(JsonElement jsonElement) {
         super.deserializeJson(jsonElement);
         IWeightedListModule<?> weightedListModule = AftermathAPI.getInstance().getWeightedListModule(ItemWeightedListModule.IDENTIFIER);
-        weightedListModule.deserializeJson(jsonElement.getAsJsonObject().get("equipment"));
+        weightedListModule.deserializeJson(jsonElement.getAsJsonObject().get(Constant.EQUIPMENT));
         this.equipment = (ItemWeightedListModule) weightedListModule;
     }
 

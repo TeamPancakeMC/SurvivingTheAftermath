@@ -1,6 +1,7 @@
 package com.pancake.surviving_the_aftermath.api.module.impl.weighted;
 
 import com.google.gson.JsonElement;
+import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -31,6 +32,7 @@ public class EntityTypeWeightedListModule implements IWeightedListModule<EntityT
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
+        compoundTag.putString(Constant.IDENTIFIER, IDENTIFIER);
         this.weightedList.unwrap().forEach(itemWeight -> {
             ResourceLocation key = ForgeRegistries.ENTITY_TYPES.getKey(itemWeight.getData());
             if (key != null) {
@@ -45,8 +47,8 @@ public class EntityTypeWeightedListModule implements IWeightedListModule<EntityT
         jsonElement.getAsJsonArray().asList().stream()
                 .map(JsonElement::getAsJsonObject)
                 .forEach(entry -> {
-                    String type = entry.get("entity_type").getAsString();
-                    int weight = entry.get("weight").getAsInt();
+                    String type = entry.get(Constant.ENTITY_TYPE).getAsString();
+                    int weight = entry.get(Constant.WEIGHT).getAsInt();
                     EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(type));
                     if (entityType != null) {
                         builder.add(entityType, weight);

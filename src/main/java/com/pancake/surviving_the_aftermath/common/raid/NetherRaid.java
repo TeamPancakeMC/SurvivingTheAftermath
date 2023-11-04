@@ -4,9 +4,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
+import com.pancake.surviving_the_aftermath.api.Constant;
+import com.pancake.surviving_the_aftermath.api.IAftermath;
+import com.pancake.surviving_the_aftermath.api.IAftermathFactory;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
-import com.pancake.surviving_the_aftermath.common.event.AftermathEvent;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
 import com.pancake.surviving_the_aftermath.common.raid.api.BaseRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
@@ -18,6 +20,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,13 +59,48 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
     public NetherRaid(ServerLevel level, BlockPos centerPos ,PortalShape portalShape) {
         super(level,centerPos);
         setSpawnPos(portalShape);
-
         this.readyTime = getModule().getReadyTime();
         AftermathEventUtil.start(this, players, level);
     }
 
     public NetherRaid(ServerLevel level, CompoundTag compoundTag) {
-        super(level, compoundTag);
+        super(level);
+        this.deserializeNBT(compoundTag);
+        AftermathEventUtil.start(this, players, level);
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag compoundTag = super.serializeNBT();
+        compoundTag.putInt(Constant.READY_TIME, readyTime);
+        compoundTag.putInt(Constant.REWARD_TIME, rewardTime);
+
+        ListTag listTag = new ListTag();
+        spawnPos.forEach(blockPos -> listTag.add(NbtUtils.writeBlockPos(blockPos)));
+        compoundTag.put(Constant.SPAWN_POS, listTag);
+
+        System.out.println("serializeNBT spawnPos: " + spawnPos);
+        System.out.println("serializeNBT compoundTag: " + compoundTag);
+        return compoundTag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        System.out.println("deserializeNBT compoundTag: " + nbt);
+        super.deserializeNBT(nbt);
+
+        this.readyTime = nbt.getInt(Constant.READY_TIME);
+        this.rewardTime = nbt.getInt(Constant.REWARD_TIME);
+
+        ListTag tags = nbt.getList(Constant.SPAWN_POS, Tag.TAG_COMPOUND);
+        System.out.println("deserializeNBT tags: " + tags);
+        tags.forEach(tag -> {
+            BlockPos blockPos = NbtUtils.readBlockPos((CompoundTag) tag);
+            System.out.println("deserializeNBT blockPos: " + blockPos);
+            spawnPos.add(blockPos);
+
+        });
+        System.out.println("deserializeNBT spawnPos: " + spawnPos);
     }
 
     @Override
@@ -176,7 +216,7 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         if (state == AftermathState.ONGOING){
             checkNextWave();
             spawnWave();
-            progress.setProgress(EnemyTotalHealthRatio());
+            EnemyTotalHealthRatio();
         }
     }
 
@@ -185,7 +225,7 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
             AftermathEventUtil.ongoing(this, players, level);
             return;
         }
-        progress.setProgress(1 - (float) readyTime / getModule().getReadyTime());
+        this.progressPercent = 1 - (float) readyTime / getModule().getReadyTime();
         AftermathEventUtil.ready(this, players, level);
         spawnMovingParticles(centerPos, centerPos.above(), ParticleTypes.PORTAL, 1000, 1);
         readyTime--;
@@ -202,7 +242,7 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
 
 
     @Override
-    protected List<LazyOptional<Entity>>  spawnEntities(IEntityInfoModule module) {
+    protected List<LazyOptional<Entity>> spawnEntities(IEntityInfoModule module) {
         List<LazyOptional<Entity>> arrayList = module.spawnEntity(level);
         for (LazyOptional<Entity> lazyOptional : arrayList) {
             lazyOptional.ifPresent(entity -> {
@@ -228,8 +268,8 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         enemies.removeIf(uuid -> level.getEntity(uuid) == null);
     }
 
-    private float EnemyTotalHealthRatio(){
-        if (enemies.isEmpty()) return 0;
+    private void EnemyTotalHealthRatio(){
+        if (enemies.isEmpty()) return;
         float healthCount = 0;
         float maxHealthCount = 0;
         for (UUID uuid : enemies) {
@@ -238,7 +278,7 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
                 maxHealthCount += livingEntity.getMaxHealth();
             }
         }
-        return healthCount / maxHealthCount;
+        this.progressPercent = healthCount / maxHealthCount;
     }
 
     protected void checkNextWave(){
@@ -262,9 +302,16 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
             BlockPos.betweenClosed(bottomLeft, bottomLeft.relative(Direction.UP, height - 1).relative(rightDir, width - 1)).forEach(blockPos -> {
                 spawnPos.add(new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
             });
-
         } catch (IllegalAccessException | NoSuchFieldException e) {
             LOGGER.error("NetherRaid setSpawnPos error: " + e);
+        }
+        System.out.println("setSpawnPos spawnPos: " + spawnPos);
+    }
+
+    public static class Factory implements IAftermathFactory {
+        @Override
+        public IAftermath<BaseAftermathModule> create(ServerLevel level, CompoundTag compound) {
+            return new NetherRaid(level, compound);
         }
     }
 }

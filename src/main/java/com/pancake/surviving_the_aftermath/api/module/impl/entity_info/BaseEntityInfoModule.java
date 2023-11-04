@@ -34,6 +34,8 @@ public class BaseEntityInfoModule implements IEntityInfoModule {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
+        compoundTag.putString(Constant.IDENTIFIER, IDENTIFIER);
+
         ResourceLocation key = ForgeRegistries.ENTITY_TYPES.getKey(entityType);
         assert key != null;
         compoundTag.putString(Constant.ENTITY_TYPE, key.getPath());

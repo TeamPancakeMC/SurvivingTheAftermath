@@ -22,11 +22,13 @@ public class AftermathManager {
     public void tick() {
         for (IAftermath<BaseAftermathModule> raid : AFTERMATH_MAP.values()) {
             if (raid.isEnd()) {
+                System.out.println("删除aftermath: " + raid.getUUID());
                 remove(raid);
             } else {
                 raid.tick();
             }
         }
+        System.out.println("管理器中的aftermath数量: " + AFTERMATH_MAP.size());
     }
 
     private void remove(IAftermath<BaseAftermathModule> aftermath) {
@@ -37,6 +39,7 @@ public class AftermathManager {
     private void add(IAftermath<BaseAftermathModule> aftermath) {
         AFTERMATH_MAP.put(aftermath.getUUID(), aftermath);
         aftermath.getTrackers().forEach(ITracker::register);
+        System.out.println("add aftermath: " + aftermath.getUUID());
     }
 
     public Map<UUID, IAftermath<BaseAftermathModule>> getAftermathMap() {
@@ -53,8 +56,7 @@ public class AftermathManager {
 
     public void create(ServerLevel level, CompoundTag compoundTag) {
         IAftermathFactory aftermathFactory = AftermathAPI.getInstance().getAftermathFactory(compoundTag.getString("identifier"));
-        IAftermath aftermath = aftermathFactory.create(level, compoundTag);
-        aftermath.deserializeNBT(compoundTag);
+        IAftermath<BaseAftermathModule> aftermath = aftermathFactory.create(level, compoundTag);
         add(aftermath);
     }
 }

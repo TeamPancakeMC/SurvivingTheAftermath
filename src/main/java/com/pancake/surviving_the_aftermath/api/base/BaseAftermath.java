@@ -15,6 +15,7 @@ import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -40,27 +41,18 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
     protected List<UUID> players = Lists.newArrayList();
     protected T module;
     private final String NAME = Constant.MOD_NAME + "." + getUniqueIdentifier();
-    protected final ServerBossEvent progress = new ServerBossEvent(Component.translatable(NAME), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
+    protected static final ServerBossEvent progress = new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
+    protected float progressPercent = progress.getProgress();
     public BaseAftermath(ServerLevel level) {
         this.level = level;
         this.uuid = progress.getId();
         this.module = (T) AFTERMATH_API.getRandomAftermathModule(getUniqueIdentifier())
                 .orElseGet(() -> AFTERMATH_API.getAftermathMap().get(getUniqueIdentifier()).get(0));
     }
-    public BaseAftermath(ServerLevel level, CompoundTag compoundTag) {
-        this.level = level;
-        this.deserializeNBT(compoundTag);
-    }
 
     @Override
     public void tick() {
-        if (level.players().isEmpty()) {
-            LOGGER.error("level not found player");
-            end();
-            return;
-        }
         if (isEnd()) return;
-
 
         updateProgress();
         if (state == AftermathState.VICTORY){
@@ -98,9 +90,10 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
         compoundTag.putString(Constant.IDENTIFIER, this.getUniqueIdentifier());
         compoundTag.putUUID(Constant.UUID, this.uuid);
         compoundTag.put(Constant.MODULE, module.serializeNBT());
+        compoundTag.putFloat(Constant.PROGRESS, progressPercent);
 
         ListTag tags = new ListTag();
-        this.players.forEach(uuid -> tags.add(NbtUtils.createUUID(uuid)));
+        players.forEach(uuid -> tags.add(NbtUtils.createUUID(uuid)));
         compoundTag.put(Constant.PLAYERS, tags);
 
         return compoundTag;
@@ -109,15 +102,16 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.uuid = nbt.getUUID(Constant.UUID);
+        this.progressPercent = nbt.getFloat(Constant.PROGRESS);
 
         CompoundTag moduleTag = nbt.getCompound(Constant.MODULE);
         IAftermathModule aftermathModule = AFTERMATH_API.getAftermathModule(this.getUniqueIdentifier());
         aftermathModule.deserializeNBT(moduleTag);
         this.module = (T) aftermathModule;
 
-        ListTag tags = nbt.getList(Constant.PLAYERS, 11);
-        players.clear();
-        tags.forEach(tag -> this.players.add(NbtUtils.loadUUID(tag)));
+
+        ListTag tags = nbt.getList(Constant.PLAYERS, Tag.TAG_INT_ARRAY);
+        tags.forEach(tag -> players.add(NbtUtils.loadUUID(tag)));
     }
 
     @Override
@@ -148,6 +142,7 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
 
     @Override
     public void updateProgress() {
+        progress.setProgress(progressPercent);
         updatePlayers();
     }
 

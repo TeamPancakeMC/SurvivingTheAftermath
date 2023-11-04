@@ -100,9 +100,16 @@ public class AftermathAPI {
         try {
             Class<? extends T> objectClass = objectMap.get(identifier);
             return objectClass.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new RuntimeException("Failed to create object " + identifier, e);
+        } catch (InstantiationException e) {
+            LOGGER.error("AftermathAPI Failed to instantiate object with identifier {} error : {}", identifier, e);
+        } catch (IllegalAccessException e) {
+            LOGGER.error("AftermathAPI Failed to access object with identifier {} error : {}", identifier , e);
+        } catch (NoSuchMethodException e) {
+            LOGGER.error("AftermathAPI Failed to find constructor of object with identifier {} error : {}", identifier, e);
+        } catch (InvocationTargetException e) {
+            LOGGER.error("AftermathAPI Failed to invoke constructor of object with identifier {} error : {}", identifier, e);
         }
+        return null;
     }
 
 

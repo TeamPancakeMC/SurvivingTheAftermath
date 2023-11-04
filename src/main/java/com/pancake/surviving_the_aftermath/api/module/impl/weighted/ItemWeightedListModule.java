@@ -1,6 +1,7 @@
 package com.pancake.surviving_the_aftermath.api.module.impl.weighted;
 
 import com.google.gson.JsonElement;
+import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -49,6 +50,7 @@ public class ItemWeightedListModule implements IWeightedListModule<Item>{
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
+        compoundTag.putString(Constant.IDENTIFIER, IDENTIFIER);
         weightedList.unwrap().forEach(itemWeight -> {
             ResourceLocation key = ForgeRegistries.ITEMS.getKey(itemWeight.getData());
             if (key != null) {
