@@ -1,21 +1,18 @@
 package com.pancake.surviving_the_aftermath.common.raid.module;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.pancake.surviving_the_aftermath.api.Constant;
-import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.util.GsonHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NetherRaidModule extends BaseRaidModule {
-    private int readyTime;
+    private NetherRaidModule() {
+    }
+
+    protected int readyTime;
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = super.serializeNBT();
@@ -36,6 +33,13 @@ public class NetherRaidModule extends BaseRaidModule {
     }
 
     @Override
+    public JsonElement serializeJson() {
+        JsonElement jsonElement = super.serializeJson();
+        jsonElement.getAsJsonObject().addProperty(Constant.READY_TIME,readyTime);
+        return jsonElement;
+    }
+
+    @Override
     public String getUniqueIdentifier() {
         return NetherRaid.IDENTIFIER;
     }
@@ -46,5 +50,23 @@ public class NetherRaidModule extends BaseRaidModule {
 
     public void setReadyTime(int readyTime) {
         this.readyTime = readyTime;
+    }
+
+
+    public static class Builder extends BaseRaidModule.Builder<NetherRaidModule>{
+        private int readyTime;
+
+        public Builder setReadyTime(int readyTime) {
+            this.readyTime = readyTime;
+            return this;
+        }
+
+
+        @Override
+        public NetherRaidModule build() {
+            NetherRaidModule build = super.build();
+            build.setReadyTime(this.readyTime);
+            return build;
+        }
     }
 }

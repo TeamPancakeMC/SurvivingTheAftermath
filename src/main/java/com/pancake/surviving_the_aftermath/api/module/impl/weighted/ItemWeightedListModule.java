@@ -1,8 +1,10 @@
 package com.pancake.surviving_the_aftermath.api.module.impl.weighted;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
+import com.pancake.surviving_the_aftermath.common.util.RegistryUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -11,6 +13,9 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemWeightedListModule implements IWeightedListModule<Item>{
+    private ItemWeightedListModule() {
+    }
+
     public static final String IDENTIFIER = "ItemWeightedListModule";
 
     private SimpleWeightedRandomList<Item> weightedList;
@@ -33,6 +38,18 @@ public class ItemWeightedListModule implements IWeightedListModule<Item>{
                     }
                 });
         weightedList = builder.build();
+    }
+
+    @Override
+    public JsonElement serializeJson() {
+        JsonObject jsonObject = new JsonObject();
+        weightedList.unwrap().forEach(itemWeight -> {
+            ResourceLocation key = ForgeRegistries.ITEMS.getKey(itemWeight.getData());
+            if (key != null) {
+                jsonObject.addProperty(key.toString(), itemWeight.getWeight().asInt());
+            }
+        });
+        return jsonObject;
     }
 
     @Override
@@ -63,5 +80,21 @@ public class ItemWeightedListModule implements IWeightedListModule<Item>{
     @Override
     public String getUniqueIdentifier() {
         return IDENTIFIER;
+    }
+
+    public static class Builder {
+        private SimpleWeightedRandomList.Builder<Item> builder = new SimpleWeightedRandomList.Builder<>();
+
+        public Builder add(String itemStr, int weight) {
+            Item item = RegistryUtil.getItemFromRegistryName(itemStr);
+            builder.add(item, weight);
+            return this;
+        }
+
+        public ItemWeightedListModule build() {
+            ItemWeightedListModule itemWeightedListModule = new ItemWeightedListModule();
+            itemWeightedListModule.weightedList = builder.build();
+            return itemWeightedListModule;
+        }
     }
 }

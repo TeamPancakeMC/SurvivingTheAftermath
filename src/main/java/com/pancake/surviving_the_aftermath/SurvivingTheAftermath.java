@@ -4,7 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.impl.amount.FixedAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.amount.RandomAmountModule;
-import com.pancake.surviving_the_aftermath.api.module.impl.entity_info.BaseEntityInfoModule;
+import com.pancake.surviving_the_aftermath.api.module.impl.entity_info.EntityInfoModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.entity_info.EntityInfoWithEquipmentModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.weighted.EntityTypeWeightedListModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.weighted.ItemWeightedListModule;
@@ -13,7 +13,6 @@ import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoade
 import com.pancake.surviving_the_aftermath.common.init.ModStructurePieceTypes;
 import com.pancake.surviving_the_aftermath.common.init.ModStructureTypes;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
-import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
 import com.pancake.surviving_the_aftermath.common.tracker.PlayerBattleTracker;
 import net.minecraft.resources.ResourceLocation;
@@ -55,7 +54,7 @@ public class SurvivingTheAftermath {
         instance.registerAmountModule(FixedAmountModule.IDENTIFIER,FixedAmountModule.class);
         instance.registerAmountModule(RandomAmountModule.IDENTIFIER,RandomAmountModule.class);
 
-        instance.registerEntityInfoModule(BaseEntityInfoModule.IDENTIFIER,BaseEntityInfoModule.class);
+        instance.registerEntityInfoModule(EntityInfoModule.IDENTIFIER, EntityInfoModule.class);
         instance.registerEntityInfoModule(EntityInfoWithEquipmentModule.IDENTIFIER,EntityInfoWithEquipmentModule.class);
 
         instance.registerAftermathModule(NetherRaid.IDENTIFIER, NetherRaidModule.class);

@@ -1,8 +1,10 @@
 package com.pancake.surviving_the_aftermath.api.module.impl.weighted;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
+import com.pancake.surviving_the_aftermath.common.util.RegistryUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.random.SimpleWeightedRandomList;
@@ -12,7 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class EntityTypeWeightedListModule implements IWeightedListModule<EntityType<?>> {
     public static String IDENTIFIER = "EntityTypeWeightedListModule";
-    private SimpleWeightedRandomList<EntityType<?>> weightedList;
+    protected SimpleWeightedRandomList<EntityType<?>> weightedList;
     @Override
     public String getUniqueIdentifier() {
         return IDENTIFIER;
@@ -58,7 +60,35 @@ public class EntityTypeWeightedListModule implements IWeightedListModule<EntityT
     }
 
     @Override
+    public JsonElement serializeJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(Constant.IDENTIFIER, IDENTIFIER);
+        this.weightedList.unwrap().forEach(itemWeight -> {
+            JsonObject entry = new JsonObject();
+            entry.addProperty(Constant.ENTITY_TYPE, ForgeRegistries.ENTITY_TYPES.getKey(itemWeight.getData()).toString());
+            entry.addProperty(Constant.WEIGHT, itemWeight.getWeight().asInt());
+            jsonObject.add(RegistryUtil.getRegistryNameFromEntityType(itemWeight.getData()).toString(), entry);
+        });
+        return jsonObject;
+    }
+
+    @Override
     public SimpleWeightedRandomList<EntityType<?>> getWeightedList() {
         return this.weightedList;
+    }
+
+    public static class Builder {
+        protected SimpleWeightedRandomList.Builder<EntityType<?>> builder = new SimpleWeightedRandomList.Builder<>();
+
+        public Builder add(EntityType<?> entityType, int weight) {
+            this.builder.add(entityType, weight);
+            return this;
+        }
+
+        public EntityTypeWeightedListModule build() {
+            EntityTypeWeightedListModule entityTypeWeightedListModule = new EntityTypeWeightedListModule();
+            entityTypeWeightedListModule.weightedList = this.builder.build();
+            return entityTypeWeightedListModule;
+        }
     }
 }

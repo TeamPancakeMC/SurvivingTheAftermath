@@ -1,14 +1,13 @@
 package com.pancake.surviving_the_aftermath.api.module.impl.entity_info;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.util.RegistryUtil;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -16,15 +15,17 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
-public class BaseEntityInfoModule implements IEntityInfoModule {
-    public static final String IDENTIFIER = "BaseEntityInfoModule";
-    private EntityType<?> entityType;
-    private IAmountModule amountModule;
+public class EntityInfoModule implements IEntityInfoModule {
+    public static final String IDENTIFIER = "EntityInfoModule";
+    protected EntityType<?> entityType;
+    protected IAmountModule amountModule;
+
+    protected EntityInfoModule() {
+    }
 
     @Override
     public String getUniqueIdentifier() {
@@ -61,6 +62,15 @@ public class BaseEntityInfoModule implements IEntityInfoModule {
     }
 
     @Override
+    public JsonElement serializeJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(Constant.IDENTIFIER, IDENTIFIER);
+        jsonObject.addProperty(Constant.ENTITY_TYPE, RegistryUtil.getRegistryNameFromEntityType(entityType).toString());
+        jsonObject.add(Constant.AMOUNT, amountModule.serializeJson());
+        return jsonObject;
+    }
+
+    @Override
     public List<LazyOptional<Entity>> spawnEntity(ServerLevel level) {
         List<LazyOptional<Entity>> arrayList = Lists.newArrayList();
         for (int i = 0; i < amountModule.getSpawnAmount(); i++) {
@@ -68,5 +78,27 @@ public class BaseEntityInfoModule implements IEntityInfoModule {
             arrayList.add(entity == null ? LazyOptional.empty() : LazyOptional.of(() -> entity));
         }
         return arrayList;
+    }
+
+    public static class Builder {
+        protected EntityType<?> entityType;
+        protected IAmountModule amountModule;
+
+        public Builder setEntityType(String entityTypeStr) {
+            this.entityType = RegistryUtil.getEntityTypeFromRegistryName(entityTypeStr);
+            return this;
+        }
+
+        public Builder setAmountModule(Supplier<IAmountModule> amountModule) {
+            this.amountModule = amountModule.get();
+            return this;
+        }
+
+        public EntityInfoModule build() {
+            EntityInfoModule entityInfoModule = new EntityInfoModule();
+            entityInfoModule.entityType = this.entityType;
+            entityInfoModule.amountModule = this.amountModule;
+            return entityInfoModule;
+        }
     }
 }

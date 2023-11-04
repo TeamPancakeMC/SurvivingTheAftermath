@@ -9,12 +9,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.List;
 
-public class EntityInfoWithEquipmentModule extends BaseEntityInfoModule {
+public class EntityInfoWithEquipmentModule extends EntityInfoModule {
     public static final String IDENTIFIER = "EntityInfoWithEquipmentModule";
     private ItemWeightedListModule equipment;
 
@@ -63,5 +62,29 @@ public class EntityInfoWithEquipmentModule extends BaseEntityInfoModule {
             });
         }
         return arrayList;
+    }
+
+    @Override
+    public JsonElement serializeJson() {
+        JsonElement jsonElement = super.serializeJson();
+        jsonElement.getAsJsonObject().add(Constant.EQUIPMENT, equipment.serializeJson());
+        return jsonElement;
+    }
+
+    public static class Builder extends EntityInfoModule.Builder{
+        private ItemWeightedListModule equipment;
+
+        public Builder setEquipment(ItemWeightedListModule equipment) {
+            this.equipment = equipment;
+            return this;
+        }
+
+        public EntityInfoWithEquipmentModule build() {
+            EntityInfoWithEquipmentModule entityInfoWithEquipmentModule = new EntityInfoWithEquipmentModule();
+            entityInfoWithEquipmentModule.entityType = this.entityType;
+            entityInfoWithEquipmentModule.amountModule = this.amountModule;
+            entityInfoWithEquipmentModule.equipment = this.equipment;
+            return entityInfoWithEquipmentModule;
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.data.datagen;
 
+import com.pancake.surviving_the_aftermath.common.data.datagen.raid.NetherRaidModuleProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -30,6 +31,7 @@ public class EventSubscriber {
 //		generator.addProvider(event.includeClient(), new ModLanguageProvider(output));
 //		generator.addProvider(event.includeClient(), new ModLanguageCNProvider(output));
 //		generator.addProvider(event.includeServer(), new ModLootTableProvider(output));
+		generator.addProvider(event.includeServer(), new NetherRaidModuleProvider(output));
 	}
 
 }
