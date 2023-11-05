@@ -1,7 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.raid.api;
 
 
-import com.google.common.collect.Lists;
 import com.mojang.logging.LogUtils;
 import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
@@ -9,12 +8,11 @@ import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
-import com.pancake.surviving_the_aftermath.common.tracker.PlayerBattleTracker;
+import com.pancake.surviving_the_aftermath.common.tracker.MobBattleTracker;
+import com.pancake.surviving_the_aftermath.common.util.RandomUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +27,6 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
     public static final Logger LOGGER = LogUtils.getLogger();
     protected int currentWave = -1;
     protected BlockPos centerPos;
-    protected List<UUID> enemies = Lists.newArrayList();
     public BaseRaid(ServerLevel level, BlockPos centerPos) {
         super(level);
         this.centerPos = centerPos;
@@ -41,7 +38,7 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
 
     @Override
     public void bindTrackers() {
-        addTracker(new PlayerBattleTracker());
+        addTracker(new MobBattleTracker());
     }
 
     @Override
@@ -70,12 +67,6 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
         CompoundTag compoundTag = super.serializeNBT();
         compoundTag.putInt(Constant.CURRENT_WAVE, currentWave);
         compoundTag.put(Constant.CENTER_POS, NbtUtils.writeBlockPos(centerPos));
-
-
-        ListTag tags = new ListTag();
-        enemies.forEach(uuid -> tags.add(NbtUtils.createUUID(uuid)));
-        compoundTag.put(Constant.ENEMIES, tags);
-
         return compoundTag;
     }
 
@@ -84,15 +75,11 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
         super.deserializeNBT(nbt);
         this.currentWave = nbt.getInt(Constant.CURRENT_WAVE);
         this.centerPos = NbtUtils.readBlockPos(nbt.getCompound(Constant.CENTER_POS));
-
-
-        ListTag tags = nbt.getList(Constant.ENEMIES, Tag.TAG_INT_ARRAY);
-        tags.forEach(tag -> enemies.add(NbtUtils.loadUUID(tag)));
     }
 
 
     public Player randomPlayersUnderAttack(){
-        return level.getPlayerByUUID(players.get(level.random.nextInt(players.size())));
+        return level.getPlayerByUUID(RandomUtils.getRandomElement(players));
     }
 
 

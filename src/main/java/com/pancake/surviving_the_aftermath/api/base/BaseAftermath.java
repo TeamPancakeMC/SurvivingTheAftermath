@@ -35,7 +35,8 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
     protected AftermathState state;
     protected UUID uuid;
     protected ServerLevel level;
-    protected List<UUID> players = Lists.newArrayList();
+    protected Set<UUID> players = Sets.newHashSet();
+    protected Set<UUID> enemies = Sets.newHashSet();
     protected T module;
     private final String NAME = Constant.MOD_NAME + "." + getUniqueIdentifier();
     protected static final ServerBossEvent progress = new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
@@ -69,6 +70,7 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
 
     @Override
     public List<ITracker> getTrackers() {
+        TRACKERS.forEach(tracker -> tracker.setUUID(uuid));
         return TRACKERS;
     }
 
@@ -89,9 +91,13 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
         compoundTag.put(Constant.MODULE, module.serializeNBT());
         compoundTag.putFloat(Constant.PROGRESS, progressPercent);
 
-        ListTag tags = new ListTag();
-        players.forEach(uuid -> tags.add(NbtUtils.createUUID(uuid)));
-        compoundTag.put(Constant.PLAYERS, tags);
+        ListTag playerTags = new ListTag();
+        players.forEach(uuid -> playerTags.add(NbtUtils.createUUID(uuid)));
+        compoundTag.put(Constant.PLAYERS, playerTags);
+
+        ListTag enemiesTags = new ListTag();
+        enemies.forEach(uuid -> enemiesTags.add(NbtUtils.createUUID(uuid)));
+        compoundTag.put(Constant.ENEMIES, enemiesTags);
 
         return compoundTag;
     }
@@ -107,13 +113,27 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
         this.module = (T) aftermathModule;
 
 
-        ListTag tags = nbt.getList(Constant.PLAYERS, Tag.TAG_INT_ARRAY);
-        tags.forEach(tag -> players.add(NbtUtils.loadUUID(tag)));
+        ListTag playerTags = nbt.getList(Constant.PLAYERS, Tag.TAG_INT_ARRAY);
+        playerTags.forEach(tag -> players.add(NbtUtils.loadUUID(tag)));
+
+        ListTag enemiesTags = nbt.getList(Constant.ENEMIES, Tag.TAG_INT_ARRAY);
+        enemiesTags.forEach(tag -> enemies.add(NbtUtils.loadUUID(tag)));
     }
 
     @Override
     public Predicate<? super ServerPlayer> validPlayer() {
         return (Predicate<ServerPlayer>) player -> !player.isSpectator();
+    }
+
+
+    @Override
+    public Set<UUID> getEnemies() {
+        return enemies;
+    }
+
+    @Override
+    public Set<UUID> getPlayers() {
+        return players;
     }
 
     @Override

@@ -13,6 +13,8 @@ import com.pancake.surviving_the_aftermath.common.init.ModStructures;
 import com.pancake.surviving_the_aftermath.common.raid.api.BaseRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
 import com.pancake.surviving_the_aftermath.common.structure.NetherRaidStructure;
+import com.pancake.surviving_the_aftermath.common.tracker.RaidMobBattleTracker;
+import com.pancake.surviving_the_aftermath.common.tracker.RaidPlayerBattleTracker;
 import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -299,6 +301,13 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         } catch (IllegalAccessException | NoSuchFieldException e) {
             LOGGER.error("NetherRaid setSpawnPos error: " + e);
         }
+    }
+
+    @Override
+    public void bindTrackers() {
+        super.bindTrackers();
+        addTracker(new RaidMobBattleTracker());
+        addTracker(new RaidPlayerBattleTracker());
     }
 
     public static class Factory implements IAftermathFactory {

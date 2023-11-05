@@ -2,6 +2,8 @@ package com.pancake.surviving_the_aftermath.api;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import java.util.UUID;
+
 public interface ITracker extends IIdentifier{
     static void register(ITracker tracker) {
         MinecraftForge.EVENT_BUS.register(tracker);
@@ -10,4 +12,5 @@ public interface ITracker extends IIdentifier{
         MinecraftForge.EVENT_BUS.unregister(tracker);
     }
 
+    public void setUUID(UUID uuid);
 }

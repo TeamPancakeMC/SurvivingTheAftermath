@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -27,6 +28,10 @@ public interface IAftermath<T extends BaseAftermathModule> extends IIdentifier, 
     int[] getBarsOffset();
 
     Predicate<? super ServerPlayer> validPlayer();
+
+    Set<UUID> getEnemies();
+
+    Set<UUID> getPlayers();
 
     void updatePlayers();
 

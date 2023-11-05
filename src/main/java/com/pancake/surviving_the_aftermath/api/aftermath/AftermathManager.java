@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class AftermathManager {
@@ -39,6 +40,10 @@ public class AftermathManager {
 
     public Map<UUID, IAftermath<BaseAftermathModule>> getAftermathMap() {
         return AFTERMATH_MAP;
+    }
+
+    public Optional<IAftermath<BaseAftermathModule>> getAftermath(UUID uuid) {
+        return Optional.ofNullable(AFTERMATH_MAP.get(uuid));
     }
 
     public boolean create(IAftermath<BaseAftermathModule> aftermath) {

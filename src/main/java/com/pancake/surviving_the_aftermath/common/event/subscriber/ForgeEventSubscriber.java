@@ -35,7 +35,7 @@ public class ForgeEventSubscriber {
 	public static void onTickLevelTick(TickEvent.LevelTickEvent event) {
 		Level level = event.level;
 		if (event.phase == TickEvent.Phase.END && !level.isClientSide()) {
-			AftermathCap.get(level).ifPresent(AftermathCap::tick);
+			new Thread(() -> AftermathCap.get(level).ifPresent(AftermathCap::tick)).start();
 		}
 	}
 	@SubscribeEvent
