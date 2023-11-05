@@ -22,4 +22,12 @@ public class Constant {
     public static final String CENTER_POS = "centerPos";
     public static final String PROGRESS = "progressPercent";
     public static final String ITEM = "item";
+    public static final String DEATH_MAP = "deathMap";
+    public static final String DEATH_COUNT = "deathCount";
+    public static final String ESCAPE_MAP = "escapeMap";
+    public static final String ESCAPE_TIME = "escapeTime";
+    //观战者
+    public static final String SPECTATOR_MAP = "spectatorMap";
+    public static final String SPECTATOR_LIST = "spectatorList";
+    public static final String TRACKER = "tracker";
 }

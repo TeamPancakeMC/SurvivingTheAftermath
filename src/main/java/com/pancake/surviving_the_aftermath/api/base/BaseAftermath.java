@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public abstract class BaseAftermath<T extends BaseAftermathModule> implements IAftermath<BaseAftermathModule> {
     protected static final Logger LOGGER = LogUtils.getLogger();
@@ -96,6 +97,13 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
         compoundTag.put(Constant.MODULE, module.serializeNBT());
         compoundTag.putFloat(Constant.PROGRESS, progressPercent);
 
+        ListTag tags = new ListTag();
+        this.getTrackers().forEach(tracker -> {
+            System.out.println(tracker);
+            tags.add(tracker.serializeNBT());
+        });
+        compoundTag.put(Constant.TRACKER, tags);
+
         ListTag playerTags = new ListTag();
         players.forEach(uuid -> playerTags.add(NbtUtils.createUUID(uuid)));
         compoundTag.put(Constant.PLAYERS, playerTags);
@@ -115,6 +123,15 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
         IAftermathModule aftermathModule = AFTERMATH_API.getAftermathModule(this.getUniqueIdentifier());
         aftermathModule.deserializeNBT(moduleTag);
         this.module = (T) aftermathModule;
+
+        ListTag tags = nbt.getList(Constant.TRACKER, Tag.TAG_COMPOUND);
+        tags.forEach(tag -> {
+            CompoundTag trackerTag = (CompoundTag) tag;
+            TRACKERS.stream()
+                    .filter(tracker -> tracker.getUniqueIdentifier().equals(trackerTag.getString(Constant.IDENTIFIER)))
+                    .map(tracker -> (ITracker) tracker)
+                    .forEach(tracker -> tracker.deserializeNBT(trackerTag));
+        });
 
 
         ListTag playerTags = nbt.getList(Constant.PLAYERS, Tag.TAG_INT_ARRAY);

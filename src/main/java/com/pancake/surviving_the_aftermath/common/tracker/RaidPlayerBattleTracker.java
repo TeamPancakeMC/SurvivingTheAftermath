@@ -3,6 +3,7 @@ package com.pancake.surviving_the_aftermath.common.tracker;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.aftermath.BaseTracker;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
@@ -14,6 +15,10 @@ import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import com.pancake.surviving_the_aftermath.common.util.RandomUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,8 +46,6 @@ public class RaidPlayerBattleTracker extends BaseTracker {
     public String getUniqueIdentifier() {
         return IDENTIFIER;
     }
-
-
 
     @SubscribeEvent
     public void updatePlayer(AftermathEvent.Ongoing event) {
@@ -87,6 +90,7 @@ public class RaidPlayerBattleTracker extends BaseTracker {
             if (deathMap.containsKey(serverPlayer.getUUID())) {
                 Integer deathCount = deathMap.get(serverPlayer.getUUID());
 
+                System.out.println("死亡次数：" + deathCount);
                 if (!players.isEmpty()) {
                     player.displayClientMessage(Component.translatable(PLAYER_BATTLE_PERSONAL_FAIL), true);
                     setSpectator(serverPlayer, level);
@@ -178,4 +182,70 @@ public class RaidPlayerBattleTracker extends BaseTracker {
         player.setGameMode(GameType.SPECTATOR);
     }
 
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag compoundTag = new CompoundTag();
+        compoundTag.putString(Constant.IDENTIFIER, getUniqueIdentifier());
+
+//        Set<UUID> players
+        ListTag playerTags = new ListTag();
+        players.forEach(uuid -> playerTags.add(NbtUtils.createUUID(uuid)));
+        compoundTag.put(Constant.PLAYERS, playerTags);
+
+
+//        Map<UUID, Integer> deathMap
+        CompoundTag deathTag = new CompoundTag();
+        deathMap.forEach((uuid, deathCount) -> {
+            deathTag.putUUID(Constant.UUID, uuid);
+            deathTag.putInt(Constant.DEATH_COUNT, deathCount);
+        });
+        compoundTag.put(Constant.DEATH_MAP, deathTag);
+
+//        Map<UUID, Long> escapeMap
+        CompoundTag escapeTag = new CompoundTag();
+        escapeMap.forEach((uuid, escapeTime) -> {
+            escapeTag.putUUID(Constant.UUID, uuid);
+            escapeTag.putLong(Constant.ESCAPE_TIME, escapeTime);
+        });
+        compoundTag.put(Constant.ESCAPE_MAP, escapeTag);
+
+//        Map<UUID, Set<UUID>> spectatorMap
+        CompoundTag spectatorTag = new CompoundTag();
+        spectatorMap.forEach((uuid, spectatorUUIDs) -> {
+            ListTag spectatorUUIDsTag = new ListTag();
+            spectatorUUIDs.forEach(spectatorUUID -> spectatorUUIDsTag.add(NbtUtils.createUUID(spectatorUUID)));
+            spectatorTag.put(Constant.UUID, NbtUtils.createUUID(uuid));
+            spectatorTag.put(Constant.SPECTATOR_LIST, spectatorUUIDsTag);
+        });
+        compoundTag.put(Constant.SPECTATOR_MAP, spectatorTag);
+        return compoundTag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        ListTag playerTags = nbt.getList(Constant.PLAYERS, Tag.TAG_INT_ARRAY);
+        playerTags.forEach(tag -> players.add(NbtUtils.loadUUID(tag)));
+
+        CompoundTag deathTag = nbt.getCompound(Constant.DEATH_MAP);
+        deathTag.getAllKeys().forEach(uuidStr -> {
+            UUID uuid = NbtUtils.loadUUID(deathTag.get(uuidStr));
+            int deathCount = deathTag.getInt(Constant.DEATH_COUNT);
+            deathMap.put(uuid, deathCount);
+        });
+
+        CompoundTag escapeTag = nbt.getCompound(Constant.ESCAPE_MAP);
+        escapeTag.getAllKeys().forEach(uuidStr -> {
+            UUID uuid = NbtUtils.loadUUID(escapeTag.get(uuidStr));
+            long escapeTime = escapeTag.getLong(Constant.ESCAPE_TIME);
+            escapeMap.put(uuid, escapeTime);
+        });
+
+        CompoundTag spectatorTag = nbt.getCompound(Constant.SPECTATOR_MAP);
+        spectatorTag.getAllKeys().forEach(uuidStr -> {
+            UUID uuid = NbtUtils.loadUUID(spectatorTag.get(uuidStr));
+            ListTag spectatorUUIDsTag = spectatorTag.getList(Constant.SPECTATOR_LIST, Tag.TAG_INT_ARRAY);
+            Set<UUID> spectatorUUIDs = spectatorUUIDsTag.stream().map(NbtUtils::loadUUID).collect(Collectors.toSet());
+            spectatorMap.put(uuid, spectatorUUIDs);
+        });
+    }
 }
