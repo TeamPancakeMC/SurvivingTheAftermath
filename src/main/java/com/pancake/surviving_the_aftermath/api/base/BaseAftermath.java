@@ -33,19 +33,19 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
     protected final AftermathManager AFTERMATH_MANAGER = AftermathManager.getInstance();
     protected final List<ITracker> TRACKERS = Lists.newArrayList();
     protected AftermathState state;
-    protected UUID uuid;
     protected ServerLevel level;
     protected Set<UUID> players = Sets.newHashSet();
     protected Set<UUID> enemies = Sets.newHashSet();
     protected T module;
     private final String NAME = Constant.MOD_NAME + "." + getUniqueIdentifier();
-    protected static final ServerBossEvent progress = new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
+    protected final ServerBossEvent progress = new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
+    protected final UUID uuid = progress.getId();
     protected float progressPercent = progress.getProgress();
     public BaseAftermath(ServerLevel level) {
         this.level = level;
-        this.uuid = progress.getId();
         this.module = (T) AFTERMATH_API.getRandomAftermathModule(getUniqueIdentifier())
                 .orElseGet(() -> AFTERMATH_API.getAftermathMap().get(getUniqueIdentifier()).get(0));
+        bindTrackers();
     }
 
     @Override
@@ -76,8 +76,14 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
 
     @Override
     public boolean isEnd() {
-        return this.state == AftermathState.END;
+        return this.state == AftermathState.END ;
     }
+
+    @Override
+    public boolean isLose() {
+        return this.state == AftermathState.LOSE;
+    }
+
     @Override
     public UUID getUUID() {
         return this.uuid;
@@ -87,7 +93,6 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
         compoundTag.putString(Constant.IDENTIFIER, this.getUniqueIdentifier());
-        compoundTag.putUUID(Constant.UUID, this.uuid);
         compoundTag.put(Constant.MODULE, module.serializeNBT());
         compoundTag.putFloat(Constant.PROGRESS, progressPercent);
 
@@ -104,7 +109,6 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.uuid = nbt.getUUID(Constant.UUID);
         this.progressPercent = nbt.getFloat(Constant.PROGRESS);
 
         CompoundTag moduleTag = nbt.getCompound(Constant.MODULE);
@@ -159,6 +163,12 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
     @Override
     public void end() {
         AftermathEventUtil.end(this, players, level);
+        this.progress.removeAllPlayers();
+    }
+
+    @Override
+    public void lose() {
+        AftermathEventUtil.lose(this, players, level);
         this.progress.removeAllPlayers();
     }
 

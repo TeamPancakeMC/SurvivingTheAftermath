@@ -47,15 +47,14 @@ public class RaidPlayerBattleTracker extends BaseTracker {
     @SubscribeEvent
     public void updatePlayer(AftermathEvent.Ongoing event) {
         ServerLevel level = event.getLevel();
-        Set<UUID> raidPlayers = event.getPlayers();
-
-        if (level.isClientSide()) return;
-
-        Set<UUID> uuidsToRemove = players.stream()
-                .filter(uuid -> !raidPlayers.contains(uuid))
-                .collect(Collectors.toSet());
-
-        uuidsToRemove.forEach(uuid -> {
+        Set<UUID> uuids = Sets.newHashSet();
+        Set<UUID> eventPlayers = event.getPlayers();
+        for (UUID uuid : players) {
+            if (!eventPlayers.contains(uuid)) {
+                uuids.add(uuid);
+            }
+        }
+        for (UUID uuid : uuids) {
             players.remove(uuid);
             Player player = level.getPlayerByUUID(uuid);
             if (player != null) {
@@ -63,16 +62,21 @@ public class RaidPlayerBattleTracker extends BaseTracker {
             } else {
                 deathMap.put(uuid, deathMap.getOrDefault(uuid, 0) + 1);
             }
-        });
+        }
 
-        // 添加新加入事件的玩家
-        raidPlayers.stream()
-                .filter(uuid -> !players.contains(uuid))
-                .map(level::getPlayerByUUID).filter(Objects::nonNull)
-                .forEach(serverPlayer -> {
-                    escapeMap.remove(serverPlayer.getUUID());
-                    players.add(serverPlayer.getUUID());
-                });
+        for (UUID uuid : eventPlayers) {
+            if (!players.contains(uuid)) {
+                Player player = level.getPlayerByUUID(uuid);
+                if (player instanceof ServerPlayer serverPlayer && serverPlayer.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) {
+                    escapeMap.remove(uuid);
+                    players.add(uuid);
+                }
+            }
+        }
+        System.out.println("玩家数量：" + players);
+        System.out.println("死亡玩家数量：" + deathMap);
+        System.out.println("逃跑玩家数量：" + escapeMap);
+        System.out.println("观战玩家数量：" + spectatorMap);
     }
 
     @SubscribeEvent
@@ -81,8 +85,8 @@ public class RaidPlayerBattleTracker extends BaseTracker {
         Level level = player.level();
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             if (deathMap.containsKey(serverPlayer.getUUID())) {
-
                 Integer deathCount = deathMap.get(serverPlayer.getUUID());
+
                 if (!players.isEmpty()) {
                     player.displayClientMessage(Component.translatable(PLAYER_BATTLE_PERSONAL_FAIL), true);
                     setSpectator(serverPlayer, level);
@@ -92,8 +96,7 @@ public class RaidPlayerBattleTracker extends BaseTracker {
 
                 if (deathCount >= MAX_DEATH_COUNT || spectatorMap.containsKey(serverPlayer.getUUID())) {
                     restorePlayerGameMode(level);
-                    manager.getAftermath(uuid).ifPresent(aftermath ->
-                            AftermathEventUtil.lose((BaseAftermath<BaseAftermathModule>) aftermath,players, (ServerLevel) level));
+                    manager.getAftermath(uuid).ifPresent(IAftermath::lose);
                 }
             }
         }
@@ -106,18 +109,20 @@ public class RaidPlayerBattleTracker extends BaseTracker {
     public void onPlayerEscape(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         Level level = player.level();
-        UUID uuid = player.getUUID();
+        UUID uuidPlayer = player.getUUID();
 
-        if (!level.isClientSide && escapeMap.containsKey(uuid)) {
-            Long lastEscapeTime = escapeMap.get(uuid);
+        if (!level.isClientSide && escapeMap.containsKey(uuidPlayer)) {
+            Long lastEscapeTime = escapeMap.get(uuidPlayer);
             long time = level.getGameTime() - lastEscapeTime;
 
             manager.getAftermath(uuid).ifPresent(aftermath -> {
-                if (aftermath instanceof BaseRaid raid){
+                if (aftermath instanceof BaseRaid<?> raid){
 
                     BlockPos centerPos = raid.getCenterPos();
                     BlockPos pos = player.blockPosition();
                     double distance = Math.sqrt(centerPos.distSqr(pos));
+
+                    System.out.println("玩家逃跑距离：" + distance);
 
 
                     if (lastEscapeTime != 0L && time > 20 * 5) {

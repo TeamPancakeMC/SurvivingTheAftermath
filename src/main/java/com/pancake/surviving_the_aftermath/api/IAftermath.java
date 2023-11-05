@@ -20,6 +20,7 @@ public interface IAftermath<T extends BaseAftermathModule> extends IIdentifier, 
     List<ITracker> getTrackers();
 
     boolean isEnd();
+    boolean isLose();
     boolean isCreate();
     UUID getUUID();
 
@@ -39,5 +40,6 @@ public interface IAftermath<T extends BaseAftermathModule> extends IIdentifier, 
     void spawnRewards();
 
     void end();
+    void lose();
      T getModule();
 }

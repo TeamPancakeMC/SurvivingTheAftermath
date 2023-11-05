@@ -8,6 +8,7 @@ import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +21,7 @@ public class AftermathManager {
 
     public void tick() {
         for (IAftermath<BaseAftermathModule> raid : AFTERMATH_MAP.values()) {
-            if (raid.isEnd()) {
+            if (raid.isEnd() || raid.isLose()) {
                 remove(raid);
             } else {
                 raid.tick();
@@ -35,7 +36,9 @@ public class AftermathManager {
 
     private void add(IAftermath<BaseAftermathModule> aftermath) {
         AFTERMATH_MAP.put(aftermath.getUUID(), aftermath);
-        aftermath.getTrackers().forEach(ITracker::register);
+        List<ITracker> trackers = aftermath.getTrackers();
+        System.out.println("add aftermath :" + trackers);
+        trackers.forEach(ITracker::register);
     }
 
     public Map<UUID, IAftermath<BaseAftermathModule>> getAftermathMap() {

@@ -42,7 +42,7 @@ public class AftermathEventUtil {
         MinecraftForge.EVENT_BUS.post(new AftermathEvent.Celebrating(aftermath,players, level,rewardList));
     }
     //post lose
-    public static void lose(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
+    public static void lose(BaseAftermath aftermath, Set<UUID> players, ServerLevel level) {
         aftermath.setState(AftermathState.LOSE);
         MinecraftForge.EVENT_BUS.post(new AftermathEvent.Lose(aftermath,players, level));
     }

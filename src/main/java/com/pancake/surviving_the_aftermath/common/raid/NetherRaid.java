@@ -9,6 +9,7 @@ import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.IAftermathFactory;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
+import com.pancake.surviving_the_aftermath.common.event.AftermathEvent;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
 import com.pancake.surviving_the_aftermath.common.raid.api.BaseRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
@@ -211,6 +212,7 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
             return;
         }
         if (state == AftermathState.ONGOING){
+            AftermathEventUtil.ongoing(this, players, level);
             checkNextWave();
             spawnWave();
             EnemyTotalHealthRatio();
