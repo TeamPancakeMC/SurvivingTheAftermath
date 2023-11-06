@@ -1,5 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.data.datagen.raid;
 
+import com.google.common.collect.Lists;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.amount.FixedAmountModule;
@@ -9,7 +10,6 @@ import com.pancake.surviving_the_aftermath.api.module.impl.weighted.ItemWeighted
 import com.pancake.surviving_the_aftermath.common.data.datagen.AftermathModuleProviders;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
 import net.minecraft.data.PackOutput;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
 

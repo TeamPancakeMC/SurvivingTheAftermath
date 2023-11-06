@@ -99,7 +99,7 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
 
         ListTag tags = new ListTag();
         this.getTrackers().forEach(tracker -> {
-            System.out.println(tracker);
+            System.out.println("tracker :" + tracker);
             tags.add(tracker.serializeNBT());
         });
         compoundTag.put(Constant.TRACKER, tags);

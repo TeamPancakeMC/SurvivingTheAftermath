@@ -1,17 +1,14 @@
 package com.pancake.surviving_the_aftermath.common.tracker;
 
 
-import com.pancake.surviving_the_aftermath.api.IAftermath;
-import com.pancake.surviving_the_aftermath.api.aftermath.BaseTracker;
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
+import com.pancake.surviving_the_aftermath.api.base.BaseTracker;
 import com.pancake.surviving_the_aftermath.common.config.AftermathConfig;
-import com.pancake.surviving_the_aftermath.common.raid.api.BaseRaid;
-import com.pancake.surviving_the_aftermath.common.raid.api.IRaid;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import java.util.Set;
+import java.util.UUID;
 
 
 public class MobBattleTracker extends BaseTracker {
@@ -28,10 +25,12 @@ public class MobBattleTracker extends BaseTracker {
         LivingEntity entity = event.getEntity();
         if (entity.level().isClientSide()) return;
 
-        manager.getAftermathMap().get(uuid).getEnemies().forEach(uuid -> {
-            if (uuid.equals(entity.getUUID())) {
+        manager.getAftermath(uuid).ifPresent(aftermath -> {
+            Set<UUID> enemies = aftermath.getEnemies();
+            if (enemies.contains(entity.getUUID())) {
                 entity.setGlowingTag(true);
             }
         });
     }
+
 }
