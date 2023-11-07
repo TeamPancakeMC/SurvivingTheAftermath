@@ -11,8 +11,9 @@ public abstract class BaseTracker implements ITracker {
     protected UUID uuid;
 
     @Override
-    public void setUUID(UUID uuid) {
+    public ITracker setUUID(UUID uuid) {
         this.uuid = uuid;
+        return this;
     }
 
     @Override

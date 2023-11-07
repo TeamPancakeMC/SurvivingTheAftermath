@@ -26,12 +26,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public abstract class BaseAftermath<T extends BaseAftermathModule> implements IAftermath<BaseAftermathModule> {
     protected static final Logger LOGGER = LogUtils.getLogger();
-    protected final AftermathAPI AFTERMATH_API = AftermathAPI.getInstance();
-    protected final AftermathManager AFTERMATH_MANAGER = AftermathManager.getInstance();
+    protected final AftermathAPI API = AftermathAPI.getInstance();
+    protected final AftermathManager MANAGER = AftermathManager.getInstance();
     protected final List<ITracker> TRACKERS = Lists.newArrayList();
     protected AftermathState state;
     protected ServerLevel level;
@@ -44,8 +43,8 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
     protected float progressPercent = progress.getProgress();
     public BaseAftermath(ServerLevel level) {
         this.level = level;
-        this.module = (T) AFTERMATH_API.getRandomAftermathModule(getUniqueIdentifier())
-                .orElseGet(() -> AFTERMATH_API.getAftermathMap().get(getUniqueIdentifier()).get(0));
+        this.module = (T) API.getRandomAftermathModule(getUniqueIdentifier())
+                .orElseGet(() -> API.getAftermathMap().get(getUniqueIdentifier()).get(0));
         bindTrackers();
     }
 
@@ -71,7 +70,6 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
 
     @Override
     public List<ITracker> getTrackers() {
-        TRACKERS.forEach(tracker -> tracker.setUUID(uuid));
         return TRACKERS;
     }
 
@@ -120,7 +118,7 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
         this.progressPercent = nbt.getFloat(Constant.PROGRESS);
 
         CompoundTag moduleTag = nbt.getCompound(Constant.MODULE);
-        IAftermathModule aftermathModule = AFTERMATH_API.getAftermathModule(this.getUniqueIdentifier());
+        IAftermathModule aftermathModule = API.getAftermathModule(this.getUniqueIdentifier());
         aftermathModule.deserializeNBT(moduleTag);
         this.module = (T) aftermathModule;
 

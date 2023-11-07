@@ -9,7 +9,6 @@ import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.IAftermathFactory;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
-import com.pancake.surviving_the_aftermath.common.event.AftermathEvent;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
 import com.pancake.surviving_the_aftermath.common.raid.api.BaseRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
@@ -35,7 +34,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
@@ -309,8 +307,9 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
     @Override
     public void bindTrackers() {
         super.bindTrackers();
-        addTracker(new RaidMobBattleTracker());
-        addTracker(new RaidPlayerBattleTracker());
+        API.getTracker(uuid, RaidMobBattleTracker.IDENTIFIER,
+                        RaidPlayerBattleTracker.IDENTIFIER)
+                .forEach(this::addTracker);
     }
 
     public static class Factory implements IAftermathFactory {

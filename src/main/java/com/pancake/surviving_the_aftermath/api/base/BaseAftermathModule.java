@@ -63,9 +63,11 @@ public abstract class BaseAftermathModule implements IAftermathModule {
         Rewards = rewards;
     }
 
+    @Override
     public String getJsonName() {
         return jsonName == null ? getUniqueIdentifier().toLowerCase() : jsonName.toLowerCase();
     }
+    @Override
     public void setJsonName(String jsonName) {
         this.jsonName = jsonName;
     }

@@ -15,6 +15,9 @@ import com.pancake.surviving_the_aftermath.common.event.subscriber.EnchantmentSu
 import com.pancake.surviving_the_aftermath.common.init.*;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
+import com.pancake.surviving_the_aftermath.common.tracker.MobBattleTracker;
+import com.pancake.surviving_the_aftermath.common.tracker.RaidMobBattleTracker;
+import com.pancake.surviving_the_aftermath.common.tracker.RaidPlayerBattleTracker;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -61,7 +64,9 @@ public class SurvivingTheAftermath {
         instance.registerWeightedListModule(EntityTypeWeightedListModule.IDENTIFIER, EntityTypeWeightedListModule.class);
         instance.registerWeightedListModule(ItemWeightedListModule.IDENTIFIER, ItemWeightedListModule.class);
 
-//        instance.registerTracker(PlayerBattleTracker.IDENTIFIER,PlayerBattleTracker.class);
+        instance.registerTracker(RaidMobBattleTracker.IDENTIFIER,RaidMobBattleTracker.class);
+        instance.registerTracker(RaidPlayerBattleTracker.IDENTIFIER,RaidPlayerBattleTracker.class);
+        instance.registerTracker(MobBattleTracker.IDENTIFIER,MobBattleTracker.class);
 
         instance.registerAmountModule(FixedAmountModule.IDENTIFIER,FixedAmountModule.class);
         instance.registerAmountModule(RandomAmountModule.IDENTIFIER,RandomAmountModule.class);

@@ -2,9 +2,11 @@ package com.pancake.surviving_the_aftermath.common.util;
 
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
+import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.common.event.AftermathEvent;
 import com.pancake.surviving_the_aftermath.compat.kubejs.event.AftermathEventJS;
 import com.pancake.surviving_the_aftermath.compat.kubejs.event.AftermathEvents;
+import com.pancake.surviving_the_aftermath.compat.kubejs.event.AftermathModifyEventJS;
 import dev.latvian.mods.kubejs.event.EventResult;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.SimpleWeightedRandomList;
@@ -61,5 +63,9 @@ public class AftermathEventUtil {
         aftermath.setState(AftermathState.END);
         MinecraftForge.EVENT_BUS.post(new AftermathEvent.End(aftermath,players, level));
         AftermathEvents.END.post(new AftermathEventJS.EndJS(aftermath, players, level));
+    }
+
+    public static void modify(String identifier, List<IAftermathModule> aftermaths) {
+        EventResult result = AftermathEvents.MODIFY.post(new AftermathModifyEventJS(identifier, aftermaths));
     }
 }

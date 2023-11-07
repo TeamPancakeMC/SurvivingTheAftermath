@@ -9,4 +9,8 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public interface IAftermathModule extends IIdentifier, IJSONSerializable, INBTSerializable<CompoundTag> {
     SimpleWeightedRandomList<Item> getRewardList();
+
+    String getJsonName();
+
+    void setJsonName(String jsonName);
 }

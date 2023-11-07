@@ -16,5 +16,5 @@ public interface ITracker extends IIdentifier, INBTSerializable<CompoundTag> {
         MinecraftForge.EVENT_BUS.unregister(tracker);
     }
 
-    public void setUUID(UUID uuid);
+    public ITracker setUUID(UUID uuid);
 }

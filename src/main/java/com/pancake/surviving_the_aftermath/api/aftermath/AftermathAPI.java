@@ -11,10 +11,8 @@ import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
 import org.slf4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AftermathAPI {
     private final Map<String, List<IAftermathModule>> AFTERMATH_MODULE_MAP = Maps.newHashMap();
@@ -43,14 +41,24 @@ public class AftermathAPI {
         return Optional.ofNullable(aftermathModules.get(new Random().nextInt(aftermathModules.size())));
     }
 
+    public List<IAftermathModule> getAftermathModules(String identifier) {
+        return AFTERMATH_MODULE_MAP.get(identifier);
+    }
+
 
     public void registerTracker(String identifier, Class<? extends ITracker> tracker) {
         TRACKERS.put(identifier, tracker);
     }
 
-    public ITracker getTracker(String identifier) {
-        return getObjectInstance(TRACKERS, identifier);
+    public List<ITracker> getTracker(UUID uuid, String... identifiers) {
+        return Arrays.stream(identifiers)
+                .map(identifier -> getObjectInstance(TRACKERS, identifier))
+                .filter(Objects::nonNull)
+                .map(tracker -> tracker.setUUID(uuid))
+                .toList();
     }
+
+
 
     public void registerAmountModule(String identifier, Class<? extends IAmountModule> amountModule) {
         AMOUNT_MODULES_MAP.put(identifier, amountModule);

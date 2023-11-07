@@ -9,6 +9,7 @@ import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
+import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -39,6 +40,7 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
             IAftermathModule aftermathModule = instance.getAftermathModule(identifier);
             try {
                 aftermathModule.deserializeJson(asJsonObject);
+                aftermathModule.setJsonName(resourceLocation.getPath());
                 if (!AFTERMATH_MODULE_MAP.containsKey(identifier)) {
                     AFTERMATH_MODULE_MAP.put(identifier, new ArrayList<>(List.of(aftermathModule)));
                 }
@@ -47,6 +49,8 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
                 SurvivingTheAftermath.LOGGER.error("Failed to deserialize aftermath module: " + aftermathModule.getUniqueIdentifier());
             }
         });
+
+
         instance.finishAftermathMap(AFTERMATH_MODULE_MAP);
     }
 }

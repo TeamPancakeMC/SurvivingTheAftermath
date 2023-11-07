@@ -9,6 +9,8 @@ import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.common.tracker.MobBattleTracker;
+import com.pancake.surviving_the_aftermath.common.tracker.RaidMobBattleTracker;
+import com.pancake.surviving_the_aftermath.common.tracker.RaidPlayerBattleTracker;
 import com.pancake.surviving_the_aftermath.common.util.RandomUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -38,12 +40,13 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
 
     @Override
     public void bindTrackers() {
-        addTracker(new MobBattleTracker());
+        API.getTracker(uuid, MobBattleTracker.IDENTIFIER)
+                .forEach(this::addTracker);
     }
 
     @Override
     public boolean isCreate() {
-        Map<UUID, IAftermath<BaseAftermathModule>> aftermathMap = AFTERMATH_MANAGER.getAftermathMap();
+        Map<UUID, IAftermath<BaseAftermathModule>> aftermathMap = MANAGER.getAftermathMap();
         return aftermathMap.values().stream()
                 .filter(aftermath -> aftermath instanceof IRaid)
                 .map(aftermath -> (IRaid) aftermath)
