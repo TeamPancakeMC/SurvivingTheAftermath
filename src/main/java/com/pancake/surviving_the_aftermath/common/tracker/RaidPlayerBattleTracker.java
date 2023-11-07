@@ -48,7 +48,7 @@ public class RaidPlayerBattleTracker extends BaseTracker {
 
     @SubscribeEvent
     public void updatePlayer(AftermathEvent.Ongoing event) {
-        ServerLevel level = event.getLevel();
+        Level level = event.getLevel();
         Set<UUID> uuids = Sets.newHashSet();
         Set<UUID> eventPlayers = event.getPlayers();
         for (UUID uuid : players) {

@@ -1,19 +1,18 @@
-package com.pancake.surviving_the_aftermath.common.event;
+package com.pancake.surviving_the_aftermath.compat.kubejs.event;
 
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
+import dev.latvian.mods.kubejs.event.EventJS;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class AftermathEvent extends Event {
+public class AftermathEventJS extends EventJS {
     private final BaseAftermath<BaseAftermathModule> aftermath;
     private final Set<UUID> players;
     private final ServerLevel level;
@@ -26,53 +25,53 @@ public class AftermathEvent extends Event {
         return level;
     }
 
-    public AftermathEvent(BaseAftermath<BaseAftermathModule> aftermath,Set<UUID> players, ServerLevel level) {
+    public AftermathEventJS(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
         this.aftermath = aftermath;
         this.players = players;
         this.level = level;
     }
 
-    public static class Start extends AftermathEvent {
-        public Start(BaseAftermath<BaseAftermathModule> aftermath,Set<UUID> players, ServerLevel level) {
+    public static class StartJS extends AftermathEventJS {
+        public StartJS(BaseAftermath<BaseAftermathModule> aftermath,Set<UUID> players, ServerLevel level) {
             super(aftermath,players, level);
         }
     }
-    public static class End extends AftermathEvent {
+    public static class EndJS extends AftermathEventJS {
 
-        public End(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
+        public EndJS(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
-    public static class Ready extends AftermathEvent {
+    public static class ReadyJS extends AftermathEventJS {
 
-        public Ready(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
+        public ReadyJS(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
 
-    public static class Ongoing extends AftermathEvent {
+    public static class OngoingJS extends AftermathEventJS {
 
-        public Ongoing(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
+        public OngoingJS(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
-    public static class Victory extends AftermathEvent {
+    public static class VictoryJS extends AftermathEventJS {
 
-        public Victory(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
+        public VictoryJS(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
-    public static class Lose extends AftermathEvent {
+    public static class LoseJS extends AftermathEventJS {
 
-        public Lose(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
+        public LoseJS(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
     @Cancelable
-    public static class Celebrating extends AftermathEvent {
+    public static class CelebratingJS extends AftermathEventJS {
         private SimpleWeightedRandomList<Item> rewardList;
 
-        public Celebrating(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level,SimpleWeightedRandomList<Item> rewardList) {
+        public CelebratingJS(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level,SimpleWeightedRandomList<Item> rewardList) {
             super(aftermath, players, level);
             this.rewardList = rewardList;
         }

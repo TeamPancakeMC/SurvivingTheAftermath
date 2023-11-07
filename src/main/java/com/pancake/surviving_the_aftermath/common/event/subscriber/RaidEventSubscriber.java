@@ -54,7 +54,8 @@ public class RaidEventSubscriber {
         }
     }
     @SubscribeEvent
-    public static void onRaidStart(AftermathEvent.Start event) {
+    public static void onRaidStart(AftermathEvent.Start event)
+    {
         event.getPlayers().forEach(uuid -> {
             Player player = event.getLevel().getPlayerByUUID(uuid);
             if (player != null) {

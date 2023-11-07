@@ -1,0 +1,1 @@
+com.pancake.surviving_the_aftermath.compat.kubejs.ModKubeJSPlugin
