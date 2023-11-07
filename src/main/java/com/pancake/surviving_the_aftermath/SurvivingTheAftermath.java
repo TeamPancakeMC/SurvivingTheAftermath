@@ -11,9 +11,8 @@ import com.pancake.surviving_the_aftermath.api.module.impl.weighted.ItemWeighted
 import com.pancake.surviving_the_aftermath.common.config.AftermathConfig;
 import com.pancake.surviving_the_aftermath.common.data.datagen.EventSubscriber;
 import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoader;
-import com.pancake.surviving_the_aftermath.common.init.ModMobEffects;
-import com.pancake.surviving_the_aftermath.common.init.ModStructurePieceTypes;
-import com.pancake.surviving_the_aftermath.common.init.ModStructureTypes;
+import com.pancake.surviving_the_aftermath.common.event.subscriber.EnchantmentSubscriber;
+import com.pancake.surviving_the_aftermath.common.init.*;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
 import net.minecraft.resources.ResourceLocation;
@@ -35,12 +34,19 @@ public class SurvivingTheAftermath {
     public static final String MOD_ID = "surviving_the_aftermath";
     public static final Logger LOGGER = LogUtils.getLogger();
     public SurvivingTheAftermath() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(EventSubscriber::onGatherData);
-        ModStructureTypes.STRUCTURE_TYPES.register(modEventBus);
-        ModStructurePieceTypes.STRUCTURE_PIECE_TYPES.register(modEventBus);
-        ModMobEffects.MOB_EFFECTS.register(modEventBus);
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModBlocks.BLOCKS.register(bus);
+        ModItems.ITEMS.register(bus);
+        ModTabs.TABS.register(bus);
+        ModVillagers.VILLAGER_PROFESSIONS.register(bus);
+        ModEnchantments.ENCHANTMENTS.register(bus);
+        ModSoundEvents.SOUND_EVENTS.register(bus);
+        ModStructurePieceTypes.STRUCTURE_PIECE_TYPES.register(bus);
+        ModStructureTypes.STRUCTURE_TYPES.register(bus);
+        ModMobEffects.MOB_EFFECTS.register(bus);
+        bus.addListener(EventSubscriber::onGatherData);
+        bus.addListener(EnchantmentSubscriber::onFMLClientSetup);
+        bus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.addListener(this::onDataPackLoad);
 

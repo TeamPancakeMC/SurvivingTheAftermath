@@ -107,6 +107,8 @@ public class AftermathAPI {
             LOGGER.error("AftermathAPI Failed to find constructor of object with identifier {} error : {}", identifier, e);
         } catch (InvocationTargetException e) {
             LOGGER.error("AftermathAPI Failed to invoke constructor of object with identifier {} error : {}", identifier, e);
+        }catch (NullPointerException e){
+            LOGGER.error("AftermathAPI Failed to find object with identifier :  {}", identifier);
         }
         return null;
     }
