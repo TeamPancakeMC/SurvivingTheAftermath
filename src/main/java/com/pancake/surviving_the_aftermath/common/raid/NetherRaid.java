@@ -1,7 +1,7 @@
 package com.pancake.surviving_the_aftermath.common.raid;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.Constant;
@@ -10,12 +10,14 @@ import com.pancake.surviving_the_aftermath.api.IAftermathFactory;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
+import com.pancake.surviving_the_aftermath.api.PortalShapeAccessor;
 import com.pancake.surviving_the_aftermath.common.raid.api.BaseRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
 import com.pancake.surviving_the_aftermath.common.structure.NetherRaidStructure;
 import com.pancake.surviving_the_aftermath.common.tracker.RaidMobBattleTracker;
 import com.pancake.surviving_the_aftermath.common.tracker.RaidPlayerBattleTracker;
 import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
+import com.pancake.surviving_the_aftermath.common.util.RandomUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -35,6 +37,7 @@ import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
@@ -48,16 +51,13 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class NetherRaid extends BaseRaid<NetherRaidModule> {
     public static final String IDENTIFIER = "nether_raid";
     private static final ResourceLocation BARS_RESOURCE = SurvivingTheAftermath.asResource("textures/gui/nether_raid_bars.png");
-    protected List<BlockPos> spawnPos = Lists.newArrayList();
+    protected Set<BlockPos> spawnPos = Sets.newHashSet();
     private int readyTime;
     private static final int MAX_REWARD_TIME = 10 * 20;
     private int rewardTime = MAX_REWARD_TIME;
@@ -133,7 +133,7 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
 
     @Override
     public void spawnRewards() {
-        BlockPos blockPos = spawnPos.get(level.random.nextInt(spawnPos.size()));
+        BlockPos blockPos = RandomUtils.getRandomElement(spawnPos);
         Direction dir = Direction.Plane.HORIZONTAL.stream().filter(d -> level.isEmptyBlock(blockPos.relative(d))
                 && !spawnPos.contains(blockPos.relative(d))).findFirst().orElse(Direction.UP);
         Vec3 vec = Vec3.atCenterOf(blockPos);
@@ -247,10 +247,12 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         for (LazyOptional<Entity> lazyOptional : arrayList) {
             lazyOptional.ifPresent(entity -> {
                 if (entity instanceof Mob mob){
-                    BlockPos blockPos = spawnPos.get(level.random.nextInt(spawnPos.size()));
-                    mob.moveTo(blockPos.getX() + 1, blockPos.getY(), blockPos.getZ() + 1);
+                    BlockPos blockPos = RandomUtils.getRandomElement(spawnPos);
+                    mob.moveTo(blockPos.getX() + 0.5, blockPos.getY() , blockPos.getZ()+ 0.5);
                     mob.setPersistenceRequired();
-                    mob.getBrain().setMemory(MemoryModuleType.ANGRY_AT, randomPlayersUnderAttack().getUUID());
+                    Player target = randomPlayersUnderAttack();
+                    mob.getBrain().setMemory(MemoryModuleType.ANGRY_AT, target.getUUID());
+                    mob.setTarget(target);
 
                     for (var slot : EquipmentSlot.values()) {
                         mob.setDropChance(slot, 0);
@@ -269,6 +271,8 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
                     if (entity instanceof Ghast ghast) {
                         ghast.setPos(ghast.getX(), ghast.getY() + 20, ghast.getZ());
                     }
+
+
                     enemies.add(mob.getUUID());
                     level.addFreshEntity(entity);
                 }
@@ -276,6 +280,8 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         }
         return arrayList;
     }
+
+
 
     protected void spawnWave() {
         if (enemies.isEmpty() && state == AftermathState.ONGOING){
@@ -312,16 +318,14 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
 
     protected void setSpawnPos(PortalShape portalShape){
         spawnPos.clear();
-        try {
-            BlockPos bottomLeft = SurvivingTheAftermath.getPrivateField(portalShape, "bottomLeft", BlockPos.class);
-            int height = SurvivingTheAftermath.getPrivateField(portalShape, "height", Integer.class);
-            int width = SurvivingTheAftermath.getPrivateField(portalShape, "width", Integer.class);
-            Direction rightDir = SurvivingTheAftermath.getPrivateField(portalShape, "rightDir", Direction.class);
-            BlockPos.betweenClosed(bottomLeft, bottomLeft.relative(Direction.UP, height - 1).relative(rightDir, width - 1))
+        spawnPos.add(centerPos);
+        PortalShapeAccessor portalShapeMixin = (PortalShapeAccessor ) portalShape;
+        BlockPos bottomLeft = portalShapeMixin.survivingTheAftermath$getBottomLeft();
+        int height = portalShapeMixin.survivingTheAftermath$getHeight();
+        int width = portalShapeMixin.survivingTheAftermath$getWidth();
+        Direction rightDir = portalShapeMixin.survivingTheAftermath$getRightDir();
+        BlockPos.betweenClosed(bottomLeft, bottomLeft.relative(Direction.UP, height - 1).relative(rightDir, width - 1))
                     .forEach(blockPos -> spawnPos.add(new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ())));
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            LOGGER.error("NetherRaid setSpawnPos error: " + e);
-        }
     }
 
     @Override
@@ -330,6 +334,11 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         API.getTracker(uuid, RaidMobBattleTracker.IDENTIFIER,
                         RaidPlayerBattleTracker.IDENTIFIER)
                 .forEach(this::addTracker);
+    }
+
+    @Override
+    public boolean join(Entity entity) {
+        return entity.getType() == EntityType.MAGMA_CUBE && super.join(entity);
     }
 
     public static class Factory implements IAftermathFactory {

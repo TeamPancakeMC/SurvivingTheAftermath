@@ -5,6 +5,7 @@ import com.pancake.surviving_the_aftermath.common.event.AftermathEvent;
 import com.pancake.surviving_the_aftermath.common.init.ModSoundEvents;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
+import com.pancake.surviving_the_aftermath.common.raid.api.BaseRaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.portal.PortalShape;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -75,7 +77,16 @@ public class RaidEventSubscriber {
                         ModSoundEvents.ORCHELIAS_VOX.get(), SoundSource.NEUTRAL, 3.0F, 1.0F, level.random.nextLong());
             }
         });
-
     }
+
+    @SubscribeEvent
+    public static void joinRaid(EntityJoinLevelEvent event) {
+        AftermathManager.getInstance().getAftermathMap().values().stream()
+                .filter(aftermath -> aftermath instanceof BaseRaid<?>)
+                .map(aftermath -> (BaseRaid<?>) aftermath)
+                .forEach(raid -> raid.join(event.getEntity()));
+    }
+
+
 
 }

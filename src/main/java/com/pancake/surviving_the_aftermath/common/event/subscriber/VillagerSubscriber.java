@@ -31,18 +31,18 @@ public class VillagerSubscriber {
     public static void addCustomTrades(VillagerTradesEvent event) {
         final ItemStack emerald = new ItemStack(Items.EMERALD, 2);
         final ItemStack diamond = new ItemStack(Items.DIAMOND, 1);
+        Int2ObjectMap<List<VillagerTrades.ItemListing>> trades1 = event.getTrades();
         if (event.getType() == ModVillagers.RELIC_DEALER.get()) {
-            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-            trades.get(1).add((trader, random) -> enchantBookForNetherCore(random));
+            trades1.get(1).add((trader, random) -> enchantBookForNetherCore(random));
         }
         if (event.getType() == VillagerProfession.BUTCHER) {
-            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
+            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = trades1;
             ItemStack rawFalukorv = new ItemStack(ModItems.RAW_FALUKORV.get(), 1);
             trades.get(4).add((trader, random) -> newOffer(emerald, rawFalukorv));
             trades.get(5).add((trader, random) -> newOffer(diamond, rawFalukorv));
         }
         if (event.getType() == VillagerProfession.FARMER) {
-            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
+            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = trades1;
             for (Item item : RegistryUtil.getKnownItems()) {
                 if (item.isEdible()) {
                     ItemStack foodStack = item.getDefaultInstance();

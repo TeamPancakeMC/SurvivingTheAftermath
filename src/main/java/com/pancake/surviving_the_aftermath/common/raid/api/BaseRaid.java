@@ -2,6 +2,7 @@ package com.pancake.surviving_the_aftermath.common.raid.api;
 
 
 import com.mojang.logging.LogUtils;
+import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
@@ -86,4 +87,9 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
     }
 
 
+    public boolean join(Entity entity) {
+        return state == AftermathState.ONGOING
+                && Math.sqrt(entity.blockPosition().distSqr(centerPos)) < getRadius()
+                && enemies.add(entity.getUUID());
+    }
 }
