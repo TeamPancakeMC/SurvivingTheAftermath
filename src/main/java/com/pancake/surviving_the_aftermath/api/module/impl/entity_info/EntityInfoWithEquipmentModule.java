@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class EntityInfoWithEquipmentModule extends EntityInfoModule {
     public static final String IDENTIFIER = "entity_info_equipment";
@@ -73,8 +74,8 @@ public class EntityInfoWithEquipmentModule extends EntityInfoModule {
     public static class Builder extends EntityInfoModule.Builder{
         private ItemWeightedListModule equipment;
 
-        public Builder setEquipment(ItemWeightedListModule equipment) {
-            this.equipment = equipment;
+        public Builder setEquipment(Supplier<ItemWeightedListModule> equipment) {
+            this.equipment = equipment.get();
             return this;
         }
 

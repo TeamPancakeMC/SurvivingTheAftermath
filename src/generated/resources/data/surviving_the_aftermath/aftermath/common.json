@@ -3,11 +3,27 @@
   "readyTime": 100,
   "rewards": [
     {
-      "item": "minecraft:stone",
-      "weight": 1
+      "item": "minecraft:gold_ingot",
+      "weight": 100
     },
     {
       "item": "minecraft:diamond",
+      "weight": 10
+    },
+    {
+      "item": "minecraft:emerald",
+      "weight": 20
+    },
+    {
+      "item": "minecraft:enchanted_golden_apple",
+      "weight": 2
+    },
+    {
+      "item": "minecraft:air",
+      "weight": 2
+    },
+    {
+      "item": "surviving_the_aftermath:nether_core",
       "weight": 1
     }
   ],
@@ -15,10 +31,11 @@
     [
       {
         "amount": {
-          "amount": 10,
-          "identifier": "fixed_amount"
+          "identifier": "random_amount",
+          "max": 5,
+          "min": 4
         },
-        "entityType": "minecraft:zombie",
+        "entityType": "minecraft:piglin",
         "identifier": "entity_info"
       }
     ],
@@ -26,10 +43,681 @@
       {
         "amount": {
           "identifier": "random_amount",
-          "max": 20,
-          "min": 10
+          "max": 5,
+          "min": 4
         },
-        "entityType": "minecraft:creeper",
+        "entityType": "minecraft:zombified_piglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 5,
+          "min": 4
+        },
+        "entityType": "minecraft:hoglin",
+        "identifier": "entity_info"
+      }
+    ],
+    [
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 5,
+          "min": 4
+        },
+        "entityType": "minecraft:piglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "amount": 1,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:hoglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "amount": 1,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:magma_cube",
+        "identifier": "entity_info"
+      }
+    ],
+    [
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 5,
+          "min": 4
+        },
+        "entityType": "minecraft:piglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entityType": "minecraft:hoglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "amount": 1,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:blaze",
+        "identifier": "entity_info"
+      }
+    ],
+    [
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entityType": "minecraft:piglin",
+        "equipment": [
+          {
+            "item": "minecraft:golden_helmet",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_chestplate",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_leggings",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_boots",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_sword",
+            "weight": 1
+          }
+        ],
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 2
+        },
+        "entityType": "minecraft:hoglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "amount": 1,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:blaze",
+        "identifier": "entity_info"
+      }
+    ],
+    [
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entityType": "minecraft:piglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entityType": "minecraft:hoglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "amount": 1,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:piglin_brute",
+        "equipment": [
+          {
+            "item": "minecraft:golden_helmet",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_chestplate",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_leggings",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_boots",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_sword",
+            "weight": 1
+          }
+        ],
+        "identifier": "entity_info"
+      }
+    ],
+    [
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entityType": "minecraft:piglin",
+        "equipment": [
+          {
+            "item": "minecraft:golden_helmet",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_chestplate",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_leggings",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_boots",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_sword",
+            "weight": 1
+          }
+        ],
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 2
+        },
+        "entityType": "minecraft:hoglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entityType": "minecraft:magma_cube",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 1
+        },
+        "entityType": "minecraft:ghast",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "amount": 1,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:blaze",
+        "identifier": "entity_info"
+      }
+    ],
+    [
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entityType": "minecraft:piglin",
+        "equipment": [
+          {
+            "item": "minecraft:golden_helmet",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_chestplate",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_leggings",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_boots",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_sword",
+            "weight": 1
+          }
+        ],
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 2
+        },
+        "entityType": "minecraft:hoglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entityType": "minecraft:magma_cube",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 1
+        },
+        "entityType": "minecraft:ghast",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "amount": 1,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:blaze",
+        "identifier": "entity_info"
+      }
+    ],
+    [
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entityType": "minecraft:piglin",
+        "equipment": [
+          {
+            "item": "minecraft:golden_helmet",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_chestplate",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_leggings",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_boots",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_sword",
+            "weight": 1
+          }
+        ],
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 2
+        },
+        "entityType": "minecraft:hoglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entityType": "minecraft:magma_cube",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 1
+        },
+        "entityType": "minecraft:ghast",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "amount": 1,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:blaze",
+        "identifier": "entity_info"
+      }
+    ],
+    [
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entityType": "minecraft:piglin",
+        "equipment": [
+          {
+            "item": "minecraft:golden_helmet",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_chestplate",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_leggings",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_boots",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_sword",
+            "weight": 1
+          }
+        ],
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 2
+        },
+        "entityType": "minecraft:hoglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entityType": "minecraft:magma_cube",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 1
+        },
+        "entityType": "minecraft:ghast",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "amount": 1,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:blaze",
+        "identifier": "entity_info"
+      }
+    ],
+    [
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entityType": "minecraft:piglin",
+        "equipment": [
+          {
+            "item": "minecraft:golden_helmet",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_chestplate",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_leggings",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_boots",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_sword",
+            "weight": 1
+          }
+        ],
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 2
+        },
+        "entityType": "minecraft:hoglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entityType": "minecraft:magma_cube",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 1
+        },
+        "entityType": "minecraft:ghast",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "amount": 1,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:blaze",
+        "identifier": "entity_info"
+      }
+    ],
+    [
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entityType": "minecraft:piglin",
+        "equipment": [
+          {
+            "item": "minecraft:golden_helmet",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_chestplate",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_leggings",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_boots",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_sword",
+            "weight": 1
+          }
+        ],
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 2
+        },
+        "entityType": "minecraft:hoglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entityType": "minecraft:magma_cube",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 1
+        },
+        "entityType": "minecraft:ghast",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "amount": 1,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:blaze",
+        "identifier": "entity_info"
+      }
+    ],
+    [
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entityType": "minecraft:piglin",
+        "equipment": [
+          {
+            "item": "minecraft:golden_helmet",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_chestplate",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_leggings",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_boots",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:golden_sword",
+            "weight": 1
+          }
+        ],
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 2
+        },
+        "entityType": "minecraft:hoglin",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entityType": "minecraft:magma_cube",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 3,
+          "min": 1
+        },
+        "entityType": "minecraft:ghast",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "amount": 1,
+          "identifier": "fixed_amount"
+        },
+        "entityType": "minecraft:blaze",
+        "identifier": "entity_info"
+      },
+      {
+        "amount": {
+          "identifier": "random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entityType": "minecraft:piglin",
+        "equipment": [
+          {
+            "item": "minecraft:netherite_helmet",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:netherite_chestplate",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:netherite_leggings",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:netherite_boots",
+            "weight": 1
+          },
+          {
+            "item": "minecraft:netherite_sword",
+            "weight": 1
+          }
+        ],
         "identifier": "entity_info"
       }
     ]

@@ -2,10 +2,10 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.pancake.surviving_the_aftermath.common.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "refmap": "SurvivingTheAftermath.refmap.json",
   "mixins": [
-    "VillagerMixin"
+
   ],
   "client": [
   ],

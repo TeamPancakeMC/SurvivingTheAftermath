@@ -25,6 +25,10 @@ public class AftermathEventJS extends EventJS {
         return level;
     }
 
+    public BaseAftermath<BaseAftermathModule> getAftermath() {
+        return aftermath;
+    }
+
     public AftermathEventJS(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
         this.aftermath = aftermath;
         this.players = players;

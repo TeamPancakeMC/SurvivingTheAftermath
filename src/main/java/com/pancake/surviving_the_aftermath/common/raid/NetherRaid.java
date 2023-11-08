@@ -28,11 +28,13 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.monster.hoglin.Hoglin;
+import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
@@ -246,11 +248,29 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
             lazyOptional.ifPresent(entity -> {
                 if (entity instanceof Mob mob){
                     BlockPos blockPos = spawnPos.get(level.random.nextInt(spawnPos.size()));
-                    mob.moveTo(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
+                    mob.moveTo(blockPos.getX() + 1, blockPos.getY(), blockPos.getZ() + 1);
                     mob.setPersistenceRequired();
                     mob.getBrain().setMemory(MemoryModuleType.ANGRY_AT, randomPlayersUnderAttack().getUUID());
-                    level.addFreshEntity(entity);
+
+                    for (var slot : EquipmentSlot.values()) {
+                        mob.setDropChance(slot, 0);
+                    }
+
+
+                    if (entity instanceof AbstractPiglin piglin) {
+                        piglin.setImmuneToZombification(true);
+                    }
+                    if (entity instanceof Hoglin hoglin) {
+                        hoglin.setImmuneToZombification(true);
+                    }
+                    if (entity instanceof Slime slime) {
+                        slime.finalizeSpawn(level, level.getCurrentDifficultyAt(slime.blockPosition()), MobSpawnType.EVENT, null, null);
+                    }
+                    if (entity instanceof Ghast ghast) {
+                        ghast.setPos(ghast.getX(), ghast.getY() + 20, ghast.getZ());
+                    }
                     enemies.add(mob.getUUID());
+                    level.addFreshEntity(entity);
                 }
             });
         }
