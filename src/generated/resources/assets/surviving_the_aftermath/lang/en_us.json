@@ -1,5 +1,4 @@
 {
-  "block.surviving_the_aftermath.party_bonfire": "Party Bonfire",
   "effect.surviving_the_aftermath.cowardice": "Cowardice",
   "enchantment.surviving_the_aftermath.bloodthirsty": "Bloodthirsty",
   "enchantment.surviving_the_aftermath.clean_water": "Clean Water",
@@ -19,6 +18,5 @@
   "item.surviving_the_aftermath.raw_falukorv": "Raw Falukorv",
   "item.surviving_the_aftermath.stack_of_egg_tarts": "Stack of Egg Tart",
   "item.surviving_the_aftermath.tianjin_pancake": "Tianjin Pancake",
-  "itemGroup.surviving_the_aftermath": "Surviving the Aftermath",
-  "surviving_the_aftermath.nether_raid": ""
+  "itemGroup.surviving_the_aftermath": "Surviving the Aftermath"
 }

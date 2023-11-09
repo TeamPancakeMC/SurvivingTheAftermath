@@ -2,9 +2,15 @@
   "parent": "minecraft:item/generated",
   "overrides": [
     {
-      "model": "surviving_the_aftermath:item/counter_attack",
+      "model": "surviving_the_aftermath:item/moon",
       "predicate": {
-        "surviving_the_aftermath:special": 0.1
+        "surviving_the_aftermath:special": 0.8
+      }
+    },
+    {
+      "model": "surviving_the_aftermath:item/frantic",
+      "predicate": {
+        "surviving_the_aftermath:special": 0.6
       }
     },
     {
@@ -20,21 +26,21 @@
       }
     },
     {
-      "model": "surviving_the_aftermath:item/life_tree",
-      "predicate": {
-        "surviving_the_aftermath:special": 0.4
-      }
-    },
-    {
       "model": "surviving_the_aftermath:item/devoured",
       "predicate": {
         "surviving_the_aftermath:special": 0.5
       }
     },
     {
-      "model": "surviving_the_aftermath:item/frantic",
+      "model": "surviving_the_aftermath:item/counter_attack",
       "predicate": {
-        "surviving_the_aftermath:special": 0.6
+        "surviving_the_aftermath:special": 0.1
+      }
+    },
+    {
+      "model": "surviving_the_aftermath:item/sun",
+      "predicate": {
+        "surviving_the_aftermath:special": 0.9
       }
     },
     {
@@ -44,15 +50,9 @@
       }
     },
     {
-      "model": "surviving_the_aftermath:item/moon",
+      "model": "surviving_the_aftermath:item/life_tree",
       "predicate": {
-        "surviving_the_aftermath:special": 0.8
-      }
-    },
-    {
-      "model": "surviving_the_aftermath:item/sun",
-      "predicate": {
-        "surviving_the_aftermath:special": 0.9
+        "surviving_the_aftermath:special": 0.4
       }
     }
   ],
