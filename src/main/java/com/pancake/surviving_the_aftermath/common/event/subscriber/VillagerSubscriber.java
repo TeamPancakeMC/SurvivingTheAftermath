@@ -6,7 +6,6 @@ import com.pancake.surviving_the_aftermath.common.init.ModEnchantments;
 import com.pancake.surviving_the_aftermath.common.init.ModItems;
 import com.pancake.surviving_the_aftermath.common.init.ModVillagers;
 import com.pancake.surviving_the_aftermath.common.util.RegistryUtil;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -29,28 +28,28 @@ import java.util.List;
 public class VillagerSubscriber {
     @SubscribeEvent
     public static void addCustomTrades(VillagerTradesEvent event) {
-        final ItemStack emerald = new ItemStack(Items.EMERALD, 2);
-        final ItemStack diamond = new ItemStack(Items.DIAMOND, 1);
-        Int2ObjectMap<List<VillagerTrades.ItemListing>> trades1 = event.getTrades();
-        if (event.getType() == ModVillagers.RELIC_DEALER.get()) {
-            trades1.get(1).add((trader, random) -> enchantBookForNetherCore(random));
-        }
-        if (event.getType() == VillagerProfession.BUTCHER) {
-            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = trades1;
-            ItemStack rawFalukorv = new ItemStack(ModItems.RAW_FALUKORV.get(), 1);
-            trades.get(4).add((trader, random) -> newOffer(emerald, rawFalukorv));
-            trades.get(5).add((trader, random) -> newOffer(diamond, rawFalukorv));
-        }
-        if (event.getType() == VillagerProfession.FARMER) {
-            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = trades1;
-            for (Item item : RegistryUtil.getKnownItems()) {
-                if (item.isEdible()) {
-                    ItemStack foodStack = item.getDefaultInstance();
-                    trades.get(4).add((trader, random) -> newOffer(emerald, foodStack));
-                    trades.get(5).add((trader, random) -> newOffer(diamond, foodStack));
-                }
-            }
-        }
+//        final ItemStack emerald = new ItemStack(Items.EMERALD, 2);
+//        final ItemStack diamond = new ItemStack(Items.DIAMOND, 1);
+//        event.getTrades();
+//        if (event.getType() == ModVillagers.RELIC_DEALER.get()) {
+//            trades1.get(1).add((trader, random) -> enchantBookForNetherCore(random));
+//        }
+//        if (event.getType() == VillagerProfession.BUTCHER) {
+//            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = trades1;
+//            ItemStack rawFalukorv = new ItemStack(ModItems.RAW_FALUKORV.get(), 1);
+//            trades.get(4).add((trader, random) -> newOffer(emerald, rawFalukorv));
+//            trades.get(5).add((trader, random) -> newOffer(diamond, rawFalukorv));
+//        }
+//        if (event.getType() == VillagerProfession.FARMER) {
+//            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = trades1;
+//            for (Item item : RegistryUtil.getKnownItems()) {
+//                if (item.isEdible()) {
+//                    ItemStack foodStack = item.getDefaultInstance();
+//                    trades.get(4).add((trader, random) -> newOffer(emerald, foodStack));
+//                    trades.get(5).add((trader, random) -> newOffer(diamond, foodStack));
+//                }
+//            }
+//        }
     }
 
     private static MerchantOffer newOffer(ItemStack baseCostA, ItemStack result) {

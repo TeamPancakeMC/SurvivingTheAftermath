@@ -8,6 +8,7 @@ import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
+import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import org.slf4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -29,6 +30,8 @@ public class AftermathAPI {
     }
     private AftermathAPI() {}
     public void finishAftermathMap(Map<String, List<IAftermathModule>> map) {
+        AFTERMATH_MODULE_MAP.clear();
+        map.forEach(AftermathEventUtil::modify);
         AFTERMATH_MODULE_MAP.putAll(map);
     }
 

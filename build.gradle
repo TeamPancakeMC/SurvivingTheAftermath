@@ -170,6 +170,10 @@ dependencies {
     compileOnly fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
     compileOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
 
+    runtimeOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
+    runtimeOnly fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
+    runtimeOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
+
 
 
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings

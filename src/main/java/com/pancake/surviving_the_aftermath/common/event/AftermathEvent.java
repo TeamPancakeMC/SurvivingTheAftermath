@@ -12,11 +12,13 @@ import net.minecraftforge.eventbus.api.Event;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class AftermathEvent extends Event {
     private final BaseAftermath<BaseAftermathModule> aftermath;
     private final Set<UUID> players;
     private final ServerLevel level;
+    private final BaseAftermathModule module;
 
     public Set<UUID> getPlayers() {
         return players;
@@ -30,12 +32,16 @@ public class AftermathEvent extends Event {
         return aftermath;
     }
 
+    public BaseAftermathModule getModule(){return module;}
+
     public AftermathEvent(BaseAftermath<BaseAftermathModule> aftermath,Set<UUID> players, ServerLevel level) {
         this.aftermath = aftermath;
         this.players = players;
         this.level = level;
+        this.module = aftermath.getModule();
     }
 
+    @Cancelable
     public static class Start extends AftermathEvent {
         public Start(BaseAftermath<BaseAftermathModule> aftermath,Set<UUID> players, ServerLevel level) {
             super(aftermath,players, level);
@@ -74,18 +80,8 @@ public class AftermathEvent extends Event {
     }
     @Cancelable
     public static class Celebrating extends AftermathEvent {
-        private SimpleWeightedRandomList<Item> rewardList;
-
-        public Celebrating(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level,SimpleWeightedRandomList<Item> rewardList) {
+        public Celebrating(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
-            this.rewardList = rewardList;
-        }
-        public SimpleWeightedRandomList<Item> getRewardList() {
-            return rewardList;
-        }
-
-        public void setRewardList(SimpleWeightedRandomList<Item> rewardList) {
-            this.rewardList = rewardList;
         }
     }
 }

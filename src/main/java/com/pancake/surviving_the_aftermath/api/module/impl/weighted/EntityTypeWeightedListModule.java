@@ -11,10 +11,11 @@ import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.function.Supplier;
 
-public class EntityTypeWeightedListModule implements IWeightedListModule<EntityType<?>> {
+
+public class EntityTypeWeightedListModule extends BaseWeightedListModule<EntityType<?>> {
     public static String IDENTIFIER = "entity_type_weighted";
-    protected SimpleWeightedRandomList<EntityType<?>> weightedList;
     @Override
     public String getUniqueIdentifier() {
         return IDENTIFIER;
@@ -69,11 +70,6 @@ public class EntityTypeWeightedListModule implements IWeightedListModule<EntityT
             jsonObject.add(RegistryUtil.getRegistryNameFromEntityType(itemWeight.getData()).toString(), entry);
         });
         return jsonObject;
-    }
-
-    @Override
-    public SimpleWeightedRandomList<EntityType<?>> getWeightedList() {
-        return this.weightedList;
     }
 
     public static class Builder {

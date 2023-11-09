@@ -32,6 +32,7 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
     }
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> jsonElementMap, @NotNull ResourceManager manager, @NotNull ProfilerFiller filler) {
+        System.out.println("Loading aftermath modules");
         AFTERMATH_MODULE_MAP.clear();
         AftermathAPI instance = AftermathAPI.getInstance();
         jsonElementMap.forEach((resourceLocation, jsonElement) -> {

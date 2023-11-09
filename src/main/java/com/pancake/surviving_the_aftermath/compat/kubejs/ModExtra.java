@@ -21,4 +21,12 @@ public class ModExtra{
         }
         return null;
     }
+
+    public static boolean validateKeyExists(Object o) {
+        if (!(o instanceof String key)) {
+            return false; // 如果对象不是字符串, 直接返回false
+        }
+
+        return API.getAftermathMap().containsKey(key);
+    }
 }

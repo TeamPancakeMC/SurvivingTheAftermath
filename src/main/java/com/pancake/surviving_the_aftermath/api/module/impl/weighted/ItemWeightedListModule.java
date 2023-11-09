@@ -10,18 +10,16 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ItemWeightedListModule implements IWeightedListModule<Item>{
+import java.util.List;
+import java.util.function.Supplier;
+
+public class ItemWeightedListModule extends BaseWeightedListModule<Item>{
 
     public static final String IDENTIFIER = "item_weighted";
-
-    private SimpleWeightedRandomList<Item> weightedList;
-    @Override
-    public SimpleWeightedRandomList<Item> getWeightedList() {
-        return weightedList;
-    }
 
     @Override
     public void deserializeJson(JsonElement jsonElement) {
