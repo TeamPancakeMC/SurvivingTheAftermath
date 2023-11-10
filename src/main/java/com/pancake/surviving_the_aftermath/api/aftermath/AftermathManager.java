@@ -37,7 +37,6 @@ public class AftermathManager {
     private void add(IAftermath<BaseAftermathModule> aftermath) {
         AFTERMATH_MAP.put(aftermath.getUUID(), aftermath);
         List<ITracker> trackers = aftermath.getTrackers();
-        System.out.println("add aftermath :" + trackers);
         trackers.forEach(ITracker::register);
     }
 

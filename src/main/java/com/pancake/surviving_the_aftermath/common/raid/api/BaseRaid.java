@@ -29,6 +29,7 @@ import java.util.UUID;
 public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<BaseRaidModule> implements IRaid{
     public static final Logger LOGGER = LogUtils.getLogger();
     protected int currentWave = -1;
+    protected int totalEnemy = 0;
     protected BlockPos centerPos;
     public BaseRaid(ServerLevel level, BlockPos centerPos) {
         super(level);
@@ -71,6 +72,7 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
         CompoundTag compoundTag = super.serializeNBT();
         compoundTag.putInt(Constant.CURRENT_WAVE, currentWave);
         compoundTag.put(Constant.CENTER_POS, NbtUtils.writeBlockPos(centerPos));
+        compoundTag.putInt(Constant.TOTAL_ENEMY, totalEnemy);
         return compoundTag;
     }
 
@@ -79,6 +81,7 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
         super.deserializeNBT(nbt);
         this.currentWave = nbt.getInt(Constant.CURRENT_WAVE);
         this.centerPos = NbtUtils.readBlockPos(nbt.getCompound(Constant.CENTER_POS));
+        this.totalEnemy = nbt.getInt(Constant.TOTAL_ENEMY);
     }
 
 
@@ -88,8 +91,12 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
 
 
     public boolean join(Entity entity) {
-        return state == AftermathState.ONGOING
-                && Math.sqrt(entity.blockPosition().distSqr(centerPos)) < getRadius()
-                && enemies.add(entity.getUUID());
+        if (state == AftermathState.ONGOING &&
+                Math.sqrt(entity.blockPosition().distSqr(centerPos)) < getRadius() &&
+                enemies.add(entity.getUUID())) {
+            totalEnemy++;
+            return true;
+        }
+        return false;
     }
 }

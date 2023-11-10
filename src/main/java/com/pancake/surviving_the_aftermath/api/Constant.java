@@ -30,4 +30,5 @@ public class Constant {
     public static final String SPECTATOR_MAP = "spectatorMap";
     public static final String SPECTATOR_LIST = "spectatorList";
     public static final String TRACKER = "tracker";
+    public static final String TOTAL_ENEMY = "totalEnemy";
 }
