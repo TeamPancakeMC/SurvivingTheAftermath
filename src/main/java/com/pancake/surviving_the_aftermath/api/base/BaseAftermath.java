@@ -54,14 +54,9 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
 
         updateProgress();
         if (state == AftermathState.VICTORY){
+            this.progressPercent = 0;
             spawnRewards();
         }
-
-//        long gameTime = level.getGameTime();
-//        if (gameTime % 20 == 0) {
-//
-//
-//        }
     }
 
     protected void addTracker(ITracker tracker) {
@@ -97,7 +92,6 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
 
         ListTag tags = new ListTag();
         this.getTrackers().forEach(tracker -> {
-            System.out.println("tracker :" + tracker);
             tags.add(tracker.serializeNBT());
         });
         compoundTag.put(Constant.TRACKER, tags);

@@ -25,576 +25,490 @@ public class NetherRaidModuleProvider extends AftermathModuleProviders<NetherRai
     public void addModules() {
         NetherRaidModule netherRaidModule = new NetherRaidModule.Builder("common")
                 .setReadyTime(100)
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoModule infoModule = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:piglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(4,5)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule);
-                    return infoModules;
-                })
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoModule infoModule = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:zombified_piglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(4, 5)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule);
-
-                    EntityInfoModule infoModule1 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:hoglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(4, 5)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule1);
-                    return infoModules;
-                })
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoModule infoModule = new EntityInfoModule.Builder()
+                /*   1   */
+                .addWave(() -> List.of(
+                        new EntityInfoModule.Builder()
+                        .setEntityType("minecraft:piglin")
+                        .setAmountModule(() -> new RandomAmountModule.Builder()
+                                .setRange(4,5)
+                                .build()
+                        ).build()
+                ))
+                /*   2   */
+                .addWave(() -> List.of(
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:zombified_piglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(4, 5)
+                                        .build()
+                                ).build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:hoglin")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(1)
+                                        .build()
+                                ).build()
+                ))
+                /*   3   */
+                .addWave(() -> List.of(
+                    new EntityInfoModule.Builder()
                             .setEntityType("minecraft:piglin")
                             .setAmountModule(() -> new RandomAmountModule.Builder()
                                     .setRange(4, 5)
                                     .build()
-                            ).build();
-                    infoModules.add(infoModule);
-
-                    EntityInfoModule infoModule1 = new EntityInfoModule.Builder()
+                            ).build(),
+                    new EntityInfoModule.Builder()
                             .setEntityType("minecraft:hoglin")
                             .setAmountModule(() -> new FixedAmountModule.Builder()
                                     .setAmount(1)
                                     .build()
-                            ).build();
-                    infoModules.add(infoModule1);
-
-                    EntityInfoModule infoModule2 = new EntityInfoModule.Builder()
+                            ).build(),
+                    new EntityInfoModule.Builder()
                             .setEntityType("minecraft:magma_cube")
                             .setAmountModule(() -> new FixedAmountModule.Builder()
                                     .setAmount(1)
                                     .build()
-                            ).build();
-                    infoModules.add(infoModule2);
-                    return infoModules;
-                })
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoModule infoModule = new EntityInfoModule.Builder()
+                            ).build()
+                ))
+                /*   4   */
+                .addWave(() -> List.of(
+                    new EntityInfoModule.Builder()
                             .setEntityType("minecraft:piglin")
                             .setAmountModule(() -> new RandomAmountModule.Builder()
                                     .setRange(4, 5)
                                     .build()
-                            ).build();
-                    infoModules.add(infoModule);
-
-                    EntityInfoModule infoModule1 = new EntityInfoModule.Builder()
+                            ).build(),
+                    new EntityInfoModule.Builder()
                             .setEntityType("minecraft:hoglin")
                             .setAmountModule(() -> new RandomAmountModule.Builder()
                                     .setRange(1,2)
                                     .build()
-                            ).build();
-                    infoModules.add(infoModule1);
-
-                    EntityInfoModule infoModule2 = new EntityInfoModule.Builder()
+                            ).build(),
+                    new EntityInfoModule.Builder()
                             .setEntityType("minecraft:magma_cube")
                             .setAmountModule(() -> new FixedAmountModule.Builder()
                                     .setAmount(1)
                                     .build()
-                            ).build();
-                    EntityInfoModule infoModule3 = new EntityInfoModule.Builder()
+                            ).build(),
+                    new EntityInfoModule.Builder()
                             .setEntityType("minecraft:blaze")
                             .setAmountModule(() -> new FixedAmountModule.Builder()
                                     .setAmount(1)
                                     .build()
-                            ).build();
-                    infoModules.add(infoModule3);
-                    return infoModules;
-                })
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoWithEquipmentModule infoModule = (EntityInfoWithEquipmentModule) new EntityInfoWithEquipmentModule.Builder()
-                            .setEquipment(() -> {
-                                return new ItemWeightedListModule.Builder()
-                                        .add("minecraft:golden_helmet",1)
-                                        .add("minecraft:golden_chestplate",1)
-                                        .add("minecraft:golden_leggings",1)
-                                        .add("minecraft:golden_boots",1)
-                                        .add("minecraft:golden_sword",1)
-                                        .build();
-
-                            })
-                            .setEntityType("minecraft:piglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(3,4)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule);
-
-                    EntityInfoModule infoModule1 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:hoglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(2,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule1);
-
-                    EntityInfoModule infoModule2 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:magma_cube")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,2)
-                                    .build()
-                            ).build();
-                    EntityInfoModule infoModule3 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:ghast")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,3)
-                                    .build()
-                            ).build();
-                    EntityInfoModule infoModule4 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:blaze")
-                            .setAmountModule(() -> new FixedAmountModule.Builder()
-                                    .setAmount(1)
-                                    .build()
-                            ).build();
-
-                    infoModules.add(infoModule4);
-                    return infoModules;
-                })
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoModule infoModule = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:piglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(3,4)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule);
-
-                    EntityInfoModule infoModule1 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:hoglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,2)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule1);
-
-                    EntityInfoModule infoModule2 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:magma_cube")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,2)
-                                    .build()
-                            ).build();
-                    EntityInfoModule infoModule3 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:blaze")
-                            .setAmountModule(() -> new FixedAmountModule.Builder()
-                                    .setAmount(1)
-                                    .build()
-                            ).build();
-                    EntityInfoWithEquipmentModule infoModule4 = (EntityInfoWithEquipmentModule) new EntityInfoWithEquipmentModule.Builder()
-                            .setEquipment(() -> {
-                                return new ItemWeightedListModule.Builder()
-                                        .add("minecraft:golden_helmet",1)
-                                        .add("minecraft:golden_chestplate",1)
-                                        .add("minecraft:golden_leggings",1)
-                                        .add("minecraft:golden_boots",1)
-                                        .add("minecraft:golden_sword",1)
-                                        .build();
-
-                            })
-                            .setEntityType("minecraft:piglin_brute")
-                            .setAmountModule(() -> new  FixedAmountModule.Builder()
-                                    .setAmount(1)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule4);
-                    return infoModules;
-                })
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoWithEquipmentModule infoModule = (EntityInfoWithEquipmentModule) new EntityInfoWithEquipmentModule.Builder()
-                            .setEquipment(() -> {
-                                return new ItemWeightedListModule.Builder()
-                                        .add("minecraft:golden_helmet",1)
-                                        .add("minecraft:golden_chestplate",1)
-                                        .add("minecraft:golden_leggings",1)
-                                        .add("minecraft:golden_boots",1)
-                                        .add("minecraft:golden_sword",1)
-                                        .build();
-
-                            })
-                            .setEntityType("minecraft:piglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(3,4)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule);
-
-                    EntityInfoModule infoModule1 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:hoglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(2,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule1);
-
-                    EntityInfoModule infoModule2 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:magma_cube")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,2)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule2);
-                    EntityInfoModule infoModule3 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:ghast")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule3);
-                    EntityInfoModule infoModule4 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:blaze")
-                            .setAmountModule(() -> new FixedAmountModule.Builder()
-                                    .setAmount(1)
-                                    .build()
-                            ).build();
-
-                    infoModules.add(infoModule4);
-                    return infoModules;
-                })
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoWithEquipmentModule infoModule = (EntityInfoWithEquipmentModule) new EntityInfoWithEquipmentModule.Builder()
-                            .setEquipment(() -> {
-                                return new ItemWeightedListModule.Builder()
-                                        .add("minecraft:golden_helmet",1)
-                                        .add("minecraft:golden_chestplate",1)
-                                        .add("minecraft:golden_leggings",1)
-                                        .add("minecraft:golden_boots",1)
-                                        .add("minecraft:golden_sword",1)
-                                        .build();
-
-                            })
-                            .setEntityType("minecraft:piglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(3,4)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule);
-
-                    EntityInfoModule infoModule1 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:hoglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(2,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule1);
-
-                    EntityInfoModule infoModule2 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:magma_cube")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,2)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule2);
-                    EntityInfoModule infoModule3 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:ghast")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule3);
-                    EntityInfoModule infoModule4 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:blaze")
-                            .setAmountModule(() -> new FixedAmountModule.Builder()
-                                    .setAmount(1)
-                                    .build()
-                            ).build();
-
-                    infoModules.add(infoModule4);
-                    return infoModules;
-                })
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoWithEquipmentModule infoModule = (EntityInfoWithEquipmentModule) new EntityInfoWithEquipmentModule.Builder()
-                            .setEquipment(() -> {
-                                return new ItemWeightedListModule.Builder()
-                                        .add("minecraft:golden_helmet",1)
-                                        .add("minecraft:golden_chestplate",1)
-                                        .add("minecraft:golden_leggings",1)
-                                        .add("minecraft:golden_boots",1)
-                                        .add("minecraft:golden_sword",1)
-                                        .build();
-
-                            })
-                            .setEntityType("minecraft:piglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(3,4)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule);
-
-                    EntityInfoModule infoModule1 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:hoglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(2,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule1);
-
-                    EntityInfoModule infoModule2 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:magma_cube")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,2)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule2);
-                    EntityInfoModule infoModule3 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:ghast")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule3);
-                    EntityInfoModule infoModule4 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:blaze")
-                            .setAmountModule(() -> new FixedAmountModule.Builder()
-                                    .setAmount(1)
-                                    .build()
-                            ).build();
-
-                    infoModules.add(infoModule4);
-                    return infoModules;
-                })
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoWithEquipmentModule infoModule = (EntityInfoWithEquipmentModule) new EntityInfoWithEquipmentModule.Builder()
-                            .setEquipment(() -> {
-                                return new ItemWeightedListModule.Builder()
-                                        .add("minecraft:golden_helmet",1)
-                                        .add("minecraft:golden_chestplate",1)
-                                        .add("minecraft:golden_leggings",1)
-                                        .add("minecraft:golden_boots",1)
-                                        .add("minecraft:golden_sword",1)
-                                        .build();
-
-                            })
-                            .setEntityType("minecraft:piglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(3,4)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule);
-
-                    EntityInfoModule infoModule1 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:hoglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(2,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule1);
-
-                    EntityInfoModule infoModule2 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:magma_cube")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,2)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule2);
-                    EntityInfoModule infoModule3 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:ghast")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule3);
-                    EntityInfoModule infoModule4 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:blaze")
-                            .setAmountModule(() -> new FixedAmountModule.Builder()
-                                    .setAmount(1)
-                                    .build()
-                            ).build();
-
-                    infoModules.add(infoModule4);
-                    return infoModules;
-                })
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoWithEquipmentModule infoModule = (EntityInfoWithEquipmentModule) new EntityInfoWithEquipmentModule.Builder()
-                            .setEquipment(() -> {
-                                return new ItemWeightedListModule.Builder()
-                                        .add("minecraft:golden_helmet",1)
-                                        .add("minecraft:golden_chestplate",1)
-                                        .add("minecraft:golden_leggings",1)
-                                        .add("minecraft:golden_boots",1)
-                                        .add("minecraft:golden_sword",1)
-                                        .build();
-
-                            })
-                            .setEntityType("minecraft:piglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(3,4)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule);
-
-                    EntityInfoModule infoModule1 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:hoglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(2,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule1);
-
-                    EntityInfoModule infoModule2 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:magma_cube")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,2)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule2);
-                    EntityInfoModule infoModule3 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:ghast")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule3);
-                    EntityInfoModule infoModule4 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:blaze")
-                            .setAmountModule(() -> new FixedAmountModule.Builder()
-                                    .setAmount(1)
-                                    .build()
-                            ).build();
-
-                    infoModules.add(infoModule4);
-                    return infoModules;
-                })
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoWithEquipmentModule infoModule = (EntityInfoWithEquipmentModule) new EntityInfoWithEquipmentModule.Builder()
-                            .setEquipment(() -> {
-                                return new ItemWeightedListModule.Builder()
-                                        .add("minecraft:golden_helmet",1)
-                                        .add("minecraft:golden_chestplate",1)
-                                        .add("minecraft:golden_leggings",1)
-                                        .add("minecraft:golden_boots",1)
-                                        .add("minecraft:golden_sword",1)
-                                        .build();
-
-                            })
-                            .setEntityType("minecraft:piglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(3,4)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule);
-
-                    EntityInfoModule infoModule1 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:hoglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(2,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule1);
-
-                    EntityInfoModule infoModule2 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:magma_cube")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,2)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule2);
-                    EntityInfoModule infoModule3 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:ghast")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule3);
-                    EntityInfoModule infoModule4 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:blaze")
-                            .setAmountModule(() -> new FixedAmountModule.Builder()
-                                    .setAmount(1)
-                                    .build()
-                            ).build();
-
-                    infoModules.add(infoModule4);
-                    return infoModules;
-                })
-                .addWave(() -> {
-                    List<IEntityInfoModule> infoModules = Lists.newArrayList();
-                    EntityInfoWithEquipmentModule infoModule = (EntityInfoWithEquipmentModule) new EntityInfoWithEquipmentModule.Builder()
-                            .setEquipment(() -> {
-                                return new ItemWeightedListModule.Builder()
-                                        .add("minecraft:golden_helmet",1)
-                                        .add("minecraft:golden_chestplate",1)
-                                        .add("minecraft:golden_leggings",1)
-                                        .add("minecraft:golden_boots",1)
-                                        .add("minecraft:golden_sword",1)
-                                        .build();
-
-                            })
-                            .setEntityType("minecraft:piglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(3,4)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule);
-
-                    EntityInfoModule infoModule1 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:hoglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(2,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule1);
-
-                    EntityInfoModule infoModule2 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:magma_cube")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,2)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule2);
-                    EntityInfoModule infoModule3 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:ghast")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(1,3)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule3);
-                    EntityInfoModule infoModule4 = new EntityInfoModule.Builder()
-                            .setEntityType("minecraft:blaze")
-                            .setAmountModule(() -> new FixedAmountModule.Builder()
-                                    .setAmount(1)
-                                    .build()
-                            ).build();
-
-                    infoModules.add(infoModule4);
-                    EntityInfoWithEquipmentModule infoModule5 = (EntityInfoWithEquipmentModule) new EntityInfoWithEquipmentModule.Builder()
-                            .setEquipment(() -> {
-                                return new ItemWeightedListModule.Builder()
-                                        .add("minecraft:netherite_helmet",1)
-                                        .add("minecraft:netherite_chestplate",1)
-                                        .add("minecraft:netherite_leggings",1)
-                                        .add("minecraft:netherite_boots",1)
-                                        .add("minecraft:netherite_sword",1)
-                                        .build();
-
-                            })
-                            .setEntityType("minecraft:piglin")
-                            .setAmountModule(() -> new RandomAmountModule.Builder()
-                                    .setRange(3,4)
-                                    .build()
-                            ).build();
-                    infoModules.add(infoModule5);
-                    return infoModules;
-                })
+                            ).build()
+                ))
+                /*   5   */
+                .addWave(() -> List.of(
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:piglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(3, 4)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:hoglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(1, 2)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:magma_cube")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(1, 2)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:blaze")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(1)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:golden_helmet", 1)
+                                        .add("minecraft:golden_chestplate", 1)
+                                        .add("minecraft:golden_leggings", 1)
+                                        .add("minecraft:golden_boots", 1)
+                                        .add("minecraft:golden_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin_brute")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(1)
+                                        .build()
+                                )
+                                .build()
+                ))
+                /*   6   */
+                .addWave(() -> List.of(
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:golden_helmet", 1)
+                                        .add("minecraft:golden_chestplate", 1)
+                                        .add("minecraft:golden_leggings", 1)
+                                        .add("minecraft:golden_boots", 1)
+                                        .add("minecraft:golden_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(3, 4)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:hoglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(2, 3)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:magma_cube")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(1, 2)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:ghast")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(1, 3)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:blaze")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(1)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:golden_helmet", 1)
+                                        .add("minecraft:golden_chestplate", 1)
+                                        .add("minecraft:golden_leggings", 1)
+                                        .add("minecraft:golden_boots", 1)
+                                        .add("minecraft:golden_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin_brute")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(1)
+                                        .build()
+                                )
+                                .build()
+                ))
+                /*   7   */
+                .addWave(() -> List.of(
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:golden_helmet", 1)
+                                        .add("minecraft:golden_chestplate", 1)
+                                        .add("minecraft:golden_leggings", 1)
+                                        .add("minecraft:golden_boots", 1)
+                                        .add("minecraft:golden_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(3, 4)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:hoglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(3, 4)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:magma_cube")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(2, 4)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:ghast")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(2, 4)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:blaze")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(2)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:golden_helmet", 1)
+                                        .add("minecraft:golden_chestplate", 1)
+                                        .add("minecraft:golden_leggings", 1)
+                                        .add("minecraft:golden_boots", 1)
+                                        .add("minecraft:golden_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin_brute")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(1)
+                                        .build()
+                                )
+                                .build()
+                ))
+                /*   8   */
+                .addWave(() -> List.of(
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:golden_helmet", 1)
+                                        .add("minecraft:golden_chestplate", 1)
+                                        .add("minecraft:golden_leggings", 1)
+                                        .add("minecraft:golden_boots", 1)
+                                        .add("minecraft:golden_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(3, 4)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:hoglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(2, 4)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:magma_cube")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(3, 4)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:ghast")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(2, 4)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:blaze")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(3)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:golden_helmet", 1)
+                                        .add("minecraft:golden_chestplate", 1)
+                                        .add("minecraft:golden_leggings", 1)
+                                        .add("minecraft:golden_boots", 1)
+                                        .add("minecraft:golden_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin_brute")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(2)
+                                        .build()
+                                )
+                                .build()
+                ))
+                /*   9   */
+                .addWave(() -> List.of(
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:golden_helmet", 1)
+                                        .add("minecraft:golden_chestplate", 1)
+                                        .add("minecraft:golden_leggings", 1)
+                                        .add("minecraft:golden_boots", 1)
+                                        .add("minecraft:golden_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(4, 6)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:hoglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(3, 6)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:magma_cube")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(3, 5)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:ghast")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(3, 5)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:blaze")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(4)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:golden_helmet", 1)
+                                        .add("minecraft:golden_chestplate", 1)
+                                        .add("minecraft:golden_leggings", 1)
+                                        .add("minecraft:golden_boots", 1)
+                                        .add("minecraft:golden_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin_brute")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(3)
+                                        .build()
+                                )
+                                .build()
+                ))
+                /*   10   */
+                .addWave(() -> List.of(
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:golden_helmet", 1)
+                                        .add("minecraft:golden_chestplate", 1)
+                                        .add("minecraft:golden_leggings", 1)
+                                        .add("minecraft:golden_boots", 1)
+                                        .add("minecraft:golden_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(2, 6)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:hoglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(2, 6)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:magma_cube")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(2, 6)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:ghast")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(2, 6)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:blaze")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(6)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:golden_helmet", 1)
+                                        .add("minecraft:golden_chestplate", 1)
+                                        .add("minecraft:golden_leggings", 1)
+                                        .add("minecraft:golden_boots", 1)
+                                        .add("minecraft:golden_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin_brute")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(3, 5)
+                                        .build()
+                                )
+                                .build()
+                ))
+                /*   11   */
+                .addWave(() -> List.of(
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:golden_helmet", 1)
+                                        .add("minecraft:golden_chestplate", 1)
+                                        .add("minecraft:golden_leggings", 1)
+                                        .add("minecraft:golden_boots", 1)
+                                        .add("minecraft:golden_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(1, 8)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:hoglin")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(1, 8)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:magma_cube")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(1, 8)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:ghast")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(1, 8)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoModule.Builder()
+                                .setEntityType("minecraft:blaze")
+                                .setAmountModule(() -> new RandomAmountModule.Builder()
+                                        .setRange(1, 8)
+                                        .build()
+                                )
+                                .build(),
+                        new EntityInfoWithEquipmentModule.Builder()
+                                .setEquipment(() -> new ItemWeightedListModule.Builder()
+                                        .add("minecraft:netherite_helmet", 1)
+                                        .add("minecraft:netherite_chestplate", 1)
+                                        .add("minecraft:netherite_leggings", 1)
+                                        .add("minecraft:netherite_boots", 1)
+                                        .add("minecraft:netherite_sword", 1)
+                                        .build()
+                                )
+                                .setEntityType("minecraft:piglin_brute")
+                                .setAmountModule(() -> new FixedAmountModule.Builder()
+                                        .setAmount(8)
+                                        .build()
+                                )
+                                .build()
+                ))
                 .setRewards(() -> new ItemWeightedListModule.Builder()
                         .add("minecraft:gold_ingot", 100)
                         .add("minecraft:diamond", 10)

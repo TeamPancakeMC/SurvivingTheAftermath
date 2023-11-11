@@ -41,8 +41,6 @@ public class ModLanguageCNProvider extends LanguageProvider {
         add(RaidEventSubscriber.NETHER_RAID_VICTORY, "望着最后一颗火星熄灭，你感觉它们不会再回来了，暂时......");
         add(RaidPlayerBattleTracker.PLAYER_BATTLE_ESCAPE, "请勿战斗过程逃跑，否则你将付出代价，倒计时开始......%s");
         add(RaidPlayerBattleTracker.PLAYER_BATTLE_PERSONAL_FAIL, "你虽然失败了但是可以继续相信你的队友");
-//        add(Main.MODID + NetherRaid.IDENTIFIER + ".wave", "地狱突袭 第%s波");
-//        add(Main.MODID + NetherRaid.IDENTIFIER + ".victory", "地狱突袭 胜利");
     }
 
 }

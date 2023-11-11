@@ -18,6 +18,7 @@ import com.pancake.surviving_the_aftermath.common.tracker.RaidMobBattleTracker;
 import com.pancake.surviving_the_aftermath.common.tracker.RaidPlayerBattleTracker;
 import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import com.pancake.surviving_the_aftermath.common.util.RandomUtils;
+import com.pancake.surviving_the_aftermath.common.util.SpawnEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -30,6 +31,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.SpawnUtil;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -223,7 +225,7 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
             AftermathEventUtil.ongoing(this, players, level);
             checkNextWave();
             spawnWave();
-            EnemyTotalHealthRatio();
+            EnemyTotalRatio();
         }
     }
 
@@ -234,19 +236,8 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         }
         this.progressPercent = 1 - (float) readyTime / getModule().getReadyTime();
         AftermathEventUtil.ready(this, players, level);
-        spawnMovingParticles(centerPos, centerPos.above(), ParticleTypes.PORTAL, 1000, 1);
         readyTime--;
     }
-
-
-    public void spawnMovingParticles(BlockPos startPos, BlockPos endPos, SimpleParticleType particle, int steps, int speed) {
-//        ClientLevel clientLevel = Minecraft.getInstance().level;
-//        if (clientLevel != null) {
-//        }
-    }
-
-
-
 
     @Override
     protected List<LazyOptional<Entity>> spawnEntities(IEntityInfoModule module) {
@@ -281,14 +272,13 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
 
 
                     enemies.add(mob.getUUID());
-                    level.addFreshEntity(entity);
+                    totalEnemy++;
+                    level.addFreshEntityWithPassengers(mob);
                 }
             });
         }
         return arrayList;
     }
-
-
 
     protected void spawnWave() {
         if (enemies.isEmpty() && state == AftermathState.ONGOING){
@@ -299,17 +289,9 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         enemies.removeIf(uuid -> level.getEntity(uuid) == null);
     }
 
-    private void EnemyTotalHealthRatio(){
+    private void EnemyTotalRatio(){
         if (enemies.isEmpty()) return;
-        float healthCount = 0;
-        float maxHealthCount = 0;
-        for (UUID uuid : enemies) {
-            if (level.getEntity(uuid) instanceof LivingEntity  livingEntity){
-                healthCount += livingEntity.getHealth();
-                maxHealthCount += livingEntity.getMaxHealth();
-            }
-        }
-        this.progressPercent = healthCount / maxHealthCount;
+        this.progressPercent = enemies.size() / (float) totalEnemy;
     }
 
     protected void checkNextWave(){
@@ -318,6 +300,7 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
                 AftermathEventUtil.victory(this, players, level);
             } else {
                 currentWave++;
+                totalEnemy = 0;
                 AftermathEventUtil.ongoing(this, players, level);
             }
         }
@@ -354,4 +337,6 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
             return new NetherRaid(level, compound);
         }
     }
+
+
 }

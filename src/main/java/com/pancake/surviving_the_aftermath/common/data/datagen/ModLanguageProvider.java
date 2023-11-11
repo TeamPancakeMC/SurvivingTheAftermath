@@ -1,9 +1,11 @@
 package com.pancake.surviving_the_aftermath.common.data.datagen;
 
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
+import com.pancake.surviving_the_aftermath.common.event.subscriber.RaidEventSubscriber;
 import com.pancake.surviving_the_aftermath.common.init.ModEnchantments;
 import com.pancake.surviving_the_aftermath.common.init.ModItems;
 import com.pancake.surviving_the_aftermath.common.init.ModMobEffects;
+import com.pancake.surviving_the_aftermath.common.tracker.RaidPlayerBattleTracker;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -36,6 +38,11 @@ public class ModLanguageProvider extends LanguageProvider {
 		add(ModEnchantments.RANGER.get(), "Ranger");
 		add(ModEnchantments.MOON.get(), "Moon");
 		add(ModEnchantments.SUN.get(), "Sun");
+
+		add(RaidEventSubscriber.NETHER_RAID_START, "You feel the air getting hotter .....");
+		add(RaidEventSubscriber.NETHER_RAID_VICTORY, "Looking at the last Mars extinguished, you feel they will not come back, temporarily......");
+		add(RaidPlayerBattleTracker.PLAYER_BATTLE_ESCAPE, "Do not fight process escape, or you will pay the price, the countdown begins......%s");
+		add(RaidPlayerBattleTracker.PLAYER_BATTLE_PERSONAL_FAIL, "Although you failed, you can continue to trust your teammates.");
 	}
 
 }
