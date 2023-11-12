@@ -39,7 +39,6 @@ public class NetherRaidStructure extends AbstractStructure {
 		public Piece(StructurePieceSerializationContext context, CompoundTag tag) {
 			super(ModStructurePieceTypes.NETHER_RAID.get(), context.structureTemplateManager(), tag);
 		}
-
 	}
 
 }

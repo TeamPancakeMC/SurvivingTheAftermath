@@ -48,7 +48,9 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 import net.minecraft.world.level.portal.PortalShape;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
@@ -147,10 +149,12 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         Direction dir = Direction.Plane.HORIZONTAL.stream().filter(d -> level.isEmptyBlock(blockPos.relative(d))
                 && !spawnPos.contains(blockPos.relative(d))).findFirst().orElse(Direction.UP);
         Vec3 vec = Vec3.atCenterOf(blockPos);
-        module.getRewardList().getRandomValue(level.random).ifPresent(reward ->
-                level.addFreshEntity(new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
-                        dir.getStepX() * 0.2, 0.2, dir.getStepZ() * 0.2f)));
-
+        module.getRewardList().getRandomValue(level.random).ifPresent(reward -> {
+            ItemEntity itemEntity = new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
+                    dir.getStepX() * 0.2, 0.2, dir.getStepZ() * 0.2f);
+            itemEntity.setInvulnerable(true);
+            level.addFreshEntity(itemEntity);
+        });
     }
 
     @Override
@@ -241,6 +245,7 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
 
     @Override
     protected List<LazyOptional<Entity>> spawnEntities(IEntityInfoModule module) {
+        if (players.isEmpty()) return Collections.emptyList();
         List<LazyOptional<Entity>> arrayList = module.spawnEntity(level);
         for (LazyOptional<Entity> lazyOptional : arrayList) {
             lazyOptional.ifPresent(entity -> {
@@ -270,6 +275,16 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
                         ghast.setPos(ghast.getX(), ghast.getY() + 20, ghast.getZ());
                     }
 
+                    for (int i = 0; i < 5; i++) {
+                        if (isBlocked(level, mob)) {
+                            Direction.Plane.HORIZONTAL.stream().forEach(direction -> {
+                                if (level.isEmptyBlock(mob.blockPosition().relative(direction))) {
+                                    mob.moveTo(Vec3.atCenterOf(mob.blockPosition().relative(direction)));
+                                }
+                            });
+                        }
+                    }
+
 
                     enemies.add(mob.getUUID());
                     totalEnemy++;
@@ -279,6 +294,15 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         }
         return arrayList;
     }
+
+    private boolean isBlocked(ServerLevel level, Entity entity) {
+        for (var shape : level.getBlockCollisions(entity, entity.getBoundingBox())) {
+            return !shape.isEmpty();
+        }
+        return false;
+    }
+
+
 
     protected void spawnWave() {
         if (enemies.isEmpty() && state == AftermathState.ONGOING){

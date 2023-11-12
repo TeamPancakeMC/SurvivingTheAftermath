@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 public abstract class BaseAftermathModule implements IAftermathModule {
     protected final AftermathAPI AFTERMATH_API = AftermathAPI.getInstance();
-    protected ItemWeightedListModule Rewards;
+    protected ItemWeightedListModule Rewards = new ItemWeightedListModule();
     protected String jsonName;
     @Override
     public CompoundTag serializeNBT() {

@@ -18,5 +18,9 @@
   "item.surviving_the_aftermath.raw_falukorv": "Raw Falukorv",
   "item.surviving_the_aftermath.stack_of_egg_tarts": "Stack of Egg Tart",
   "item.surviving_the_aftermath.tianjin_pancake": "Tianjin Pancake",
-  "itemGroup.surviving_the_aftermath": "Surviving the Aftermath"
+  "itemGroup.surviving_the_aftermath": "Surviving the Aftermath",
+  "message.surviving_the_aftermath.nether_raid.start": "You feel the air getting hotter .....",
+  "message.surviving_the_aftermath.nether_raid.victory": "Looking at the last Mars extinguished, you feel they will not come back, temporarily......",
+  "message.surviving_the_aftermath.tracker.escape": "Do not fight process escape, or you will pay the price, the countdown begins......%s",
+  "message.surviving_the_aftermath.tracker.personal_fail": "Although you failed, you can continue to trust your teammates."
 }
