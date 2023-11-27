@@ -62,11 +62,13 @@ public class EnchantmentSubscriber {
             if (!player.level().isClientSide && (itemInHand.getItem() instanceof TieredItem || itemInHand.getItem() instanceof TridentItem)) {
                 int enchantmentLevel = itemInHand.getEnchantmentLevel(ModEnchantments.DEVOURED.get());
                 if (enchantmentLevel > 0 && player.getRandom().nextInt(10) < enchantmentLevel) {
-                    CompoundTag tag = itemInHand.getOrCreateTag();
-                    float addition = tag.contains("surviving_the_aftermath.devoured") ? tag.getFloat("surviving_the_aftermath.devoured") : 0;
-                    if (addition < enchantmentLevel + 1) {
-                        tag.putFloat("surviving_the_aftermath.devoured", addition + 0.1F);
-                        player.setItemInHand(InteractionHand.MAIN_HAND, itemInHand); // Sync
+                    CompoundTag tag = itemInHand.getTag();
+                    if (tag != null){
+                        float addition = tag.contains("surviving_the_aftermath.devoured") ? tag.getFloat("surviving_the_aftermath.devoured") : 0;
+                        if (addition < enchantmentLevel + 1) {
+                            tag.putFloat("surviving_the_aftermath.devoured", addition + 0.1F);
+                            player.setItemInHand(InteractionHand.MAIN_HAND, itemInHand); // Sync
+                        }
                     }
                 }
             }
@@ -84,8 +86,8 @@ public class EnchantmentSubscriber {
     @SubscribeEvent
     public static void onAttributeGet(ItemAttributeModifierEvent event) {
         if (event.getSlotType() == EquipmentSlot.MAINHAND) {
-            CompoundTag tag = event.getItemStack().getOrCreateTag();
-            if (tag.contains("surviving_the_aftermath.devoured")) {
+            CompoundTag tag = event.getItemStack().getTag();
+            if (tag != null && tag.contains("surviving_the_aftermath.devoured")) {
                 event.addModifier(Attributes.ATTACK_DAMAGE, DEVOURED_ATTRIBUTE.apply(tag.getFloat("surviving_the_aftermath.devoured")));
             }
         }
