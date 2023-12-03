@@ -42,4 +42,6 @@ public interface IAftermath<T extends BaseAftermathModule> extends IIdentifier, 
     void end();
     void lose();
      T getModule();
+
+    void ready();
 }

@@ -46,11 +46,9 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
                 }
                 AFTERMATH_MODULE_MAP.get(identifier).add(aftermathModule);
             }catch (NullPointerException e) {
-                SurvivingTheAftermath.LOGGER.error("Failed to deserialize aftermath module: " + aftermathModule.getUniqueIdentifier());
+                SurvivingTheAftermath.LOGGER.error("Failed to deserialize aftermath module: " + aftermathModule.getUniqueIdentifier() + "\n Error: " + e);
             }
         });
-
-
         instance.finishAftermathMap(AFTERMATH_MODULE_MAP);
     }
 }

@@ -46,6 +46,10 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
         this.module = (T) API.getRandomAftermathModule(getUniqueIdentifier())
                 .orElseGet(() -> API.getAftermathMap().get(getUniqueIdentifier()).get(0));
         bindTrackers();
+
+        if (!AftermathEventUtil.start(this, players, level)) {
+            end();
+        }
     }
 
     @Override
@@ -110,7 +114,6 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.progressPercent = nbt.getFloat(Constant.PROGRESS);
-
         CompoundTag moduleTag = nbt.getCompound(Constant.MODULE);
         IAftermathModule aftermathModule = API.getAftermathModule(this.getUniqueIdentifier());
         aftermathModule.deserializeNBT(moduleTag);
@@ -187,5 +190,19 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
 
     public AftermathState getState() {
         return state;
+    }
+
+    @Override
+    public void spawnRewards() {
+        if (!AftermathEventUtil.celebrating(this, players, level)) {
+            return;
+        }
+    }
+
+    @Override
+    public void ready() {
+        if (!AftermathEventUtil.ready(this, players, level)) {
+            end();
+        }
     }
 }

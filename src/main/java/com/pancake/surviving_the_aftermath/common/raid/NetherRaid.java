@@ -69,17 +69,11 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         super(level,centerPos);
         setSpawnPos(portalShape);
         this.readyTime = getModule().getReadyTime();
-        if (!AftermathEventUtil.start(this, players, level)) {
-            end();
-        }
     }
 
     public NetherRaid(ServerLevel level, CompoundTag compoundTag) {
         super(level);
         this.deserializeNBT(compoundTag);
-        if (!AftermathEventUtil.start(this, players, level)) {
-            end();
-        }
     }
 
     @Override
@@ -141,10 +135,7 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
 
     @Override
     public void spawnRewards() {
-        if (!AftermathEventUtil.celebrating(this, players, level)) {
-            return;
-        }
-
+        super.spawnRewards();
         BlockPos blockPos = RandomUtils.getRandomElement(spawnPos);
         Direction dir = Direction.Plane.HORIZONTAL.stream().filter(d -> level.isEmptyBlock(blockPos.relative(d))
                 && !spawnPos.contains(blockPos.relative(d))).findFirst().orElse(Direction.UP);
@@ -233,13 +224,14 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         }
     }
 
-    private void ready(){
+    @Override
+    public void ready(){
+        super.ready();
         if (readyTime <= 0){
             AftermathEventUtil.ongoing(this, players, level);
             return;
         }
         this.progressPercent = 1 - (float) readyTime / getModule().getReadyTime();
-        AftermathEventUtil.ready(this, players, level);
         readyTime--;
     }
 

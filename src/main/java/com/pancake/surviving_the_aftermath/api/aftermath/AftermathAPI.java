@@ -9,6 +9,7 @@ import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
 import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
+import com.pancake.surviving_the_aftermath.common.util.RandomUtils;
 import org.slf4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -40,8 +41,8 @@ public class AftermathAPI {
     }
 
     public Optional<IAftermathModule> getRandomAftermathModule(String identifier) {
-        List<IAftermathModule> aftermathModules = AFTERMATH_MODULE_MAP.get(identifier);
-        return Optional.ofNullable(aftermathModules.get(new Random().nextInt(aftermathModules.size())));
+        List<IAftermathModule> aftermathModules = getAftermathModules(identifier);
+        return Optional.ofNullable(RandomUtils.getRandomElement(aftermathModules));
     }
 
     public List<IAftermathModule> getAftermathModules(String identifier) {

@@ -1,10 +1,8 @@
 package com.pancake.surviving_the_aftermath.common.tracker;
 
-import com.pancake.surviving_the_aftermath.api.IAftermath;
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
+
 import com.pancake.surviving_the_aftermath.common.config.AftermathConfig;
 import com.pancake.surviving_the_aftermath.common.raid.api.BaseRaid;
-import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -37,9 +35,10 @@ public class RaidMobBattleTracker extends MobBattleTracker{
                     BlockPos centerPos = raid.getCenterPos();
                     BlockPos pos = entity.blockPosition();
                     double distance = Math.sqrt(centerPos.distSqr(pos));
-                    if (distance > 35) {
-                        double value = level.random.nextInt(20);
-                        entity.teleportTo(centerPos.getX() + value, centerPos.getY() + 20, centerPos.getZ() + value);;
+                    if (distance > 50) {
+                        double value = level.random.nextInt(30);
+                        BlockPos blockPos = new BlockPos((int) (centerPos.getX() + value), centerPos.getY() +  level.random.nextInt(10,20), (int) (centerPos.getZ() + value));
+                        entity.addTag("restricted_range:" + blockPos.toShortString());
                     }
                 }
             }

@@ -53,6 +53,7 @@ public class AftermathEvent extends Event {
             super(aftermath, players, level);
         }
     }
+    @Cancelable
     public static class Ready extends AftermathEvent {
 
         public Ready(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {

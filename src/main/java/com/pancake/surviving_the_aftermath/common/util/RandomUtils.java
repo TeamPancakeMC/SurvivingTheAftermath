@@ -8,12 +8,23 @@ import java.util.Set;
 public class RandomUtils<T> {
     private static final Random RANDOM = new Random();
     public static <T> T getRandomElement(Collection<T> collection) {
-        return (T) getRandomElement(collection.toArray());
-    }
-
-    public static <T> T getRandomElement(T[] array) {
-        int randomIndex = RANDOM.nextInt(array.length);
-        return array[randomIndex];
+        int size = collection.size();
+        if (size == 0) {
+            throw new IllegalArgumentException("Collection cannot be empty.");
+        }
+        int randomIndex = RANDOM.nextInt(size);
+        if (collection instanceof List) {
+            return ((List<T>) collection).get(randomIndex);
+        } else {
+            int i = 0;
+            for (T item : collection) {
+                if (i == randomIndex) {
+                    return item;
+                }
+                i++;
+            }
+            throw new IllegalStateException("Unexpected condition: randomIndex matched no element.");
+        }
     }
 
     public static boolean randomChanceOf(double percent) {
