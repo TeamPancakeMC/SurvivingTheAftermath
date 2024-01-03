@@ -1,8 +1,11 @@
 package com.pancake.surviving_the_aftermath.api.module.impl.weighted;
 
+import com.google.common.collect.Lists;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public abstract class BaseWeightedListModule<T> implements IWeightedListModule<T> {
@@ -39,5 +42,11 @@ public abstract class BaseWeightedListModule<T> implements IWeightedListModule<T
                 .forEach(itemWeight -> builder.add(itemWeight.getData(), itemWeight.getWeight().asInt()));
 
         this.weightedList = builder.build();
+    }
+
+    public List<T> getList(){
+        ArrayList<T> list = Lists.newArrayList();
+        getWeightedList().unwrap().forEach(weightedEntry -> list.add(weightedEntry.getData()));
+        return list;
     }
 }

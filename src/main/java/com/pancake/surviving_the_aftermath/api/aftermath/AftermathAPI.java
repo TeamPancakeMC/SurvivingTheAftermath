@@ -4,10 +4,7 @@ import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
 import com.pancake.surviving_the_aftermath.api.IAftermathFactory;
 import com.pancake.surviving_the_aftermath.api.ITracker;
-import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
-import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
-import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
-import com.pancake.surviving_the_aftermath.api.module.IWeightedListModule;
+import com.pancake.surviving_the_aftermath.api.module.*;
 import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import com.pancake.surviving_the_aftermath.common.util.RandomUtils;
 import org.slf4j.Logger;
@@ -23,6 +20,7 @@ public class AftermathAPI {
     private final Map<String, Class<? extends IAftermathFactory>> AFTERMATH_FACTORY_MAP = Maps.newHashMap();
     private final Map<String, Class<? extends IAmountModule>> AMOUNT_MODULES_MAP = Maps.newHashMap();
     private final Map<String, Class<? extends IEntityInfoModule>> ENTITY_INFO_MODULES_MAP = Maps.newHashMap();
+    private final Map<String, Class<? extends IConditionModule>> CONDITION_MODULES_MAP = Maps.newHashMap();
     private final Map<String, Class<? extends ITracker>> TRACKERS = Maps.newHashMap();
     private static final AftermathAPI INSTANCE = new AftermathAPI();
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -60,6 +58,14 @@ public class AftermathAPI {
                 .filter(Objects::nonNull)
                 .map(tracker -> tracker.setUUID(uuid))
                 .toList();
+    }
+
+    public void registerConditionModule(String identifier, Class<? extends IConditionModule> conditionModule) {
+        CONDITION_MODULES_MAP.put(identifier, conditionModule);
+    }
+
+    public IConditionModule getConditionModule(String identifier) {
+        return getObjectInstance(CONDITION_MODULES_MAP, identifier);
     }
 
 

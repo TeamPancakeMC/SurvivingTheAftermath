@@ -31,4 +31,6 @@ public class Constant {
     public static final String SPECTATOR_LIST = "spectatorList";
     public static final String TRACKER = "tracker";
     public static final String TOTAL_ENEMY = "totalEnemy";
+    public static final String LEVEL_STAGES = "levelStages";
+    public static final String PLAYER_STAGES = "playerStages";
 }

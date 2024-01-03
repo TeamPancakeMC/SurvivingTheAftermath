@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.module.impl.amount.FixedAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.amount.RandomAmountModule;
+import com.pancake.surviving_the_aftermath.api.module.impl.condition.StageConditionModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.entity_info.EntityInfoModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.entity_info.EntityInfoWithEquipmentModule;
 import com.pancake.surviving_the_aftermath.api.module.impl.weighted.EntityTypeWeightedListModule;
@@ -76,6 +77,9 @@ public class SurvivingTheAftermath {
 
         instance.registerAftermathModule(NetherRaid.IDENTIFIER, NetherRaidModule.class);
         instance.registerAftermathFactory(NetherRaid.IDENTIFIER, NetherRaid.Factory.class);
+
+        instance.registerConditionModule(StageConditionModule.LevelStageConditionModule.IDENTIFIER, StageConditionModule.LevelStageConditionModule.class);
+        instance.registerConditionModule(StageConditionModule.PlayerStageConditionModule.IDENTIFIER, StageConditionModule.PlayerStageConditionModule.class);
     }
 
     @SubscribeEvent
