@@ -46,4 +46,20 @@ public class EntityInfoWithEquipmentModule extends EntityInfoModule {
     public IEntityInfoModule type() {
         return ModAftermathModule.ENTITY_INFO_EQUIPMENT.get();
     }
+
+    public static class Builder extends EntityInfoModule.Builder{
+        private IWeightedModule<?> equipment;
+
+        public Builder equipment(IWeightedModule<?> equipment) {
+            this.equipment = equipment;
+            return this;
+        }
+
+        public EntityInfoWithEquipmentModule build() {
+            EntityInfoModule build = super.build();
+            EntityType<?> entityType = build.getEntityType();
+            IAmountModule amountModule = build.getAmountModule();
+            return new EntityInfoWithEquipmentModule(entityType, amountModule, equipment);
+        }
+    }
 }

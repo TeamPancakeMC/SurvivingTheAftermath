@@ -59,4 +59,19 @@ public class RandomAmountModule implements IAmountModule {
     public int getMax() {
         return max;
     }
+
+    public static class Builder {
+        private int min;
+        private int max;
+
+        public Builder amount(int min, int max) {
+            this.min = min;
+            this.max = max;
+            return this;
+        }
+
+        public RandomAmountModule build() {
+            return new RandomAmountModule(min, max);
+        }
+    }
 }

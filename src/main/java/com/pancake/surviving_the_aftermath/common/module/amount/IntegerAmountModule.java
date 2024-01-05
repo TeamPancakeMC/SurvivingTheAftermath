@@ -46,5 +46,18 @@ public class IntegerAmountModule implements IAmountModule {
     }
 
 
+    public static class Builder {
+        private int amount;
+
+        public Builder amount(int amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public IntegerAmountModule build() {
+            return new IntegerAmountModule(amount);
+        }
+    }
+
 
 }

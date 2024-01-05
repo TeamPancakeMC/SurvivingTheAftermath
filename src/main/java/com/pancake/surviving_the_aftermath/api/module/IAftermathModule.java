@@ -4,5 +4,7 @@ import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.IModule;
 
 public interface IAftermathModule extends IModule<IAftermathModule> {
+    String getJsonName();
 
+    void setJsonName(String jsonName);
 }

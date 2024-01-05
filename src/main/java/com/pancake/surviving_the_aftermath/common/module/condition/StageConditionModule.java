@@ -32,4 +32,17 @@ public class StageConditionModule implements IConditionModule {
     public String getStage() {
         return stage;
     }
+
+    public static class Builder {
+        private String stage;
+
+        public Builder stage(String stage) {
+            this.stage = stage;
+            return this;
+        }
+
+        public StageConditionModule build() {
+            return new StageConditionModule(stage);
+        }
+    }
 }

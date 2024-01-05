@@ -41,4 +41,17 @@ public class ItemWeightedModule extends BaseWeightedModule<Item> {
     public IWeightedModule<Item> type() {
         return ModAftermathModule.ITEM_WEIGHTED.get();
     }
+
+    public static class Builder{
+        private List<WeightedEntry.Wrapper<Item>> list;
+
+        public Builder list(List<WeightedEntry.Wrapper<Item>> list) {
+            this.list = list;
+            return this;
+        }
+
+        public ItemWeightedModule build() {
+            return new ItemWeightedModule(list);
+        }
+    }
 }

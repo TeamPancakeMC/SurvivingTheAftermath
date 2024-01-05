@@ -42,4 +42,17 @@ public class EntityTypeWeightedModule extends BaseWeightedModule<EntityType<?>> 
     public IWeightedModule<EntityType<?>> type() {
         return ModAftermathModule.ENTITY_TYPE_WEIGHTED.get();
     }
+
+    public static class Builder{
+        private List<WeightedEntry.Wrapper<EntityType<?>>> list;
+
+        public Builder list(List<WeightedEntry.Wrapper<EntityType<?>>> list) {
+            this.list = list;
+            return this;
+        }
+
+        public EntityTypeWeightedModule build() {
+            return new EntityTypeWeightedModule(list);
+        }
+    }
 }
