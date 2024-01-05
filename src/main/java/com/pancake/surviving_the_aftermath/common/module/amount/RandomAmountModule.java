@@ -3,6 +3,7 @@ package com.pancake.surviving_the_aftermath.common.module.amount;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
+import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 
 import java.util.Random;
 
@@ -17,10 +18,10 @@ public class RandomAmountModule implements IAmountModule {
     public Codec<? extends IAmountModule> codec() {
         return CODEC;
     }
-    @Override
-    public IAmountModule type() {
-        return this;
-    }
+//    @Override
+//    public IAmountModule type() {
+//        return this;
+//    }
     private final Random rand = new Random();
     protected int min;
     protected int max;
@@ -45,6 +46,10 @@ public class RandomAmountModule implements IAmountModule {
         return Math.max(0, this.rand.nextInt(this.max - this.min + 1) + this.min);
     }
 
+    @Override
+    public IAmountModule type() {
+        return ModAftermathModule.RANDOM_AMOUNT.get();
+    }
 
 
     public int getMin() {

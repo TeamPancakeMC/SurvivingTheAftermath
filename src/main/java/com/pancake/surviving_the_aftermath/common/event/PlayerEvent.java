@@ -1,28 +1,26 @@
-package com.pancake.surviving_the_aftermath.event;
+package com.pancake.surviving_the_aftermath.common.event;
 
 import com.google.gson.JsonElement;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
+import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
+import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
 import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
+import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoModule;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod.EventBusSubscriber
 public class PlayerEvent {
@@ -72,20 +70,27 @@ public class PlayerEvent {
 
 
         RandomAmountModule randomAmountModule = new RandomAmountModule(1, 5);
-        IntegerAmountModule integerAmountModule = new IntegerAmountModule(10);
+
+        EntityInfoModule entityInfoModule = new EntityInfoModule(EntityType.PIG, randomAmountModule);
 
         DynamicOps<Tag> opsNBT = NbtOps.INSTANCE;
         DynamicOps<JsonElement> opsJSON = JsonOps.INSTANCE;
 
-        IAmountModule.CODEC.encodeStart(opsNBT, randomAmountModule).result().ifPresent(nbt -> {
-            DataResult<IAmountModule> parse = IAmountModule.CODEC.parse(opsNBT, nbt);
+        ModuleRegistry.Codecs.ENTITY_INFO_CODEC.get().encodeStart(opsNBT, entityInfoModule).result().ifPresent(nbt -> {
+            DataResult<IEntityInfoModule> parse = ModuleRegistry.Codecs.ENTITY_INFO_CODEC.get().parse(opsNBT, nbt);
             parse.result().ifPresent(module -> {
                 System.out.println("opsNBT module: " + module);
             });
             System.out.println("opsNBT nbt" + nbt);
         });
 
-
+//        ModAftermathModule.MODULE_CODEC.get().encodeStart(opsNBT, randomAmountModule).result().ifPresent(nbt -> {
+//            DataResult<RandomAmountModule> parse = ModAftermathModule.MODULE_CODEC.get().parse(opsNBT, nbt);
+//            parse.result().ifPresent(module -> {
+//                System.out.println("opsNBT module: " + module);
+//            });
+//            System.out.println("opsNBT nbt" + nbt);
+//        });
 
 
 

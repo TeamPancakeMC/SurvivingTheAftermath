@@ -11,6 +11,13 @@ import java.util.List;
 public abstract class BaseWeightedModule<T> implements IWeightedModule<T> {
     protected List<WeightedEntry.Wrapper<T>> list;
 
+    public BaseWeightedModule(List<Wrapper<T>> list) {
+        this.list = list;
+    }
+
+    public BaseWeightedModule() {
+    }
+
     @Override
     public void add(T t, int weight) {
         this.list.add(WeightedEntry.wrap(t, weight));

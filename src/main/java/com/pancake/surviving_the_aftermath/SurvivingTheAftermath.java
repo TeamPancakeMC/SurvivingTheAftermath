@@ -1,14 +1,20 @@
 package com.pancake.surviving_the_aftermath;
 
+import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
 
+
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
+import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
+
+import java.util.Map;
+import java.util.Optional;
 
 @Mod(SurvivingTheAftermath.MOD_ID)
 public class SurvivingTheAftermath {
@@ -18,8 +24,7 @@ public class SurvivingTheAftermath {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
         bus.addListener(ModAftermathModule::onNewRegistry);
-        ModAftermathModule.MODULE.register(bus);
-
+        ModuleRegistry.register(bus);
     }
 
     public static ResourceLocation asResource(String path) {

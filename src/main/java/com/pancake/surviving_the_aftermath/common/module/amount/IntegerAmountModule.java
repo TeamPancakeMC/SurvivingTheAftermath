@@ -1,12 +1,11 @@
 package com.pancake.surviving_the_aftermath.common.module.amount;
 
-import com.mojang.datafixers.util.Either;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
-import com.pancake.surviving_the_aftermath.common.module.weighted.EntityTypeWeightedModule;
+import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 
-import java.util.function.Function;
 
 public class IntegerAmountModule implements IAmountModule {
     public static final String IDENTIFIER = "integer_amount";
@@ -39,12 +38,13 @@ public class IntegerAmountModule implements IAmountModule {
 
     @Override
     public IAmountModule type() {
-        return this;
+        return ModAftermathModule.INTEGER_AMOUNT.get();
     }
 
     public int getAmount() {
         return amount;
     }
+
 
 
 }
