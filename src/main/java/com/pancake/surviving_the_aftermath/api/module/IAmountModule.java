@@ -1,10 +1,19 @@
 package com.pancake.surviving_the_aftermath.api.module;
 
-import com.pancake.surviving_the_aftermath.api.IIdentifier;
-import com.pancake.surviving_the_aftermath.api.IJSONSerializable;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.INBTSerializable;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.KeyDispatchCodec;
+import com.pancake.surviving_the_aftermath.api.IModule;
+import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
+import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
+import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
 
-public interface IAmountModule extends IIdentifier, IJSONSerializable, INBTSerializable<CompoundTag> {
-    int getSpawnAmount();
+import java.util.function.Function;
+
+public interface IAmountModule extends IModule {
+    public static final Codec<IAmountModule> CODEC = null;
+    Codec<? extends IAmountModule> codec();
+    abstract int getSpawnAmount();
+
+    abstract IAmountModule type();
 }

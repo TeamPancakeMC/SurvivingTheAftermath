@@ -1,7 +1,0 @@
-{
-  "type": "surviving_the_aftermath:house_of_sakura",
-  "biomes": "#surviving_the_aftermath:has_house_of_sakura",
-  "spawn_overrides": {},
-  "step": "surface_structures",
-  "terrain_adaptation": "beard_thin"
-}

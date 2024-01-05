@@ -1,7 +1,0 @@
-{
-  "type": "surviving_the_aftermath:city",
-  "biomes": "#surviving_the_aftermath:has_city",
-  "spawn_overrides": {},
-  "step": "surface_structures",
-  "terrain_adaptation": "beard_box"
-}
