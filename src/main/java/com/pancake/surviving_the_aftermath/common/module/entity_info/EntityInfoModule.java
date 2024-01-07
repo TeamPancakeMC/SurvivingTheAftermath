@@ -50,22 +50,4 @@ public class EntityInfoModule implements IEntityInfoModule {
         return ModAftermathModule.ENTITY_INFO.get();
     }
 
-    public static class Builder {
-        private EntityType<?> entityType;
-        private IAmountModule amountModule;
-
-        public Builder entityType(EntityType<?> entityType) {
-            this.entityType = entityType;
-            return this;
-        }
-
-        public Builder amountModule(IAmountModule amountModule) {
-            this.amountModule = amountModule;
-            return this;
-        }
-
-        public EntityInfoModule build() {
-            return new EntityInfoModule(entityType, amountModule);
-        }
-    }
 }

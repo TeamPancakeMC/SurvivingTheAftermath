@@ -1,0 +1,47 @@
+{
+  "aftermath_module": "surviving_the_aftermath:nether_raid",
+  "ready_time": 10,
+  "rewards": [
+    {
+      "data": "minecraft:stone",
+      "weight": 10
+    },
+    {
+      "data": "minecraft:stone_axe",
+      "weight": 20
+    }
+  ],
+  "waves": [
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 5,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:pig"
+      }
+    ],
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:integer_amount",
+          "value": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_equipment",
+        "entity_type": "minecraft:pig",
+        "equipment": [
+          {
+            "data": "minecraft:stone",
+            "weight": 10
+          },
+          {
+            "data": "minecraft:stone_axe",
+            "weight": 20
+          }
+        ]
+      }
+    ]
+  ]
+}

@@ -22,18 +22,19 @@ public class NetherRaidModuleProvider extends AftermathModuleProviders<NetherRai
 
     @Override
     public void addModules() {
-        NetherRaidModule netherRaidModule = new NetherRaidModule.Builder("common")
-                .readyTime(100)
-                .addWave(List.of(new EntityInfoModule(EntityType.PIG, new IntegerAmountModule(10)),
-                        new EntityInfoWithEquipmentModule(EntityType.ZOMBIE, new RandomAmountModule(10, 20),
-                                new ItemWeightedModule(List.of(WeightedEntry.wrap(Items.IRON_SWORD, 1),
-                                        WeightedEntry.wrap(Items.IRON_AXE, 1),
-                                        WeightedEntry.wrap(Items.IRON_PICKAXE, 1)
-                                )
-                                )
-                        )
-                ))
-                .build();
+        RandomAmountModule randomAmountModule = new RandomAmountModule(1, 5);
+        IntegerAmountModule integerAmountModule = new IntegerAmountModule(1);
+        EntityInfoModule entityInfoModule = new EntityInfoModule(EntityType.PIG, randomAmountModule);
+        NetherRaidModule netherRaidModule = new NetherRaidModule();
+        ItemWeightedModule itemWeightedModule = new ItemWeightedModule(List.of(
+                WeightedEntry.wrap(Items.STONE, 10),
+                WeightedEntry.wrap(Items.STONE_AXE, 20)
+        ));
+        EntityInfoWithEquipmentModule equipmentModule = new EntityInfoWithEquipmentModule(EntityType.PIG, integerAmountModule,itemWeightedModule);
+        netherRaidModule.setReadyTime(10).setWaves(List.of(
+                List.of(entityInfoModule),
+                List.of(equipmentModule)
+        )).setRewards(itemWeightedModule);
 
         addModule(netherRaidModule);
     }

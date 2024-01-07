@@ -6,7 +6,7 @@ import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
 import net.minecraft.core.BlockPos;
 
-public class NetherRaid extends BaseRaid<NetherRaidModule> {
+public class NetherRaid extends BaseRaid {
     public static final String IDENTIFIER = "nether_raid";
 
     @Override

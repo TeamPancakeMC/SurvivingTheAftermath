@@ -7,7 +7,9 @@ import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
+import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.entity.EntityType;
 
 
@@ -16,20 +18,22 @@ public class EntityInfoWithEquipmentModule extends EntityInfoModule {
     public static final Codec<EntityInfoWithEquipmentModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("entity_type").forGetter(EntityInfoModule::getEntityType),
             ModuleRegistry.Codecs.AMOUNT_CODEC.get().fieldOf("amount_module").forGetter(EntityInfoModule::getAmountModule),
-            ModuleRegistry.Codecs.WEIGHTED_CODEC.get().fieldOf("equipment").forGetter(EntityInfoWithEquipmentModule::getEquipment)
+            Codec.list(WeightedEntry.Wrapper.codec(BuiltInRegistries.ITEM.byNameCodec()))
+                    .xmap(ItemWeightedModule::new, ItemWeightedModule::getList).fieldOf("equipment").forGetter(EntityInfoWithEquipmentModule::getEquipment)
     ).apply(instance, EntityInfoWithEquipmentModule::new));
-    private IWeightedModule<?> equipment;
 
-    public EntityInfoWithEquipmentModule(EntityType<?> entityType, IAmountModule amountModule, IWeightedModule<?> equipment) {
+    private ItemWeightedModule getEquipment() {
+        return equipment;
+    }
+
+    private ItemWeightedModule equipment;
+
+    public EntityInfoWithEquipmentModule(EntityType<?> entityType, IAmountModule amountModule, ItemWeightedModule equipment) {
         super(entityType, amountModule);
         this.equipment = equipment;
     }
 
     public EntityInfoWithEquipmentModule() {
-    }
-
-    private IWeightedModule<?> getEquipment() {
-        return equipment;
     }
 
     @Override
@@ -47,19 +51,4 @@ public class EntityInfoWithEquipmentModule extends EntityInfoModule {
         return ModAftermathModule.ENTITY_INFO_EQUIPMENT.get();
     }
 
-    public static class Builder extends EntityInfoModule.Builder{
-        private IWeightedModule<?> equipment;
-
-        public Builder equipment(IWeightedModule<?> equipment) {
-            this.equipment = equipment;
-            return this;
-        }
-
-        public EntityInfoWithEquipmentModule build() {
-            EntityInfoModule build = super.build();
-            EntityType<?> entityType = build.getEntityType();
-            IAmountModule amountModule = build.getAmountModule();
-            return new EntityInfoWithEquipmentModule(entityType, amountModule, equipment);
-        }
-    }
 }

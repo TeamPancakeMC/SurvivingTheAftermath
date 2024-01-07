@@ -15,10 +15,9 @@ import java.util.stream.Collectors;
 public class ItemWeightedModule extends BaseWeightedModule<Item> {
     public static final String IDENTIFIER = "item_weighted";
 
-    public static final Codec<ItemWeightedModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            WeightedEntry.Wrapper.codec(BuiltInRegistries.ITEM.byNameCodec())
-                    .listOf().fieldOf("list").forGetter(ItemWeightedModule::getList)
-    ).apply(instance, ItemWeightedModule::new));
+    public static final Codec<ItemWeightedModule> CODEC = Codec.list(WeightedEntry.Wrapper.codec(BuiltInRegistries.ITEM.byNameCodec()))
+            .xmap(ItemWeightedModule::new, ItemWeightedModule::getList);
+
 
     public ItemWeightedModule(List<WeightedEntry.Wrapper<Item>> list) {
         super(list);
@@ -42,16 +41,4 @@ public class ItemWeightedModule extends BaseWeightedModule<Item> {
         return ModAftermathModule.ITEM_WEIGHTED.get();
     }
 
-    public static class Builder{
-        private List<WeightedEntry.Wrapper<Item>> list;
-
-        public Builder list(List<WeightedEntry.Wrapper<Item>> list) {
-            this.list = list;
-            return this;
-        }
-
-        public ItemWeightedModule build() {
-            return new ItemWeightedModule(list);
-        }
-    }
 }

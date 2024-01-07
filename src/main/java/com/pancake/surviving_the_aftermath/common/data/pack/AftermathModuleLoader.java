@@ -23,7 +23,7 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
     public static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .create();
-    public final Multimap<String, IAftermathModule> AFTERMATH_MODULE_MAP = ArrayListMultimap.create();
+    public static final Multimap<ResourceLocation, IAftermathModule> AFTERMATH_MODULE_MAP = ArrayListMultimap.create();
 
     public AftermathModuleLoader() {
         super(GSON, "aftermath");
@@ -33,13 +33,12 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
         AFTERMATH_MODULE_MAP.clear();
         jsonElementMap.forEach((resourceLocation, jsonElement) -> {
             JsonObject asJsonObject = jsonElement.getAsJsonObject();
-            String identifier = GsonHelper.getAsString(asJsonObject, Constant.IDENTIFIER);
 
             ModuleRegistry.Codecs.AFTERMATH_MODULE_CODEC.get()
                     .parse(JsonOps.INSTANCE, asJsonObject)
                     .resultOrPartial(SurvivingTheAftermath.LOGGER::error)
                     .ifPresent(aftermathModule -> {
-                        AFTERMATH_MODULE_MAP.put(identifier, aftermathModule);
+                        AFTERMATH_MODULE_MAP.put(resourceLocation, aftermathModule);
                     });
         });
     }

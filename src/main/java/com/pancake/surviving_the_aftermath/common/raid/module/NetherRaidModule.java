@@ -18,6 +18,7 @@ public class NetherRaidModule extends BaseRaidModule {
             Codec.list(Codec.list(ModuleRegistry.Codecs.ENTITY_INFO_CODEC.get())).fieldOf("waves").forGetter(NetherRaidModule::getWaves),
             Codec.INT.fieldOf("ready_time").forGetter(NetherRaidModule::getReadyTime)
     ).apply(instance, NetherRaidModule::new));
+    private int readyTime;
 
     public NetherRaidModule(ItemWeightedModule rewards, List<List<IEntityInfoModule>> waves, int readyTime) {
         super(rewards, waves);
@@ -25,10 +26,8 @@ public class NetherRaidModule extends BaseRaidModule {
     }
 
     public NetherRaidModule() {
-        super(new ItemWeightedModule(), Lists.newArrayList());
     }
 
-    private int readyTime;
     @Override
     public Codec<? extends IAftermathModule> codec() {
         return CODEC;
@@ -51,26 +50,5 @@ public class NetherRaidModule extends BaseRaidModule {
     public NetherRaidModule setReadyTime(int readyTime) {
         this.readyTime = readyTime;
         return this;
-    }
-
-    public static class Builder extends BaseRaidModule.Builder<NetherRaidModule>{
-        private int readyTime;
-
-        public Builder(String jsonName) {
-            super(new NetherRaidModule(), jsonName);
-        }
-
-        public Builder readyTime(int readyTime) {
-            this.readyTime = readyTime;
-            return this;
-        }
-
-        @Override
-        public NetherRaidModule build() {
-            NetherRaidModule build = super.build();
-            build.setReadyTime(this.readyTime);
-            return build;
-        }
-
     }
 }

@@ -9,9 +9,7 @@ import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 
 public class IntegerAmountModule implements IAmountModule {
     public static final String IDENTIFIER = "integer_amount";
-    public static final Codec<IntegerAmountModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.fieldOf("amount").forGetter(IntegerAmountModule::getAmount)
-    ).apply(instance, IntegerAmountModule::new));
+    public static final Codec<IntegerAmountModule> CODEC = Codec.INT.xmap(IntegerAmountModule::new, IntegerAmountModule::getAmount);
     protected int amount;
 
     public IntegerAmountModule(int amount) {
@@ -44,20 +42,5 @@ public class IntegerAmountModule implements IAmountModule {
     public int getAmount() {
         return amount;
     }
-
-
-    public static class Builder {
-        private int amount;
-
-        public Builder amount(int amount) {
-            this.amount = amount;
-            return this;
-        }
-
-        public IntegerAmountModule build() {
-            return new IntegerAmountModule(amount);
-        }
-    }
-
 
 }
