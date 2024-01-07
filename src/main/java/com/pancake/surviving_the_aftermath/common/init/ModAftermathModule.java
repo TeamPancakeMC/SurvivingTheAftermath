@@ -1,7 +1,5 @@
 package com.pancake.surviving_the_aftermath.common.init;
 
-import com.mojang.serialization.Codec;
-import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.module.*;
 import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
@@ -12,17 +10,10 @@ import com.pancake.surviving_the_aftermath.common.module.weighted.EntityTypeWeig
 import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.*;
-
-import java.util.function.Supplier;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber
 public class ModAftermathModule {

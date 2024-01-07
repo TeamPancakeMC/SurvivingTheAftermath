@@ -13,7 +13,7 @@ public class EntityInfoModule implements IEntityInfoModule {
     public static final String IDENTIFIER = "entity_info";
     public static final Codec<EntityInfoModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("entity_type").forGetter(EntityInfoModule::getEntityType),
-            ModuleRegistry.Codecs.AMOUNT_CODEC.get().fieldOf("amount_module").forGetter(EntityInfoModule::getAmountModule)
+            IAmountModule.CODEC.get().fieldOf("amount_module").forGetter(EntityInfoModule::getAmountModule)
 
     ).apply(instance, EntityInfoModule::new));
     protected EntityType<?> entityType;

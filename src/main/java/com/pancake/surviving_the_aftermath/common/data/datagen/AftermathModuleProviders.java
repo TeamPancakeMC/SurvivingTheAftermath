@@ -49,7 +49,7 @@ public abstract class AftermathModuleProviders<T extends BaseAftermathModule> im
     public CompletableFuture<?> run(@NotNull CachedOutput output) {
         addModules();
         return CompletableFuture.runAsync(() -> modules.forEach(module -> {
-            ModuleRegistry.Codecs.AFTERMATH_MODULE_CODEC.get()
+            IAftermathModule.CODEC.get()
                     .encodeStart(JsonOps.INSTANCE, module)
                     .resultOrPartial(SurvivingTheAftermath.LOGGER::error)
                     .ifPresent(jsonElement -> {

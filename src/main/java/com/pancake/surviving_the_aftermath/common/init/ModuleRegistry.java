@@ -38,24 +38,6 @@ public class ModuleRegistry {
     }
 
 
-    public static final class Codecs {
-        public static final Supplier<Codec<IAftermathModule>> AFTERMATH_MODULE_CODEC = () -> AFTERMATH_MODULE_REGISTRY.get().getCodec()
-                .dispatch("aftermath_module", IAftermathModule::type, IAftermathModule::codec);
-        public static final Supplier<Codec<IEntityInfoModule>> ENTITY_INFO_CODEC = () -> ENTITY_INFO_REGISTRY.get().getCodec()
-                .dispatch("entity_info", IEntityInfoModule::type, IEntityInfoModule::codec);
-
-        public static final Supplier<Codec<IAmountModule>> AMOUNT_CODEC = () -> AMOUNT_REGISTRY.get().getCodec()
-                .dispatch("amount", IAmountModule::type, IAmountModule::codec);
-
-        public static final Supplier<Codec<IWeightedModule<?>>> WEIGHTED_CODEC = () -> WEIGHTED_REGISTRY.get().getCodec()
-                .dispatch("weighted", IWeightedModule::type, IWeightedModule::codec);
-
-        public static final Supplier<Codec<IConditionModule>> CONDITION_CODEC = () -> CONDITION_REGISTRY.get().getCodec()
-                .dispatch("condition", IConditionModule::type, IConditionModule::codec);
-
-    }
-
-
     public static final class Keys {
         public static final ResourceKey<Registry<IAftermathModule>> AFTERMATH_MODULE = key("aftermath_module");
         public static final ResourceKey<Registry<IAmountModule>> AMOUNT = key("amount");

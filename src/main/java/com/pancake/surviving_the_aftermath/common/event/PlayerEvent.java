@@ -99,8 +99,8 @@ public class PlayerEvent {
         AftermathModuleLoader.AFTERMATH_MODULE_MAP.forEach((identifier, module) -> {
             System.out.println("identifier: " + identifier);
             System.out.println("module: " + module);
-            ModuleRegistry.Codecs.AFTERMATH_MODULE_CODEC.get().encodeStart(opsNBT, module).result().ifPresent(nbt -> {
-                DataResult<IAftermathModule> parse = ModuleRegistry.Codecs.AFTERMATH_MODULE_CODEC.get().parse(opsNBT, nbt);
+            IAftermathModule.CODEC.get().encodeStart(opsNBT, module).result().ifPresent(nbt -> {
+                DataResult<IAftermathModule> parse = IAftermathModule.CODEC.get().parse(opsNBT, nbt);
                 parse.result().ifPresent(module1 -> {
                     System.out.println("opsNBT module: " + module1);
                     System.out.println(module1.type());

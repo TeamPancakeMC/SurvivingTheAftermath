@@ -34,7 +34,7 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
         jsonElementMap.forEach((resourceLocation, jsonElement) -> {
             JsonObject asJsonObject = jsonElement.getAsJsonObject();
 
-            ModuleRegistry.Codecs.AFTERMATH_MODULE_CODEC.get()
+            IAftermathModule.CODEC.get()
                     .parse(JsonOps.INSTANCE, asJsonObject)
                     .resultOrPartial(SurvivingTheAftermath.LOGGER::error)
                     .ifPresent(aftermathModule -> {

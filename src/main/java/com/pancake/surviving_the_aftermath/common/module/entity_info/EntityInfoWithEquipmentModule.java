@@ -17,7 +17,7 @@ public class EntityInfoWithEquipmentModule extends EntityInfoModule {
     public static final String IDENTIFIER = "entity_info_equipment";
     public static final Codec<EntityInfoWithEquipmentModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("entity_type").forGetter(EntityInfoModule::getEntityType),
-            ModuleRegistry.Codecs.AMOUNT_CODEC.get().fieldOf("amount_module").forGetter(EntityInfoModule::getAmountModule),
+            IAmountModule.CODEC.get().fieldOf("amount_module").forGetter(EntityInfoModule::getAmountModule),
             Codec.list(WeightedEntry.Wrapper.codec(BuiltInRegistries.ITEM.byNameCodec()))
                     .xmap(ItemWeightedModule::new, ItemWeightedModule::getList).fieldOf("equipment").forGetter(EntityInfoWithEquipmentModule::getEquipment)
     ).apply(instance, EntityInfoWithEquipmentModule::new));

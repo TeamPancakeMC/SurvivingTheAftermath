@@ -15,7 +15,7 @@ import java.util.List;
 public class NetherRaidModule extends BaseRaidModule {
     public static final Codec<NetherRaidModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ItemWeightedModule.CODEC.fieldOf("rewards").forGetter(NetherRaidModule::getRewards),
-            Codec.list(Codec.list(ModuleRegistry.Codecs.ENTITY_INFO_CODEC.get())).fieldOf("waves").forGetter(NetherRaidModule::getWaves),
+            Codec.list(Codec.list(IEntityInfoModule.CODEC.get())).fieldOf("waves").forGetter(NetherRaidModule::getWaves),
             Codec.INT.fieldOf("ready_time").forGetter(NetherRaidModule::getReadyTime)
     ).apply(instance, NetherRaidModule::new));
     private int readyTime;
