@@ -1,12 +1,18 @@
 package com.pancake.surviving_the_aftermath.api;
 
+import com.mojang.serialization.Codec;
+import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
-public interface ITracker extends IIdentifier, INBTSerializable<CompoundTag> {
+public interface ITracker extends ICodec<ITracker>{
+    Supplier<Codec<ITracker>> CODEC = () -> ModuleRegistry.TRACKER_REGISTRY.get().getCodec()
+            .dispatch("tracker", ITracker::type, ITracker::codec);
+
     static void register(ITracker tracker) {
         MinecraftForge.EVENT_BUS.register(tracker);
     }

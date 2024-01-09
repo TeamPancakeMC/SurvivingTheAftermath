@@ -1,11 +1,13 @@
 package com.pancake.surviving_the_aftermath.common.capability;
 
+import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModCapability;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
@@ -27,11 +29,13 @@ public class AftermathCap implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
-        for (Map.Entry<UUID, IAftermath<BaseAftermathModule>> entry : AFTERMATH_MANAGER.getAftermathMap().entrySet()) {
-            UUID uuid = entry.getKey();
-            IAftermath<BaseAftermathModule> aftermath = entry.getValue();
-            compoundTag.put(uuid.toString(), aftermath.serializeNBT());
-        }
+        AFTERMATH_MANAGER.getAftermathMap().forEach((uuid, aftermath) -> {
+            IAftermath.CODEC.get().encodeStart(NbtOps.INSTANCE, aftermath)
+                    .resultOrPartial(SurvivingTheAftermath.LOGGER::error)
+                    .ifPresent(tag -> {
+                        compoundTag.put(uuid.toString(), tag);
+                    });
+        });
         return compoundTag;
     }
 

@@ -16,13 +16,4 @@ public abstract class BaseTracker implements ITracker {
         return this;
     }
 
-    @Override
-    public CompoundTag serializeNBT() {
-        return new CompoundTag();
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-
-    }
 }

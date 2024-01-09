@@ -4,12 +4,13 @@ import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import dev.latvian.mods.kubejs.event.EventJS;
 
 import java.util.List;
+import java.util.Set;
 
 public class AftermathModifyEventJS extends EventJS {
     private final String identifier;
-    private final List<IAftermathModule> aftermathModules;
+    private final Set<IAftermathModule> aftermathModules;
 
-    public AftermathModifyEventJS(String identifier, List<IAftermathModule> aftermathModules) {
+    public AftermathModifyEventJS(String identifier, Set<IAftermathModule> aftermathModules) {
         this.identifier = identifier;
         this.aftermathModules = aftermathModules;
     }
@@ -18,7 +19,7 @@ public class AftermathModifyEventJS extends EventJS {
         return identifier;
     }
 
-    public List<IAftermathModule> getAftermathModules() {
+    public Set<IAftermathModule> getAftermathModules() {
         return aftermathModules;
     }
 

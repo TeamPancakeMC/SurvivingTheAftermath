@@ -80,7 +80,7 @@ public class AftermathEventUtil {
         return postForge;
     }
 
-    public static boolean modify(String identifier, List<IAftermathModule> aftermathModules) {
+    public static boolean modify(String identifier, Set<IAftermathModule> aftermathModules) {
         if (isKubejs()){
             return AftermathEventJSUtil.modify(identifier, aftermathModules);
         }

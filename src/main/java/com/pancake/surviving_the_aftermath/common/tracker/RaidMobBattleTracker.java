@@ -2,24 +2,19 @@ package com.pancake.surviving_the_aftermath.common.tracker;
 
 
 import com.pancake.surviving_the_aftermath.common.config.AftermathConfig;
-import com.pancake.surviving_the_aftermath.common.raid.api.BaseRaid;
+import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 public class RaidMobBattleTracker extends MobBattleTracker{
     public static final String IDENTIFIER = "raid_mob_battle_tracker";
-
-    @Override
-    public String getUniqueIdentifier() {
-        return IDENTIFIER;
-    }
 
     @SubscribeEvent
     public void onLivingRestrictedRange(LivingEvent.LivingTickEvent event) {

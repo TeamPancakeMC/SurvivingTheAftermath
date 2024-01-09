@@ -38,7 +38,6 @@ public class ForgeEventSubscriber {
 		Level level = event.level;
 		if (event.phase == TickEvent.Phase.END && !level.isClientSide()) {
 			AftermathCap.get(level).ifPresent(AftermathCap::tick);
-
 		}
 	}
 	@SubscribeEvent

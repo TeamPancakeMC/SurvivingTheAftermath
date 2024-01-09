@@ -1,14 +1,6 @@
 package com.pancake.surviving_the_aftermath;
 
 import com.mojang.logging.LogUtils;
-import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
-import com.pancake.surviving_the_aftermath.api.module.impl.amount.FixedAmountModule;
-import com.pancake.surviving_the_aftermath.api.module.impl.amount.RandomAmountModule;
-import com.pancake.surviving_the_aftermath.api.module.impl.condition.StageConditionModule;
-import com.pancake.surviving_the_aftermath.api.module.impl.entity_info.EntityInfoModule;
-import com.pancake.surviving_the_aftermath.api.module.impl.entity_info.EntityInfoWithEquipmentModule;
-import com.pancake.surviving_the_aftermath.api.module.impl.weighted.EntityTypeWeightedListModule;
-import com.pancake.surviving_the_aftermath.api.module.impl.weighted.ItemWeightedListModule;
 import com.pancake.surviving_the_aftermath.common.config.AftermathConfig;
 import com.pancake.surviving_the_aftermath.common.data.datagen.EventSubscriber;
 import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoader;
@@ -39,6 +31,7 @@ public class SurvivingTheAftermath {
     public static final Logger LOGGER = LogUtils.getLogger();
     public SurvivingTheAftermath() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModuleRegistry.register(bus);
         ModBlocks.BLOCKS.register(bus);
         ModItems.ITEMS.register(bus);
         ModTabs.TABS.register(bus);
@@ -50,9 +43,9 @@ public class SurvivingTheAftermath {
         ModMobEffects.MOB_EFFECTS.register(bus);
         bus.addListener(EventSubscriber::onGatherData);
         bus.addListener(EnchantmentSubscriber::onFMLClientSetup);
-        bus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.addListener(this::onDataPackLoad);
+
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AftermathConfig.SPEC);
     }
@@ -60,36 +53,9 @@ public class SurvivingTheAftermath {
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
     }
-    private void commonSetup(final FMLCommonSetupEvent event) {
-        AftermathAPI instance = AftermathAPI.getInstance();
-        instance.registerWeightedListModule(EntityTypeWeightedListModule.IDENTIFIER, EntityTypeWeightedListModule.class);
-        instance.registerWeightedListModule(ItemWeightedListModule.IDENTIFIER, ItemWeightedListModule.class);
-
-        instance.registerTracker(RaidMobBattleTracker.IDENTIFIER,RaidMobBattleTracker.class);
-        instance.registerTracker(RaidPlayerBattleTracker.IDENTIFIER,RaidPlayerBattleTracker.class);
-        instance.registerTracker(MobBattleTracker.IDENTIFIER,MobBattleTracker.class);
-
-        instance.registerAmountModule(FixedAmountModule.IDENTIFIER,FixedAmountModule.class);
-        instance.registerAmountModule(RandomAmountModule.IDENTIFIER,RandomAmountModule.class);
-
-        instance.registerEntityInfoModule(EntityInfoModule.IDENTIFIER, EntityInfoModule.class);
-        instance.registerEntityInfoModule(EntityInfoWithEquipmentModule.IDENTIFIER,EntityInfoWithEquipmentModule.class);
-
-        instance.registerAftermathModule(NetherRaid.IDENTIFIER, NetherRaidModule.class);
-        instance.registerAftermathFactory(NetherRaid.IDENTIFIER, NetherRaid.Factory.class);
-
-        instance.registerConditionModule(StageConditionModule.LevelStageConditionModule.IDENTIFIER, StageConditionModule.LevelStageConditionModule.class);
-        instance.registerConditionModule(StageConditionModule.PlayerStageConditionModule.IDENTIFIER, StageConditionModule.PlayerStageConditionModule.class);
-    }
-
     @SubscribeEvent
     public void onDataPackLoad(AddReloadListenerEvent event) {
         event.addListener(new AftermathModuleLoader());
     }
 
-    public static  <T> T getPrivateField(Object object, String fieldName, Class<T> fieldType) throws NoSuchFieldException, IllegalAccessException {
-        Field field = object.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        return fieldType.cast(field.get(object));
-    }
 }

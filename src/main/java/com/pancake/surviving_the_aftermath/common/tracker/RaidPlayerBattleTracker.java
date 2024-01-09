@@ -1,16 +1,19 @@
 package com.pancake.surviving_the_aftermath.common.tracker;
 
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.mojang.serialization.Codec;
 import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
+import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.api.base.BaseTracker;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.common.event.AftermathEvent;
 import com.pancake.surviving_the_aftermath.common.init.ModMobEffects;
-import com.pancake.surviving_the_aftermath.common.raid.api.BaseRaid;
+import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
 import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import com.pancake.surviving_the_aftermath.common.util.RandomUtils;
 import net.minecraft.core.BlockPos;
@@ -37,14 +40,10 @@ public class RaidPlayerBattleTracker extends BaseTracker {
     public static final String PLAYER_BATTLE_PERSONAL_FAIL = "message.surviving_the_aftermath.tracker.personal_fail";
     public static final String PLAYER_BATTLE_ESCAPE = "message.surviving_the_aftermath.tracker.escape";
     private static final int MAX_DEATH_COUNT = 3;
-    private final Set<UUID> players = Sets.newHashSet();
+    private final Set<UUID> players = Sets.newLinkedHashSet();
     private final Map<UUID, Integer> deathMap = Maps.newHashMap();
     private final Map<UUID, Long> escapeMap = Maps.newHashMap();
     private final Map<UUID, Set<UUID>> spectatorMap = Maps.newHashMap();
-    @Override
-    public String getUniqueIdentifier() {
-        return IDENTIFIER;
-    }
 
     @SubscribeEvent
     public void updatePlayer(AftermathEvent.Ongoing event) {
@@ -175,79 +174,12 @@ public class RaidPlayerBattleTracker extends BaseTracker {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag compoundTag = super.serializeNBT();
-        compoundTag.putString(Constant.IDENTIFIER, getUniqueIdentifier());
-
-        ListTag playerTags = new ListTag();
-        players.forEach(uuid -> playerTags.add(NbtUtils.createUUID(uuid)));
-        compoundTag.put(Constant.PLAYERS, playerTags);
-
-
-        ListTag deathTag = new ListTag();
-        deathMap.forEach((uuid, deathCount) -> {
-            CompoundTag tag = new CompoundTag();
-            tag.putUUID(Constant.UUID, uuid);
-            tag.putInt(Constant.DEATH_COUNT, deathCount);
-            deathTag.add(tag);
-        });
-        compoundTag.put(Constant.DEATH_MAP, deathTag);
-
-
-        ListTag escapeTag = new ListTag();
-        escapeMap.forEach((uuid, escapeTime) -> {
-            CompoundTag tag = new CompoundTag();
-            tag.putUUID(Constant.UUID, uuid);
-            tag.putLong(Constant.ESCAPE_TIME, escapeTime);
-            escapeTag.add(tag);
-        });
-        compoundTag.put(Constant.ESCAPE_MAP, escapeTag);
-
-
-        ListTag spectatorTag = new ListTag();
-        spectatorMap.forEach((uuid, spectatorUUIDs) -> {
-            CompoundTag tag = new CompoundTag();
-            ListTag spectatorUUIDsTag = new ListTag();
-            spectatorUUIDs.forEach(spectatorUUID -> spectatorUUIDsTag.add(NbtUtils.createUUID(spectatorUUID)));
-            tag.put(Constant.UUID, NbtUtils.createUUID(uuid));
-            tag.put(Constant.SPECTATOR_LIST, spectatorUUIDsTag);
-            spectatorTag.add(tag);
-        });
-        compoundTag.put(Constant.SPECTATOR_MAP, spectatorTag);
-
-        return compoundTag;
+    public Codec<? extends ITracker> codec() {
+        return null;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        super.deserializeNBT(nbt);
-        ListTag playerTags = nbt.getList(Constant.PLAYERS, Tag.TAG_INT_ARRAY);
-        playerTags.forEach(tag -> players.add(NbtUtils.loadUUID(tag)));
-
-        ListTag deathTag = nbt.getList(Constant.DEATH_MAP,Tag.TAG_COMPOUND);
-        deathTag.forEach(tag -> {
-            CompoundTag compoundTag = (CompoundTag) tag;
-            UUID uuid = compoundTag.getUUID(Constant.UUID);
-            int deathCount = compoundTag.getInt(Constant.DEATH_COUNT);
-            deathMap.put(uuid, deathCount);
-        });
-
-        ListTag escapeTag = nbt.getList(Constant.ESCAPE_MAP,Tag.TAG_COMPOUND);
-        escapeTag.forEach(tag -> {
-            CompoundTag compoundTag = (CompoundTag) tag;
-            UUID uuid = compoundTag.getUUID(Constant.UUID);
-            long escapeTime = compoundTag.getLong(Constant.ESCAPE_TIME);
-            escapeMap.put(uuid, escapeTime);
-        });
-
-
-        ListTag spectatorTag = nbt.getList(Constant.SPECTATOR_MAP,Tag.TAG_COMPOUND);
-        spectatorTag.forEach(tag -> {
-            CompoundTag compoundTag = (CompoundTag) tag;
-            UUID uuid = compoundTag.getUUID(Constant.UUID);
-            ListTag spectatorUUIDsTag = compoundTag.getList(Constant.SPECTATOR_LIST, Tag.TAG_INT_ARRAY);
-            Set<UUID> spectatorUUIDs = spectatorUUIDsTag.stream().map(NbtUtils::loadUUID).collect(Collectors.toSet());
-            spectatorMap.put(uuid, spectatorUUIDs);
-        });
+    public ITracker type() {
+        return null;
     }
 }

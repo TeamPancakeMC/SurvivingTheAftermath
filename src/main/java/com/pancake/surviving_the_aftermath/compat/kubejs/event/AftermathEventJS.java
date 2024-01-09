@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.Cancelable;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;

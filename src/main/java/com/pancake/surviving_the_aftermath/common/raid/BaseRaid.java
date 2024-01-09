@@ -1,13 +1,16 @@
-package com.pancake.surviving_the_aftermath.common.raid.api;
+package com.pancake.surviving_the_aftermath.common.raid;
 
 
 import com.mojang.logging.LogUtils;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
+import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
+import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
+import com.pancake.surviving_the_aftermath.common.raid.api.IRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.common.tracker.MobBattleTracker;
 import com.pancake.surviving_the_aftermath.common.tracker.RaidMobBattleTracker;
@@ -24,31 +27,37 @@ import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
-public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<BaseRaidModule> implements IRaid{
+public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<BaseRaidModule> implements IRaid {
     public static final Logger LOGGER = LogUtils.getLogger();
     protected int currentWave = -1;
     protected int totalEnemy = 0;
     protected BlockPos centerPos;
+    public BaseRaid(float progressPercent, BaseRaidModule module, Set<UUID> players, Set<UUID> enemies, Set<ITracker> trackers, BlockPos centerPos, int currentWave, int totalEnemy) {
+        super(progressPercent, module, players, enemies,trackers);
+        this.centerPos = centerPos;
+        this.currentWave = currentWave;
+        this.totalEnemy = totalEnemy;
+    }
     public BaseRaid(ServerLevel level, BlockPos centerPos) {
         super(level);
         this.centerPos = centerPos;
     }
 
-    public BaseRaid(ServerLevel level) {
-        super(level);
+    public BaseRaid() {
     }
 
     @Override
     public void bindTrackers() {
-        API.getTracker(uuid, MobBattleTracker.IDENTIFIER)
-                .forEach(this::addTracker);
+//        API.getTracker(uuid, MobBattleTracker.IDENTIFIER)
+//                .forEach(this::addTracker);
     }
 
     @Override
     public boolean isCreate() {
-        Map<UUID, IAftermath<BaseAftermathModule>> aftermathMap = MANAGER.getAftermathMap();
+        Map<UUID, IAftermath<IAftermathModule>> aftermathMap = MANAGER.getAftermathMap();
         return aftermathMap.values().stream()
                 .filter(aftermath -> aftermath instanceof IRaid)
                 .map(aftermath -> (IRaid) aftermath)
@@ -57,32 +66,10 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
     }
 
     @Override
-    public BlockPos getCenterPos() {
-        return centerPos;
-    }
-
-    @Override
     public int getRadius() {
         return 50;
     }
     protected abstract List<LazyOptional<Entity>> spawnEntities(IEntityInfoModule module);
-
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag compoundTag = super.serializeNBT();
-        compoundTag.putInt(Constant.CURRENT_WAVE, currentWave);
-        compoundTag.put(Constant.CENTER_POS, NbtUtils.writeBlockPos(centerPos));
-        compoundTag.putInt(Constant.TOTAL_ENEMY, totalEnemy);
-        return compoundTag;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        super.deserializeNBT(nbt);
-        this.currentWave = nbt.getInt(Constant.CURRENT_WAVE);
-        this.centerPos = NbtUtils.readBlockPos(nbt.getCompound(Constant.CENTER_POS));
-        this.totalEnemy = nbt.getInt(Constant.TOTAL_ENEMY);
-    }
 
 
     public Player randomPlayersUnderAttack(){
@@ -98,5 +85,18 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
             return true;
         }
         return false;
+    }
+
+    public int getCurrentWave() {
+        return currentWave;
+    }
+
+    public int getTotalEnemy() {
+        return totalEnemy;
+    }
+
+    @Override
+    public BlockPos getCenterPos() {
+        return centerPos;
     }
 }

@@ -1,28 +1,27 @@
 package com.pancake.surviving_the_aftermath.common.raid;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
-import com.pancake.surviving_the_aftermath.api.AftermathState;
-import com.pancake.surviving_the_aftermath.api.Constant;
-import com.pancake.surviving_the_aftermath.api.IAftermath;
-import com.pancake.surviving_the_aftermath.api.IAftermathFactory;
+import com.pancake.surviving_the_aftermath.api.*;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
+import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
+import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
-import com.pancake.surviving_the_aftermath.api.PortalShapeAccessor;
-import com.pancake.surviving_the_aftermath.common.raid.api.BaseRaid;
+import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
 import com.pancake.surviving_the_aftermath.common.structure.NetherRaidStructure;
 import com.pancake.surviving_the_aftermath.common.tracker.RaidMobBattleTracker;
 import com.pancake.surviving_the_aftermath.common.tracker.RaidPlayerBattleTracker;
 import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import com.pancake.surviving_the_aftermath.common.util.RandomUtils;
-import com.pancake.surviving_the_aftermath.common.util.SpawnEntityUtil;
+import com.pancake.surviving_the_aftermath.util.CodecUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -31,7 +30,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.SpawnUtil;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -48,9 +46,7 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 import net.minecraft.world.level.portal.PortalShape;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,49 +55,44 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class NetherRaid extends BaseRaid<NetherRaidModule> {
+    public static final Codec<NetherRaid> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            CodecUtils.UUID_CODEC.fieldOf("uuid").forGetter(NetherRaid::getUUID),
+            Codec.FLOAT.fieldOf("progress_percent").forGetter(NetherRaid::getProgressPercent),
+            NetherRaidModule.CODEC.fieldOf("module").forGetter(NetherRaid::getModule),
+            CodecUtils.setOf(CodecUtils.UUID_CODEC).fieldOf("players").forGetter(NetherRaid::getPlayers),
+            CodecUtils.setOf(CodecUtils.UUID_CODEC).fieldOf("enemies").forGetter(NetherRaid::getEnemies),
+            CodecUtils.setOf(ITracker.CODEC.get()).fieldOf("trackers").forGetter(NetherRaid::getTrackers),
+            BlockPos.CODEC.fieldOf("center_pos").forGetter(NetherRaid::getCenterPos),
+            Codec.INT.fieldOf("current_wave").forGetter(NetherRaid::getCurrentWave),
+            Codec.INT.fieldOf("total_enemy").forGetter(NetherRaid::getTotalEnemy),
+            Codec.INT.fieldOf("ready_time").forGetter(NetherRaid::getReadyTime),
+            Codec.INT.fieldOf("reward_time").forGetter(NetherRaid::getRewardTime),
+            Codec.list(BlockPos.CODEC).fieldOf("spawn_pos").forGetter(NetherRaid::getSpawnPos)
+    ).apply(instance, NetherRaid::new));
     public static final String IDENTIFIER = "nether_raid";
     private static final ResourceLocation BARS_RESOURCE = SurvivingTheAftermath.asResource("textures/gui/nether_raid_bars.png");
-    protected Set<BlockPos> spawnPos = Sets.newHashSet();
+    protected List<BlockPos> spawnPos = Lists.newArrayList();
     private int readyTime;
     private static final int MAX_REWARD_TIME = 10 * 20;
     private int rewardTime = MAX_REWARD_TIME;
-    public NetherRaid(ServerLevel level, BlockPos centerPos ,PortalShape portalShape) {
+    public NetherRaid(UUID uuid, float progressPercent, BaseRaidModule module, Set<UUID> players, Set<UUID> enemies, Set<ITracker> trackers,
+                      BlockPos centerPos, int currentWave, int totalEnemy,
+                      int readyTime, int rewardTime, List<BlockPos> spawnPos) {
+        super(progressPercent, module, players, enemies, trackers, centerPos, currentWave, totalEnemy);
+        this.readyTime = readyTime;
+        this.rewardTime = rewardTime;
+        this.spawnPos = spawnPos;
+    }
+
+    public NetherRaid(ServerLevel level, BlockPos centerPos , PortalShape portalShape) {
         super(level,centerPos);
         setSpawnPos(portalShape);
         this.readyTime = getModule().getReadyTime();
     }
 
-    public NetherRaid(ServerLevel level, CompoundTag compoundTag) {
-        super(level);
-        this.deserializeNBT(compoundTag);
+    public NetherRaid() {
     }
 
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag compoundTag = super.serializeNBT();
-        compoundTag.putInt(Constant.READY_TIME, readyTime);
-        compoundTag.putInt(Constant.REWARD_TIME, rewardTime);
-
-        ListTag listTag = new ListTag();
-        spawnPos.forEach(blockPos -> listTag.add(NbtUtils.writeBlockPos(blockPos)));
-        compoundTag.put(Constant.SPAWN_POS, listTag);
-        return compoundTag;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        super.deserializeNBT(nbt);
-
-        this.readyTime = nbt.getInt(Constant.READY_TIME);
-        this.rewardTime = nbt.getInt(Constant.REWARD_TIME);
-
-        ListTag tags = nbt.getList(Constant.SPAWN_POS, Tag.TAG_COMPOUND);
-        tags.forEach(tag -> {
-            BlockPos blockPos = NbtUtils.readBlockPos((CompoundTag) tag);
-            spawnPos.add(blockPos);
-
-        });
-    }
 
     @Override
     public void tick() {
@@ -117,10 +108,20 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
     }
 
     @Override
+    public ResourceLocation getRegistryName() {
+        return SurvivingTheAftermath.asResource(IDENTIFIER);
+    }
+
+    @Override
     public boolean isCreate() {
         return level.structureManager().getAllStructuresAt(this.centerPos)
                 .containsKey(level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID))
                 && super.isCreate();
+    }
+
+    @Override
+    public UUID getUUID() {
+        return uuid;
     }
 
     @Override
@@ -140,7 +141,7 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         Direction dir = Direction.Plane.HORIZONTAL.stream().filter(d -> level.isEmptyBlock(blockPos.relative(d))
                 && !spawnPos.contains(blockPos.relative(d))).findFirst().orElse(Direction.UP);
         Vec3 vec = Vec3.atCenterOf(blockPos);
-        module.getRewardList().getRandomValue(level.random).ifPresent(reward -> {
+        module.getRewards().getWeightedList().getRandomValue(level.random).ifPresent(reward -> {
             ItemEntity itemEntity = new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
                     dir.getStepX() * 0.2, 0.2, dir.getStepZ() * 0.2f);
             itemEntity.setInvulnerable(true);
@@ -153,11 +154,6 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         return (NetherRaidModule) module;
     }
 
-
-    @Override
-    public String getUniqueIdentifier() {
-        return IDENTIFIER;
-    }
 
     protected void updateStructure() {
         StructureStart start = this.level.structureManager().getStructureAt(centerPos, Objects.requireNonNull(this.level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID)));
@@ -236,6 +232,11 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
     }
 
     @Override
+    public void setServerLevel(ServerLevel level) {
+        this.level = level;
+    }
+
+    @Override
     protected List<LazyOptional<Entity>> spawnEntities(IEntityInfoModule module) {
         if (players.isEmpty()) return Collections.emptyList();
         List<LazyOptional<Entity>> arrayList = module.spawnEntity(level);
@@ -298,7 +299,6 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
 
     protected void spawnWave() {
         if (enemies.isEmpty() && state == AftermathState.ONGOING){
-            LOGGER.info(getUniqueIdentifier() +": spawn wave " + currentWave);
             module.getWaves().get(currentWave).forEach(this::spawnEntities);
             updateStructure();
         }
@@ -337,9 +337,9 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
     @Override
     public void bindTrackers() {
         super.bindTrackers();
-        API.getTracker(uuid, RaidMobBattleTracker.IDENTIFIER,
-                        RaidPlayerBattleTracker.IDENTIFIER)
-                .forEach(this::addTracker);
+//        API.getTracker(uuid, RaidMobBattleTracker.IDENTIFIER,
+//                        RaidPlayerBattleTracker.IDENTIFIER)
+//                .forEach(this::addTracker);
     }
 
     @Override
@@ -347,12 +347,26 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
         return entity.getType() == EntityType.MAGMA_CUBE && super.join(entity);
     }
 
-    public static class Factory implements IAftermathFactory {
-        @Override
-        public IAftermath<BaseAftermathModule> create(ServerLevel level, CompoundTag compound) {
-            return new NetherRaid(level, compound);
-        }
+    public List<BlockPos> getSpawnPos() {
+        return spawnPos;
     }
 
+    public int getReadyTime() {
+        return readyTime;
+    }
+
+    public int getRewardTime() {
+        return rewardTime;
+    }
+
+    @Override
+    public Codec<? extends IAftermath<IAftermathModule>> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public IAftermath<IAftermathModule> type() {
+        return ModAftermathModule.NETHER_RAID.get();
+    }
 
 }

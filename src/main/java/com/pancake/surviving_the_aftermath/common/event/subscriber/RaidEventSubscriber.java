@@ -5,7 +5,7 @@ import com.pancake.surviving_the_aftermath.common.event.AftermathEvent;
 import com.pancake.surviving_the_aftermath.common.init.ModSoundEvents;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
-import com.pancake.surviving_the_aftermath.common.raid.api.BaseRaid;
+import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;

@@ -38,7 +38,7 @@ public class AftermathEventJSUtil {
         return AftermathEvents.END.post(new AftermathEventJS.EndJS(aftermath, players, level)).pass();
     }
 
-    public static boolean modify(String identifier, List<IAftermathModule> aftermathModules) {
+    public static boolean modify(String identifier, Set<IAftermathModule> aftermathModules) {
         return AftermathEvents.MODIFY.post(new AftermathModifyEventJS(identifier, aftermathModules)).pass();
     }
 }

@@ -1,51 +1,51 @@
 package com.pancake.surviving_the_aftermath.common.raid.module;
 
-import com.google.gson.JsonElement;
-import com.pancake.surviving_the_aftermath.api.Constant;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
+import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
+import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
+import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
-import net.minecraft.nbt.CompoundTag;
+
+import java.util.List;
 
 public class NetherRaidModule extends BaseRaidModule {
-    protected int readyTime;
+    public static final Codec<NetherRaidModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ItemWeightedModule.CODEC.fieldOf("rewards").forGetter(NetherRaidModule::getRewards),
+            Codec.list(Codec.list(IEntityInfoModule.CODEC.get())).fieldOf("waves").forGetter(NetherRaidModule::getWaves),
+            Codec.INT.fieldOf("ready_time").forGetter(NetherRaidModule::getReadyTime)
+    ).apply(instance, NetherRaidModule::new));
+    private int readyTime;
+
+    public NetherRaidModule(ItemWeightedModule rewards, List<List<IEntityInfoModule>> waves, int readyTime) {
+        super(rewards, waves);
+        this.readyTime = readyTime;
+    }
+
+    public NetherRaidModule() {
+    }
+
+
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag compoundTag = super.serializeNBT();
-        compoundTag.putInt(Constant.READY_TIME,readyTime);
-        return compoundTag;
+    public Codec<? extends IAftermathModule> codec() {
+        return CODEC;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag compoundTag) {
-        super.deserializeNBT(compoundTag);
-        this.readyTime = compoundTag.getInt(Constant.READY_TIME);
+    public IAftermathModule type() {
+        return ModAftermathModule.NETHER_RAID_MODULE.get();
     }
 
-    @Override
-    public void deserializeJson(JsonElement jsonElement) {
-        super.deserializeJson(jsonElement);
-        this.readyTime = jsonElement.getAsJsonObject().get(Constant.READY_TIME).getAsInt();
-    }
-
-    @Override
-    public JsonElement serializeJson() {
-        JsonElement jsonElement = super.serializeJson();
-        jsonElement.getAsJsonObject().addProperty(Constant.READY_TIME,readyTime);
-        return jsonElement;
-    }
-
-    @Override
-    public String getUniqueIdentifier() {
-        return NetherRaid.IDENTIFIER;
-    }
 
     public int getReadyTime() {
         return readyTime;
     }
 
-    protected void setReadyTime(int readyTime) {
+    public NetherRaidModule setReadyTime(int readyTime) {
         this.readyTime = readyTime;
+        return this;
     }
-
 
     public static class Builder extends BaseRaidModule.Builder<NetherRaidModule>{
         private int readyTime;

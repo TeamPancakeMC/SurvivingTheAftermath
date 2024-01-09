@@ -1,84 +1,22 @@
 package com.pancake.surviving_the_aftermath.common.raid.module;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.pancake.surviving_the_aftermath.api.Constant;
-import com.pancake.surviving_the_aftermath.api.aftermath.AftermathAPI;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
+import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
 import com.pancake.surviving_the_aftermath.common.raid.api.IRaidModule;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.util.GsonHelper;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public abstract class BaseRaidModule extends BaseAftermathModule implements IRaidModule {
-    protected List<List<IEntityInfoModule>> waves = Lists.newArrayList();
+    protected List<List<IEntityInfoModule>> waves ;
 
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag compoundTag = super.serializeNBT();
-        ListTag waves = new ListTag();
-        for (List<IEntityInfoModule> wave : this.waves) {
-            ListTag listTag = new ListTag();
-            for (IEntityInfoModule entityInfoModule : wave) {
-                listTag.add(entityInfoModule.serializeNBT());
-            }
-            waves.add(listTag);
-        }
-        compoundTag.put(Constant.WAVES, waves);
-        return compoundTag;
+    public BaseRaidModule(ItemWeightedModule rewards, List<List<IEntityInfoModule>> waves) {
+        super(rewards);
+        this.waves = waves;
     }
 
-    @Override
-    public void deserializeNBT(CompoundTag compoundTag) {
-        super.deserializeNBT(compoundTag);
-        ListTag waves = compoundTag.getList(Constant.WAVES, 9);
-        for (Tag wave : waves) {
-            ListTag listTag = (ListTag) wave;
-            ArrayList<IEntityInfoModule> modules = Lists.newArrayList();
-            for (Tag tag: listTag) {
-                CompoundTag compoundTag1 = (CompoundTag) tag;
-                IEntityInfoModule entityInfoModule = AftermathAPI.getInstance().getEntityInfoModule(compoundTag1.getString(Constant.IDENTIFIER));
-                entityInfoModule.deserializeNBT(compoundTag1);
-                modules.add(entityInfoModule);
-            }
-            this.waves.add(modules);
-        }
-    }
-
-    @Override
-    public void deserializeJson(JsonElement jsonElement) {
-        super.deserializeJson(jsonElement);
-        jsonElement.getAsJsonObject().get(Constant.WAVES).getAsJsonArray().forEach(jsonElement1 -> {
-            ArrayList<IEntityInfoModule> modules = Lists.newArrayList();
-            jsonElement1.getAsJsonArray().forEach(jsonElement2 -> {
-                IEntityInfoModule entityInfoModule = AftermathAPI.getInstance().getEntityInfoModule(GsonHelper.getAsString(jsonElement2.getAsJsonObject(), Constant.IDENTIFIER));
-                entityInfoModule.deserializeJson(jsonElement2);
-                modules.add(entityInfoModule);
-            });
-            this.waves.add(modules);
-        });
-    }
-
-    @Override
-    public JsonElement serializeJson() {
-        JsonElement jsonElement = super.serializeJson();
-        JsonArray jsonArray = new JsonArray();
-        for (List<IEntityInfoModule> wave : waves) {
-            JsonArray jsonArray1 = new JsonArray();
-            for (IEntityInfoModule entityInfoModule : wave) {
-                jsonArray1.add(entityInfoModule.serializeJson());
-            }
-            jsonArray.add(jsonArray1);
-        }
-        jsonElement.getAsJsonObject().add(Constant.WAVES, jsonArray);
-        return jsonElement;
+    public BaseRaidModule() {
     }
 
     @Override
@@ -86,12 +24,10 @@ public abstract class BaseRaidModule extends BaseAftermathModule implements IRai
         return waves;
     }
 
-    protected void setWaves(List<List<IEntityInfoModule>> waves) {
+    public BaseRaidModule setWaves(List<List<IEntityInfoModule>> waves) {
         this.waves = waves;
+        return this;
     }
-
-    @Override
-    public abstract String getUniqueIdentifier();
 
     public static class Builder<T extends BaseAftermathModule> extends BaseAftermathModule.Builder<T>{
         protected List<List<IEntityInfoModule>> waves = Lists.newArrayList();
@@ -100,13 +36,13 @@ public abstract class BaseRaidModule extends BaseAftermathModule implements IRai
             super(module,jsonName);
         }
 
-        public Builder<T> addWave(Supplier<List<IEntityInfoModule>> wave) {
-            this.waves.add(wave.get());
+        public Builder<T> addWave(List<IEntityInfoModule> wave) {
+            this.waves.add(wave);
             return this;
         }
 
-        public Builder<T> addWaves(Supplier<List<List<IEntityInfoModule>>> waves) {
-            this.waves = waves.get();
+        public Builder<T> addWaves(List<List<IEntityInfoModule>> waves) {
+            this.waves = waves;
             return this;
         }
 
