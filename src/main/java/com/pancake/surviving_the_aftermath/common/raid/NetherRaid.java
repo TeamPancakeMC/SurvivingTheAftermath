@@ -106,11 +106,9 @@ public class NetherRaid extends BaseRaid<NetherRaidModule> {
 
     @Override
     public boolean isCreate() {
-//        return level.structureManager().getAllStructuresAt(this.centerPos)
-//                .containsKey(level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID))
-//                && super.isCreate();
-        Structure structure = level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID);
-//        LongSet longs = level.structureManager().getAllStructuresAt(this.centerPos).get(structure);
+        return level.structureManager().getAllStructuresAt(this.centerPos)
+                .containsKey(level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ModStructures.NETHER_RAID))
+                && super.isCreate();
     }
 
     @Override
