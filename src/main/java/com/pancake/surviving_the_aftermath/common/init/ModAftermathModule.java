@@ -1,5 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.init;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
+import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.api.module.*;
 import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
@@ -10,6 +11,7 @@ import com.pancake.surviving_the_aftermath.common.module.weighted.EntityTypeWeig
 import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
+import com.pancake.surviving_the_aftermath.common.tracker.RaidPlayerBattleTracker;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.common.Mod;
@@ -34,4 +36,5 @@ public class ModAftermathModule {
     public static final RegistryObject<IAftermathModule> NETHER_RAID_MODULE = ModuleRegistry.AFTERMATH_MODULE.register(NetherRaid.IDENTIFIER, NetherRaidModule::new);
     public static final RegistryObject<IAftermath<IAftermathModule>> NETHER_RAID = ModuleRegistry.AFTERMATH.register(NetherRaid.IDENTIFIER, NetherRaid::new);
 
+    public static final RegistryObject<ITracker> RAID_PLAYER_BATTLE_TRACKER = ModuleRegistry.TRACKER_MODULE.register("raid_player_battle_tracker", RaidPlayerBattleTracker::new);
 }

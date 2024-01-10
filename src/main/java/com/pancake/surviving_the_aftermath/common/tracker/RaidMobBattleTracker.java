@@ -1,6 +1,7 @@
 package com.pancake.surviving_the_aftermath.common.tracker;
 
 
+import com.mojang.serialization.Codec;
 import com.pancake.surviving_the_aftermath.common.config.AftermathConfig;
 import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
 import net.minecraft.core.BlockPos;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class RaidMobBattleTracker extends MobBattleTracker{
+    public static final Codec<RaidMobBattleTracker> CODEC = Codec.unit(RaidMobBattleTracker::new);
     public static final String IDENTIFIER = "raid_mob_battle_tracker";
 
     @SubscribeEvent

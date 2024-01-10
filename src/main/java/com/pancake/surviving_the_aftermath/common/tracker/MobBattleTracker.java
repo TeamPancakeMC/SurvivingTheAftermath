@@ -15,7 +15,9 @@ import java.util.UUID;
 
 
 public class MobBattleTracker extends BaseTracker {
+    public static final Codec<MobBattleTracker> CODEC = Codec.unit(MobBattleTracker::new);
     public static final String IDENTIFIER = "mob_battle_tracker";
+
 
     @SubscribeEvent
     public void onLivingAddHighlight(LivingEvent.LivingTickEvent event) {

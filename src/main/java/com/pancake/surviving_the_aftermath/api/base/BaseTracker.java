@@ -10,6 +10,9 @@ public abstract class BaseTracker implements ITracker {
     protected final AftermathManager manager = AftermathManager.getInstance();
     protected UUID uuid;
 
+    public BaseTracker() {
+    }
+
     @Override
     public ITracker setUUID(UUID uuid) {
         this.uuid = uuid;

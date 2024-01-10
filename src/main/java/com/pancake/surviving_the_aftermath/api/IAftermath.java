@@ -23,12 +23,6 @@ public interface IAftermath<T extends IAftermathModule> extends ICodec<IAftermat
 
     void tick();
     ResourceLocation getRegistryName();
-
-    default void bindTrackers() {
-
-    }
-    Set<ITracker> getTrackers();
-
     boolean isEnd();
     boolean isLose();
     boolean isCreate();

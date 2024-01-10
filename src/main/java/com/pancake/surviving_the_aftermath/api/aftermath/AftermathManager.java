@@ -32,13 +32,10 @@ public class AftermathManager {
 
     private void remove(IAftermath<IAftermathModule> aftermath) {
         AFTERMATH_MAP.remove(aftermath.getUUID());
-        aftermath.getTrackers().forEach(ITracker::unregister);
     }
 
     private void add(IAftermath<IAftermathModule> aftermath) {
         AFTERMATH_MAP.put(aftermath.getUUID(), aftermath);
-        Set<ITracker> trackers = aftermath.getTrackers();
-        trackers.forEach(ITracker::register);
     }
 
     public Map<UUID, IAftermath<IAftermathModule>> getAftermathMap() {

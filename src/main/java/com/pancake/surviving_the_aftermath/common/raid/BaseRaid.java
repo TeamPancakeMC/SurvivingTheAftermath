@@ -1,6 +1,7 @@
 package com.pancake.surviving_the_aftermath.common.raid;
 
 
+import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.Constant;
@@ -35,8 +36,8 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
     protected int currentWave = -1;
     protected int totalEnemy = 0;
     protected BlockPos centerPos;
-    public BaseRaid(float progressPercent, BaseRaidModule module, Set<UUID> players, Set<UUID> enemies, Set<ITracker> trackers, BlockPos centerPos, int currentWave, int totalEnemy) {
-        super(progressPercent, module, players, enemies,trackers);
+    public BaseRaid(float progressPercent, BaseRaidModule module, Set<UUID> players, Set<UUID> enemies, BlockPos centerPos, int currentWave, int totalEnemy) {
+        super(progressPercent, module, players, enemies);
         this.centerPos = centerPos;
         this.currentWave = currentWave;
         this.totalEnemy = totalEnemy;
@@ -47,12 +48,6 @@ public abstract class BaseRaid<T extends BaseRaidModule> extends BaseAftermath<B
     }
 
     public BaseRaid() {
-    }
-
-    @Override
-    public void bindTrackers() {
-//        API.getTracker(uuid, MobBattleTracker.IDENTIFIER)
-//                .forEach(this::addTracker);
     }
 
     @Override

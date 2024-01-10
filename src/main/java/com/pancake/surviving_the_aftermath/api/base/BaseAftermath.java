@@ -1,15 +1,12 @@
 package com.pancake.surviving_the_aftermath.api.base;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.logging.LogUtils;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
-import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.api.aftermath.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoader;
-import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -18,7 +15,6 @@ import net.minecraft.world.BossEvent;
 import org.slf4j.Logger;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -26,7 +22,6 @@ import java.util.function.Predicate;
 public abstract class BaseAftermath<T extends IAftermathModule> implements IAftermath<IAftermathModule> {
     protected static final Logger LOGGER = LogUtils.getLogger();
     protected final AftermathManager MANAGER = AftermathManager.getInstance();
-    protected Set<ITracker> trackers = Sets.newLinkedHashSet();
     protected AftermathState state;
     protected ServerLevel level;
     protected Set<UUID> players = Sets.newLinkedHashSet();
@@ -36,23 +31,16 @@ public abstract class BaseAftermath<T extends IAftermathModule> implements IAfte
     protected final UUID uuid = progress.getId();
     protected float progressPercent = progress.getProgress();
 
-    public BaseAftermath(float progressPercent, T module, Set<UUID> players, Set<UUID> enemies, Set<ITracker> trackers) {
+    public BaseAftermath(float progressPercent, T module, Set<UUID> players, Set<UUID> enemies) {
         this.progressPercent = progressPercent;
         this.module = module;
         this.players = players;
         this.enemies = enemies;
-        this.trackers = trackers;
     }
 
     public BaseAftermath(ServerLevel level) {
         this.level = level;
         this.module = (T) getRandomAftermathModule();
-
-
-        bindTrackers();
-        if (!AftermathEventUtil.start(this, players, level)) {
-            end();
-        }
     }
 
     public BaseAftermath() {
@@ -73,11 +61,6 @@ public abstract class BaseAftermath<T extends IAftermathModule> implements IAfte
             spawnRewards();
         }
     }
-
-    protected void addTracker(ITracker tracker) {
-        trackers.add(tracker);
-    }
-
     @Override
     public boolean isEnd() {
         return this.state == AftermathState.END ;
@@ -114,13 +97,11 @@ public abstract class BaseAftermath<T extends IAftermathModule> implements IAfte
 
     @Override
     public void end() {
-        AftermathEventUtil.end(this, players, level);
         this.progress.removeAllPlayers();
     }
 
     @Override
     public void lose() {
-        AftermathEventUtil.lose(this, players, level);
         this.progress.removeAllPlayers();
     }
     public void setState(AftermathState aftermathState) {
@@ -128,21 +109,12 @@ public abstract class BaseAftermath<T extends IAftermathModule> implements IAfte
     }
     @Override
     public void spawnRewards() {
-        if (!AftermathEventUtil.celebrating(this, players, level)) {
-            return;
-        }
+
     }
 
     @Override
     public void ready() {
-        if (!AftermathEventUtil.ready(this, players, level)) {
-            end();
-        }
-    }
 
-    @Override
-    public Set<ITracker> getTrackers() {
-        return trackers;
     }
 
     public AftermathState getState() {

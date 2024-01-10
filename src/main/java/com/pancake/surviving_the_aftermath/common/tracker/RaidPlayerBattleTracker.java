@@ -1,28 +1,21 @@
 package com.pancake.surviving_the_aftermath.common.tracker;
 
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
-import com.pancake.surviving_the_aftermath.api.Constant;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.api.base.BaseTracker;
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.common.event.AftermathEvent;
+import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModMobEffects;
 import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
-import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import com.pancake.surviving_the_aftermath.common.util.RandomUtils;
+import com.pancake.surviving_the_aftermath.util.CodecUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
@@ -33,17 +26,33 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RaidPlayerBattleTracker extends BaseTracker {
+    public static final Codec<RaidPlayerBattleTracker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            CodecUtils.setOf(CodecUtils.UUID_CODEC).fieldOf("players").forGetter(RaidPlayerBattleTracker::getPlayers),
+            Codec.unboundedMap(CodecUtils.UUID_CODEC, Codec.INT).fieldOf("death_map").forGetter(RaidPlayerBattleTracker::getDeathMap),
+            Codec.unboundedMap(CodecUtils.UUID_CODEC, Codec.LONG).fieldOf("escape_map").forGetter(RaidPlayerBattleTracker::getEscapeMap),
+            Codec.unboundedMap(CodecUtils.UUID_CODEC, CodecUtils.setOf(CodecUtils.UUID_CODEC)).fieldOf("spectator_map").forGetter(RaidPlayerBattleTracker::getSpectatorMap)
+    ).apply(instance, RaidPlayerBattleTracker::new));
+
+    public RaidPlayerBattleTracker(Set<UUID> players, Map<UUID, Integer> deathMap, Map<UUID, Long> escapeMap, Map<UUID, Set<UUID>> spectatorMap) {
+        this.players = players;
+        this.deathMap = deathMap;
+        this.escapeMap = escapeMap;
+        this.spectatorMap = spectatorMap;
+    }
+
+    public RaidPlayerBattleTracker() {
+    }
+
     public static final String IDENTIFIER = "player_battle_tracker";
     public static final String PLAYER_BATTLE_PERSONAL_FAIL = "message.surviving_the_aftermath.tracker.personal_fail";
     public static final String PLAYER_BATTLE_ESCAPE = "message.surviving_the_aftermath.tracker.escape";
     private static final int MAX_DEATH_COUNT = 3;
-    private final Set<UUID> players = Sets.newLinkedHashSet();
-    private final Map<UUID, Integer> deathMap = Maps.newHashMap();
-    private final Map<UUID, Long> escapeMap = Maps.newHashMap();
-    private final Map<UUID, Set<UUID>> spectatorMap = Maps.newHashMap();
+    private Set<UUID> players = Sets.newLinkedHashSet();
+    private Map<UUID, Integer> deathMap = Maps.newHashMap();
+    private Map<UUID, Long> escapeMap = Maps.newHashMap();
+    private Map<UUID, Set<UUID>> spectatorMap = Maps.newHashMap();
 
     @SubscribeEvent
     public void updatePlayer(AftermathEvent.Ongoing event) {
@@ -125,7 +134,6 @@ public class RaidPlayerBattleTracker extends BaseTracker {
                         if (distance > 120) {
                             player.addEffect(new MobEffectInstance(ModMobEffects.COWARDICE.get(), 45 * 60 * 20, 1));
                             escapeMap.remove(uuid);
-                            AftermathEventUtil.lose((BaseAftermath<BaseAftermathModule>) aftermath,players, (ServerLevel) level);
                             restorePlayerGameMode(level);
                         }
                     } else {
@@ -175,11 +183,27 @@ public class RaidPlayerBattleTracker extends BaseTracker {
 
     @Override
     public Codec<? extends ITracker> codec() {
-        return null;
+        return CODEC;
     }
 
     @Override
     public ITracker type() {
-        return null;
+        return ModAftermathModule.RAID_PLAYER_BATTLE_TRACKER.get();
+    }
+
+    public Set<UUID> getPlayers() {
+        return players;
+    }
+
+    public Map<UUID, Integer> getDeathMap() {
+        return deathMap;
+    }
+
+    public Map<UUID, Long> getEscapeMap() {
+        return escapeMap;
+    }
+
+    public Map<UUID, Set<UUID>> getSpectatorMap() {
+        return spectatorMap;
     }
 }
