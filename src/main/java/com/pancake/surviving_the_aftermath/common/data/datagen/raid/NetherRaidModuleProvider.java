@@ -3,6 +3,7 @@ package com.pancake.surviving_the_aftermath.common.data.datagen.raid;
 import com.pancake.surviving_the_aftermath.common.data.datagen.AftermathModuleProviders;
 import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
+import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithEquipmentModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
@@ -34,7 +35,9 @@ public class NetherRaidModuleProvider extends AftermathModuleProviders<NetherRai
         netherRaidModule.setReadyTime(10).setWaves(List.of(
                 List.of(entityInfoModule),
                 List.of(equipmentModule)
-        )).setRewards(itemWeightedModule);
+        )).setRewards(itemWeightedModule).setConditions(List.of(
+                new StructureConditionModule("surviving_the_aftermath:")
+        ));
 
         addModule(netherRaidModule);
     }

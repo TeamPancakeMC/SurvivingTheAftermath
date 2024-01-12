@@ -27,12 +27,6 @@ public class EntityTypeWeightedModule extends BaseWeightedModule<EntityType<?>> 
 
     public EntityTypeWeightedModule() {
     }
-
-    @Override
-    public String getUniqueIdentifier() {
-        return IDENTIFIER;
-    }
-
     @Override
     public Codec<? extends IWeightedModule<EntityType<?>>> codec() {
         return CODEC;

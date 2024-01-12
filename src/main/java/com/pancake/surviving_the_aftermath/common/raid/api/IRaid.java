@@ -4,4 +4,5 @@ import net.minecraft.core.BlockPos;
 
 public interface IRaid {
     BlockPos getCenterPos();
+    int getRadius();
 }

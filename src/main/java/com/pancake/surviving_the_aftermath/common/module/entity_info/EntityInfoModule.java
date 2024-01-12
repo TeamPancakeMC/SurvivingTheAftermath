@@ -26,12 +26,6 @@ public class EntityInfoModule implements IEntityInfoModule {
 
     public EntityInfoModule() {
     }
-
-    @Override
-    public String getUniqueIdentifier() {
-        return IDENTIFIER;
-    }
-
     public EntityType<?> getEntityType() {
         return entityType;
     }

@@ -33,13 +33,6 @@ public class RandomAmountModule implements IAmountModule {
 
     public RandomAmountModule() {
     }
-
-    @Override
-    public String getUniqueIdentifier() {
-        return IDENTIFIER;
-    }
-
-
     @Override
     public int getSpawnAmount() {
         this.max = Math.max(this.max, this.min);

@@ -27,11 +27,6 @@ public class ItemWeightedModule extends BaseWeightedModule<Item> {
     }
 
     @Override
-    public String getUniqueIdentifier() {
-        return IDENTIFIER;
-    }
-
-    @Override
     public Codec<? extends IWeightedModule<Item>> codec() {
         return CODEC;
     }

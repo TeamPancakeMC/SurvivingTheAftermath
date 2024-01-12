@@ -18,12 +18,6 @@ public class IntegerAmountModule implements IAmountModule {
 
     public IntegerAmountModule() {
     }
-
-    @Override
-    public String getUniqueIdentifier() {
-        return IDENTIFIER;
-    }
-
     @Override
     public Codec<? extends IAmountModule> codec() {
         return CODEC;

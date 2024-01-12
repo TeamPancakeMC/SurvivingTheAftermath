@@ -35,12 +35,6 @@ public class EntityInfoWithEquipmentModule extends EntityInfoModule {
 
     public EntityInfoWithEquipmentModule() {
     }
-
-    @Override
-    public String getUniqueIdentifier() {
-        return IDENTIFIER;
-    }
-
     @Override
     public Codec<? extends IEntityInfoModule> codec() {
         return CODEC;

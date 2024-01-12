@@ -2,6 +2,7 @@ package com.pancake.surviving_the_aftermath.common.init;
 
 import com.mojang.serialization.Codec;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
+import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.module.*;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -13,6 +14,8 @@ import net.minecraftforge.registries.*;
 import java.util.function.Supplier;
 
 public class ModuleRegistry {
+    public static final DeferredRegister<IAftermath<IAftermathModule>> AFTERMATH = DeferredRegister.create(Keys.AFTERMATH, SurvivingTheAftermath.MOD_ID);
+    public static Supplier<IForgeRegistry<IAftermath<IAftermathModule>>> AFTERMATH_REGISTRY = AFTERMATH.makeRegistry(RegistryBuilder::new);
     public static final DeferredRegister<IAftermathModule> AFTERMATH_MODULE = DeferredRegister.create(Keys.AFTERMATH_MODULE, SurvivingTheAftermath.MOD_ID);
     public static Supplier<IForgeRegistry<IAftermathModule>> AFTERMATH_MODULE_REGISTRY = AFTERMATH_MODULE.makeRegistry(RegistryBuilder::new);
 
@@ -30,6 +33,7 @@ public class ModuleRegistry {
     public static Supplier<IForgeRegistry<IConditionModule>> CONDITION_REGISTRY = CONDITION_MODULE.makeRegistry(RegistryBuilder::new);
 
     public static void register(IEventBus bus) {
+        AFTERMATH.register(bus);
         AFTERMATH_MODULE.register(bus);
         AMOUNT_MODULE.register(bus);
         ENTITY_INFO_MODULE.register(bus);
@@ -39,6 +43,7 @@ public class ModuleRegistry {
 
 
     public static final class Keys {
+        public static final ResourceKey<Registry<IAftermath<IAftermathModule>>> AFTERMATH = key("aftermath");
         public static final ResourceKey<Registry<IAftermathModule>> AFTERMATH_MODULE = key("aftermath_module");
         public static final ResourceKey<Registry<IAmountModule>> AMOUNT = key("amount");
         public static final ResourceKey<Registry<IEntityInfoModule>> ENTITY_INFO = key("entity_info");

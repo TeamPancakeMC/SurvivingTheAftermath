@@ -3,7 +3,7 @@ package com.pancake.surviving_the_aftermath.common.init;
 import com.pancake.surviving_the_aftermath.api.module.*;
 import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
-import com.pancake.surviving_the_aftermath.common.module.condition.StageConditionModule;
+import com.pancake.surviving_the_aftermath.common.module.condition.*;
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithEquipmentModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.EntityTypeWeightedModule;
@@ -29,10 +29,12 @@ public class ModAftermathModule {
     public static final RegistryObject<IWeightedModule<Item>> ITEM_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(ItemWeightedModule.IDENTIFIER, ItemWeightedModule::new);
 
 
-    public static final RegistryObject<IConditionModule> STAGE_CONDITION = ModuleRegistry.CONDITION_MODULE.register("stage", StageConditionModule::new);
-
-
     public static final RegistryObject<IAftermathModule> NETHER_RAID = ModuleRegistry.AFTERMATH_MODULE.register(NetherRaid.IDENTIFIER, NetherRaidModule::new);
 
 
+    public static final RegistryObject<IConditionModule> LEVEL_CONDITION = ModuleRegistry.CONDITION_MODULE.register(StructureConditionModule.IDENTIFIER, StructureConditionModule::new);
+    public static final RegistryObject<IConditionModule> BIOMES_CONDITION = ModuleRegistry.CONDITION_MODULE.register(BiomesConditionModule.IDENTIFIER, BiomesConditionModule::new);
+    public static final RegistryObject<IConditionModule> Y_AXIS_HEIGHT_CONDITION = ModuleRegistry.CONDITION_MODULE.register(YAxisHeightConditionModule.IDENTIFIER, YAxisHeightConditionModule::new);
+    public static final RegistryObject<IConditionModule> WEATHER_CONDITION = ModuleRegistry.CONDITION_MODULE.register(WeatherConditionModule.IDENTIFIER, WeatherConditionModule::new);
+    public static final RegistryObject<IConditionModule> XP_CONDITION = ModuleRegistry.CONDITION_MODULE.register(XpConditionModule.IDENTIFIER, XpConditionModule::new);
 }
