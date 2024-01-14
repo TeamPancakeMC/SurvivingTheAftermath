@@ -10,7 +10,5 @@ public abstract class LevelConditionModule implements IConditionModule {
     public LevelConditionModule() {
     }
 
-    public boolean checkCondition(Level level, BlockPos pos) {
-        return true;
-    }
+    public abstract boolean checkCondition(Level level, BlockPos pos);
 }

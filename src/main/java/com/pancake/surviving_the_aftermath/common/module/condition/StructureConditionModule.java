@@ -1,7 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.module.condition;
 
 import com.mojang.serialization.Codec;
-import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.module.IConditionModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.util.RegistryUtil;
@@ -12,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -31,11 +30,20 @@ public class StructureConditionModule extends LevelConditionModule{
     @Override
     public boolean checkCondition(Level level, BlockPos pos) {
         if (level instanceof ServerLevel serverLevel){
-            ResourceKey<Structure> key = RegistryUtil.keyStructure(structure);
+            ResourceKey<Structure> key = getResourceKey();
             return serverLevel.structureManager().getAllStructuresAt(pos)
                     .containsKey(level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(key));
         }
         return false;
+    }
+
+    @NotNull
+    public ResourceKey<Structure> getResourceKey() {
+        return RegistryUtil.keyStructure(structure);
+    }
+
+    public ResourceLocation getResourceLocation() {
+        return Objects.requireNonNull(ResourceLocation.tryParse(structure));
     }
 
 

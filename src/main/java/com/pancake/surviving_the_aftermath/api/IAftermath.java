@@ -6,6 +6,7 @@ import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +24,9 @@ public interface IAftermath<T extends IAftermathModule> extends IModule<IAfterma
     void tick();
     boolean isEnd();
     boolean isLose();
+    void ready();
+    void end();
+    void lose();
     void updatePlayers();
     void updateProgress();
     void spawnRewards();
@@ -33,11 +37,12 @@ public interface IAftermath<T extends IAftermathModule> extends IModule<IAfterma
     Level getLevel();
     Set<UUID> getPlayers();
     Set<UUID> getEnemies();
-    BaseAftermathModule getModule();
+    IAftermathModule getModule();
     UUID getUUID();
     float getProgressPercent();
 
 
 
     void insertTag(LivingEntity entity);
+    void setLevel(Level level);
 }

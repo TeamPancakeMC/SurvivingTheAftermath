@@ -1,6 +1,11 @@
 {
-  "aftermath_module": "surviving_the_aftermath:nether_raid",
-  "ready_time": 10,
+  "aftermath_module": "surviving_the_aftermath:raid",
+  "conditions": [
+    {
+      "condition": "surviving_the_aftermath:structure_condition",
+      "value": "surviving_the_aftermath:nether_invasion_portal"
+    }
+  ],
   "rewards": [
     {
       "data": "minecraft:stone",

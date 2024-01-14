@@ -37,4 +37,8 @@ public class WeatherConditionModule extends LevelConditionModule{
     public IConditionModule type() {
         return ModAftermathModule.WEATHER_CONDITION.get();
     }
+
+    public String getWeather() {
+        return weather;
+    }
 }

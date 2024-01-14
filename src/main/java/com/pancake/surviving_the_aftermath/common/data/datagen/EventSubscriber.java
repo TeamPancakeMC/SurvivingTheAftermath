@@ -1,6 +1,7 @@
 package com.pancake.surviving_the_aftermath.common.data.datagen;
 
 import com.pancake.surviving_the_aftermath.common.data.datagen.raid.NetherRaidModuleProvider;
+import com.pancake.surviving_the_aftermath.common.data.datagen.raid.RaidModuleProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -16,8 +17,11 @@ public class EventSubscriber {
 		PackOutput output = generator.getPackOutput();
 		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 		CompletableFuture<HolderLookup.Provider> provider = event.getLookupProvider();
-
+		generator.addProvider(event.includeServer(), new ModTagProviders.ModBiomeTagsProvider(output, provider, existingFileHelper));
+		generator.addProvider(event.includeServer(), new ModTagProviders.ModStructureTagsProvider(output, provider, existingFileHelper));
 		generator.addProvider(event.includeServer(), new NetherRaidModuleProvider(output));
+		generator.addProvider(event.includeServer(), new RaidModuleProvider(output));
+		generator.addProvider(event.includeServer(), new RegistryDataGenerator(output, provider));
 	}
 
 }

@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public interface IAftermathModule extends IModule<IAftermathModule> {
@@ -18,4 +19,5 @@ public interface IAftermathModule extends IModule<IAftermathModule> {
     void setJsonName(String jsonName);
 
     boolean isCreate(Level level,BlockPos pos, Player player);
+    List<IConditionModule> getConditions();
 }

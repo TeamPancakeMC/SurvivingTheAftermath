@@ -1,5 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.module.entity_info;
 
+import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
@@ -7,7 +8,13 @@ import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.LazyOptional;
+
+import java.util.List;
 
 public class EntityInfoModule implements IEntityInfoModule {
     public static final String IDENTIFIER = "entity_info";
@@ -25,6 +32,16 @@ public class EntityInfoModule implements IEntityInfoModule {
     }
 
     public EntityInfoModule() {
+    }
+
+    @Override
+    public List<LazyOptional<Entity>> spawnEntity(Level level) {
+        List<LazyOptional<Entity>> arrayList = Lists.newArrayList();
+        for (int i = 0; i < amountModule.getSpawnAmount(); i++) {
+            Entity entity = entityType.create(level);
+            arrayList.add(entity == null ? LazyOptional.empty() : LazyOptional.of(() -> entity));
+        }
+        return arrayList;
     }
     public EntityType<?> getEntityType() {
         return entityType;

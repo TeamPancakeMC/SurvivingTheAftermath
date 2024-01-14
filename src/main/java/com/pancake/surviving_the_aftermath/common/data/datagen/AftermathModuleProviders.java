@@ -35,12 +35,15 @@ import java.util.concurrent.CompletableFuture;
 public abstract class AftermathModuleProviders<T extends BaseAftermathModule> implements DataProvider {
     private final PackOutput output;
     private final String modId;
+    private final String locale;
     private final List<T> modules = Lists.newArrayList();
 
 
-    public AftermathModuleProviders(PackOutput output, String modId) {
+
+    public AftermathModuleProviders(PackOutput output ,String locale) {
         this.output = output;
-        this.modId = modId;
+        this.modId = SurvivingTheAftermath.MOD_ID;
+        this.locale = locale;
     }
 
 
@@ -80,6 +83,6 @@ public abstract class AftermathModuleProviders<T extends BaseAftermathModule> im
     @Override
     @NotNull
     public String getName() {
-        return "AftermathModuleProviders";
+        return "AftermathModuleProviders" + locale;
     }
 }

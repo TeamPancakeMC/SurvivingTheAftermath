@@ -3,11 +3,15 @@ package com.pancake.surviving_the_aftermath.api;
 import com.google.common.collect.Maps;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -22,12 +26,12 @@ public class AftermathManager {
     public void tick() {
         Iterator<IAftermath<IAftermathModule>> iterator = AFTERMATH_MAP.values().iterator();
         while (iterator.hasNext()) {
-            IAftermath<IAftermathModule> raid = iterator.next();
-//            if (raid.isEnd() || raid.isLose()) {
-//                iterator.remove(); // 通过迭代器安全地移除元素
-//            } else {
-//                raid.tick();
-//            }
+            IAftermath<? extends IAftermathModule> aftermath = iterator.next();
+            if (aftermath.isEnd() || aftermath.isLose()) {
+                iterator.remove(); // 通过迭代器安全地移除元素
+            } else {
+                aftermath.tick();
+            }
         }
     }
 
@@ -47,20 +51,20 @@ public class AftermathManager {
         return Optional.ofNullable(AFTERMATH_MAP.get(uuid));
     }
 
-    public boolean create(IAftermath<IAftermathModule> aftermath) {
-//        if (aftermath.isCreate()) {
-//            add(aftermath);
-//            return true;
-//        }
-//        return false;
+    public boolean create(IAftermath<IAftermathModule> aftermath, Level level, BlockPos pos, @Nullable Player player) {
+        if (aftermath.isCreate(level, pos, player)) {
+            add(aftermath);
+            return true;
+        }
+        return false;
     }
 
     public void create(Level level, CompoundTag compoundTag) {
-//        IAftermath.CODEC.get().parse(NbtOps.INSTANCE,compoundTag)
-//                .resultOrPartial(SurvivingTheAftermath.LOGGER::error)
-//                .ifPresent(aftermath -> {
-//                    aftermath.setServerLevel(level);
-//                    add(aftermath);
-//                });
+        IAftermath.CODEC.get().parse(NbtOps.INSTANCE,compoundTag)
+                .resultOrPartial(SurvivingTheAftermath.LOGGER::error)
+                .ifPresent(aftermath -> {
+                    aftermath.setLevel(level);
+                    add(aftermath);
+                });
     }
 }

@@ -5,57 +5,52 @@ import com.pancake.surviving_the_aftermath.api.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
-import com.pancake.surviving_the_aftermath.api.module.IConditionModule;
 import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoader;
 import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
-import com.pancake.surviving_the_aftermath.util.RegistryUtil;
+import com.pancake.surviving_the_aftermath.util.StructureUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.StructureManager;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.properties.StructureMode;
-import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import net.minecraft.world.level.levelgen.structure.StructureStart;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
-public abstract class BaseAftermath<T extends BaseAftermathModule> implements IAftermath<BaseAftermathModule> {
+public abstract class BaseAftermath<T extends IAftermathModule> implements IAftermath<IAftermathModule> {
     protected final AftermathManager MANAGER = AftermathManager.getInstance();
     protected AftermathState state;
     protected Level level;
     protected Set<UUID> players = Sets.newHashSet();
     protected Set<UUID> enemies = Sets.newHashSet();
     protected T module;
+    protected BlockPos centerPos;
+    protected Set<BlockPos> spawnPos = Sets.newHashSet();
     protected final ServerBossEvent progress = new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
     protected final UUID uuid = progress.getId();
     protected float progressPercent = progress.getProgress();
+    protected int rewardTime;
 
 
-    public BaseAftermath(AftermathState state, Set<UUID> players, Set<UUID> enemies, T module, float progressPercent) {
-        this.state = state;
+    public BaseAftermath(Set<UUID> players, Set<UUID> enemies, Set<BlockPos> spawnPos,T module, BlockPos centerPos, float progressPercent, int rewardTime) {
         this.players = players;
         this.enemies = enemies;
+        this.spawnPos = spawnPos;
         this.module = module;
+        this.centerPos = centerPos;
         this.progressPercent = progressPercent;
+        this.rewardTime = rewardTime;
     }
-    public BaseAftermath(Level level, BlockPos pos, Player player){
+
+    public BaseAftermath(Level level, BlockPos pos){
         this.level = level;
         this.module = (T) getRandomAftermathModule();
-        getSpawnPos(level,pos);
+        SetSpawnPos(level,pos);
     }
 
 
@@ -67,36 +62,31 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
         return modules.stream().findAny().get();
     }
 
-    public void getSpawnPos(Level level, BlockPos pos) {
-        if (level instanceof ServerLevel serverLevel){
-            Optional<IConditionModule> module = getModule().getConditions().stream()
-                    .filter(condition -> condition instanceof StructureConditionModule structureModule)
+    public void SetSpawnPos(Level level, BlockPos pos) {
+        if (level instanceof ServerLevel serverLevel) {
+            Optional<StructureConditionModule> module = getModule().getConditions().stream()
+                    .filter(condition -> condition instanceof StructureConditionModule)
+                    .map(condition -> (StructureConditionModule) condition)
                     .findFirst();
-            module.ifPresent(structureModule ->{
-                if (structureModule instanceof StructureConditionModule structureConditionModule){
-                    if (structureConditionModule.checkCondition(level,pos)) {
-                        String moduleStructure = structureConditionModule.getStructure();
-                        ResourceKey<Structure> key = RegistryUtil.keyStructure(moduleStructure);
-                        Structure structure = level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(key);
-
-                        StructureManager structureManager1 = serverLevel.structureManager();
-                        if (structure != null) {
-                            StructureStart structureAt = structureManager1.getStructureAt(pos, structure);
-                            ChunkPos chunkPos = structureAt.getChunkPos();
-                            List<StructurePiece> pieces = structureAt.getPieces();
-                            for (StructurePiece piece : pieces) {
-                                BlockPos realPos = piece.getLocatorPosition().offset(chunkPos.x * 16, 0, chunkPos.z * 16); // 计算真实的世界坐标
-                                System.out.println("realPos : " + realPos + "BlockState : " + serverLevel.getBlockState(realPos).getBlock());
-                            }
-                        }
-                    }
-                }
-            });
+            if (module.isPresent()){
+                StructureUtils.handleDataMarker(serverLevel, pos, module.get().getResourceLocation(), (serverLevel1,metadata,startPos,metaPos) -> {
+                    centerPos = startPos;
+                    setMobSpawnPos(serverLevel1,metadata,startPos,metaPos);
+                });
+            }else {
+                centerPos = pos;
+                spawnPos.add(pos);
+            }
         }
     }
 
+    public void setMobSpawnPos(ServerLevel serverLevel, String metadata, BlockPos startPos, BlockPos metaPos) {
+        spawnPos.add(metaPos);
+    }
+
+
     @Override
-    public boolean isCreate(Level level, BlockPos pos, Player player) {
+    public boolean isCreate(Level level, BlockPos pos, @Nullable Player player) {
         return getModule().isCreate(level, pos,player);
     }
 
@@ -141,10 +131,15 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
     public void spawnRewards() {
 
     }
+    @Override
+    public void end() {
+        this.progress.removeAllPlayers();
+    }
 
-
-
-
+    @Override
+    public void lose() {
+        this.progress.removeAllPlayers();
+    }
 
     @Override
     public boolean isEnd() {
@@ -170,10 +165,12 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
     public Set<UUID> getEnemies() {
         return enemies;
     }
+
     @Override
-    public T getModule() {
+    public IAftermathModule getModule() {
         return module;
     }
+
     @Override
     public UUID getUUID() {
         return uuid;
@@ -181,5 +178,22 @@ public abstract class BaseAftermath<T extends BaseAftermathModule> implements IA
     @Override
     public float getProgressPercent() {
         return progressPercent;
+    }
+
+    public BlockPos getCenterPos() {
+        return centerPos;
+    }
+
+    public Set<BlockPos> getSpawnPos() {
+        return spawnPos;
+    }
+
+    public int getRewardTime() {
+        return rewardTime;
+    }
+
+    @Override
+    public void setLevel(Level level) {
+        this.level = level;
     }
 }

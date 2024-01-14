@@ -38,7 +38,8 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
                     .parse(JsonOps.INSTANCE, asJsonObject)
                     .resultOrPartial(SurvivingTheAftermath.LOGGER::error)
                     .ifPresent(aftermathModule -> {
-                        AFTERMATH_MODULE_MAP.put(resourceLocation, aftermathModule);
+                        String string = asJsonObject.get("aftermath_module").getAsString();
+                        AFTERMATH_MODULE_MAP.put(ResourceLocation.tryParse(string), aftermathModule);
                     });
         });
     }

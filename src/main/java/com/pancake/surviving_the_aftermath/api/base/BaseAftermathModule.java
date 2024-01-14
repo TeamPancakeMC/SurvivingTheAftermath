@@ -11,7 +11,9 @@ import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,20 +31,19 @@ public abstract class BaseAftermathModule implements IAftermathModule {
     }
 
 
-    //过滤条件
     public List<IConditionModule> getFilterConditions(List<IConditionModule> conditions){
         Optional<IConditionModule> module = conditions.stream()
                 .filter(condition -> condition instanceof StructureConditionModule)
                 .findFirst();
 
-        module.ifPresent(iConditionModule ->
-                conditions.removeIf(condition -> condition instanceof StructureConditionModule && condition != iConditionModule));
+//        module.ifPresent(iConditionModule ->
+//                conditions.removeIf(condition -> condition instanceof StructureConditionModule && condition != iConditionModule));
 
         return conditions;
     }
 
     @Override
-    public boolean isCreate(Level level, BlockPos pos, Player player) {
+    public boolean isCreate(Level level, BlockPos pos, @Nullable Player player) {
         conditions.forEach(condition -> {
             if(condition instanceof LevelConditionModule levelConditionModule){
                 levelConditionModule.checkCondition(level,pos);
@@ -54,6 +55,7 @@ public abstract class BaseAftermathModule implements IAftermathModule {
         return true;
     }
 
+    @Override
     public List<IConditionModule> getConditions() {
         return conditions;
     }

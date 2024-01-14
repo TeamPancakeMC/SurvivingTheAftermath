@@ -1,0 +1,7 @@
+{
+  "type": "surviving_the_aftermath:nether_invasion_portal",
+  "biomes": "#surviving_the_aftermath:has_nether_raid",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

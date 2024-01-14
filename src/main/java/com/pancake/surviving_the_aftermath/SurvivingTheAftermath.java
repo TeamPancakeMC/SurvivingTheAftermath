@@ -6,6 +6,8 @@ import com.mojang.logging.LogUtils;
 import com.pancake.surviving_the_aftermath.common.data.datagen.EventSubscriber;
 import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoader;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
+import com.pancake.surviving_the_aftermath.common.init.ModStructurePieceTypes;
+import com.pancake.surviving_the_aftermath.common.init.ModStructureTypes;
 import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,6 +29,9 @@ public class SurvivingTheAftermath {
         bus.addListener(EventSubscriber::onGatherData);
 //        bus.addListener(ModuleRegistry::onNewRegistry);
         ModuleRegistry.register(bus);
+
+        ModStructurePieceTypes.STRUCTURE_PIECE_TYPES.register(bus);
+        ModStructureTypes.STRUCTURE_TYPES.register(bus);
         MinecraftForge.EVENT_BUS.addListener(this::onDataPackLoad);
     }
 

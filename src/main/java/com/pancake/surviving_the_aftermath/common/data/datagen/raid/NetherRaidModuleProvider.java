@@ -17,28 +17,28 @@ import java.util.List;
 
 public class NetherRaidModuleProvider extends AftermathModuleProviders<NetherRaidModule> {
     public NetherRaidModuleProvider(PackOutput output) {
-        super(output, "surviving_the_aftermath");
+        super(output, "NetherRaid");
     }
 
 
     @Override
     public void addModules() {
-        RandomAmountModule randomAmountModule = new RandomAmountModule(1, 5);
-        IntegerAmountModule integerAmountModule = new IntegerAmountModule(1);
-        EntityInfoModule entityInfoModule = new EntityInfoModule(EntityType.PIG, randomAmountModule);
-        NetherRaidModule netherRaidModule = new NetherRaidModule();
-        ItemWeightedModule itemWeightedModule = new ItemWeightedModule(List.of(
-                WeightedEntry.wrap(Items.STONE, 10),
-                WeightedEntry.wrap(Items.STONE_AXE, 20)
-        ));
-        EntityInfoWithEquipmentModule equipmentModule = new EntityInfoWithEquipmentModule(EntityType.PIG, integerAmountModule,itemWeightedModule);
-        netherRaidModule.setReadyTime(10).setWaves(List.of(
-                List.of(entityInfoModule),
-                List.of(equipmentModule)
-        )).setRewards(itemWeightedModule).setConditions(List.of(
-                new StructureConditionModule("surviving_the_aftermath:")
-        ));
-
-        addModule(netherRaidModule);
+//        RandomAmountModule randomAmountModule = new RandomAmountModule(1, 5);
+//        IntegerAmountModule integerAmountModule = new IntegerAmountModule(1);
+//        EntityInfoModule entityInfoModule = new EntityInfoModule(EntityType.PIG, randomAmountModule);
+//        NetherRaidModule netherRaidModule = new NetherRaidModule();
+//        ItemWeightedModule itemWeightedModule = new ItemWeightedModule(List.of(
+//                WeightedEntry.wrap(Items.STONE, 10),
+//                WeightedEntry.wrap(Items.STONE_AXE, 20)
+//        ));
+//        EntityInfoWithEquipmentModule equipmentModule = new EntityInfoWithEquipmentModule(EntityType.PIG, integerAmountModule,itemWeightedModule);
+//        netherRaidModule.setReadyTime(10).setWaves(List.of(
+//                List.of(entityInfoModule),
+//                List.of(equipmentModule)
+//        )).setRewards(itemWeightedModule).setConditions(List.of(
+//                new StructureConditionModule("surviving_the_aftermath:nether_invasion_portal")
+//        )).setJsonName("nether_raid");
+//
+//        addModule(netherRaidModule);
     }
 }
