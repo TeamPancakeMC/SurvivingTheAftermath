@@ -5,8 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IPredicateModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
 
-import java.util.List;
 
 public class NBTPredicate implements IPredicateModule {
     public static final String IDENTIFIER = "nbt";
@@ -62,4 +62,8 @@ public class NBTPredicate implements IPredicateModule {
         return ModAftermathModule.NBT_PREDICATE.get();
     }
 
+    @Override
+    public void apply(LivingEntity livingEntity) {
+        livingEntity.readAdditionalSaveData(nbt);
+    }
 }

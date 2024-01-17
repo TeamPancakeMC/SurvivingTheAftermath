@@ -13,7 +13,7 @@ import com.pancake.surviving_the_aftermath.api.module.IConditionModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
-import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithEquipmentModule;
+import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithPredicateModule;
 import com.pancake.surviving_the_aftermath.common.raid.api.IRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.util.CodecUtils;
@@ -128,9 +128,6 @@ public class BaseRaid extends BaseAftermath implements IRaid {
         for (LazyOptional<Entity> lazyOptional : arrayList) {
             lazyOptional.ifPresent(entity -> {
                 if (entity instanceof Mob mob) {
-                    if (entityInfoModule instanceof EntityInfoWithEquipmentModule entityInfoWithEquipmentModule){
-                        mob.setCanPickUpLoot(entityInfoWithEquipmentModule.isCanDrop());
-                    }
                     setMobSpawn(level,mob);
                 }
             });

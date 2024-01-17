@@ -28,7 +28,7 @@ public class ModKubeJSPlugin extends KubeJSPlugin {
 
 
         event.add("EntityInfoModule", EntityInfoModule.Builder.class);
-        event.add("EntityInfoWithEquipmentModule", EntityInfoWithEquipmentModule.Builder.class);
+        event.add("EntityInfoWithPredicateModule", EntityInfoWithPredicateModule.Builder.class);
 
         event.add("EntityTypeWeightedModule", EntityTypeWeightedModule.Builder.class);
         event.add("ItemWeightedModule", ItemWeightedModule.Builder.class);

@@ -8,6 +8,7 @@ import com.pancake.surviving_the_aftermath.common.module.weighted.EffectWeighted
 import com.pancake.surviving_the_aftermath.common.module.weighted.EntityTypeWeightedModule;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.List;
 
@@ -34,5 +35,11 @@ public class EffectPredicate implements IPredicateModule {
     @Override
     public IPredicateModule type() {
         return ModAftermathModule.EFFECT_PREDICATE.get();
+    }
+
+    @Override
+    public void apply(LivingEntity livingEntity) {
+        effects.getWeightedList().getRandomValue(livingEntity.getRandom())
+                .ifPresent(livingEntity::addEffect);
     }
 }

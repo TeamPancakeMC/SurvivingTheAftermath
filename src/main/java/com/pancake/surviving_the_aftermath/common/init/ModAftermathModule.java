@@ -6,7 +6,7 @@ import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountMod
 import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.condition.*;
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoModule;
-import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithEquipmentModule;
+import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithPredicateModule;
 import com.pancake.surviving_the_aftermath.common.module.predicate.AttributePredicate;
 import com.pancake.surviving_the_aftermath.common.module.predicate.EffectPredicate;
 import com.pancake.surviving_the_aftermath.common.module.predicate.EquipmentPredicate;
@@ -35,7 +35,7 @@ public class ModAftermathModule {
 
 
     public static final RegistryObject<IEntityInfoModule> ENTITY_INFO = ModuleRegistry.ENTITY_INFO_MODULE.register(EntityInfoModule.IDENTIFIER,EntityInfoModule::new);
-    public static final RegistryObject<IEntityInfoModule> ENTITY_INFO_EQUIPMENT = ModuleRegistry.ENTITY_INFO_MODULE.register(EntityInfoWithEquipmentModule.IDENTIFIER,EntityInfoWithEquipmentModule::new);
+    public static final RegistryObject<IEntityInfoModule> ENTITY_INFO_PREDICATE = ModuleRegistry.ENTITY_INFO_MODULE.register(EntityInfoWithPredicateModule.IDENTIFIER,EntityInfoWithPredicateModule::new);
 
 
     public static final RegistryObject<IAmountModule> INTEGER_AMOUNT =  ModuleRegistry.AMOUNT_MODULE.register(IntegerAmountModule.IDENTIFIER, IntegerAmountModule::new);

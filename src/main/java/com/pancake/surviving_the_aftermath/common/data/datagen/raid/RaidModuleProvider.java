@@ -5,7 +5,7 @@ import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountMod
 import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoModule;
-import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithEquipmentModule;
+import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithPredicateModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import net.minecraft.data.PackOutput;
