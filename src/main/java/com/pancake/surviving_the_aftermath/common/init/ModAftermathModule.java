@@ -12,7 +12,6 @@ import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedMo
 import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
-import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.common.Mod;
@@ -20,6 +19,12 @@ import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber
 public class ModAftermathModule {
+    public static final RegistryObject<IAftermathModule> BASE_RAID_MODULE = ModuleRegistry.AFTERMATH_MODULE.register(BaseRaidModule.IDENTIFIER, BaseRaidModule::new);
+    public static final RegistryObject<IAftermath> BASE_RAID = ModuleRegistry.AFTERMATH.register(BaseRaid.IDENTIFIER, BaseRaid::new);
+    public static final RegistryObject<IAftermath> NETHER_RAID = ModuleRegistry.AFTERMATH.register(NetherRaid.IDENTIFIER, NetherRaid::new);
+
+
+
     public static final RegistryObject<IEntityInfoModule> ENTITY_INFO = ModuleRegistry.ENTITY_INFO_MODULE.register(EntityInfoModule.IDENTIFIER,EntityInfoModule::new);
     public static final RegistryObject<IEntityInfoModule> ENTITY_INFO_EQUIPMENT = ModuleRegistry.ENTITY_INFO_MODULE.register(EntityInfoWithEquipmentModule.IDENTIFIER,EntityInfoWithEquipmentModule::new);
 
@@ -30,13 +35,6 @@ public class ModAftermathModule {
 
     public static final RegistryObject<IWeightedModule<EntityType<?>>> ENTITY_TYPE_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(EntityTypeWeightedModule.IDENTIFIER, EntityTypeWeightedModule::new);
     public static final RegistryObject<IWeightedModule<Item>> ITEM_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(ItemWeightedModule.IDENTIFIER, ItemWeightedModule::new);
-
-
-//    public static final RegistryObject<IAftermathModule> NETHER_RAID_MODULE = ModuleRegistry.AFTERMATH_MODULE.register(NetherRaid.IDENTIFIER, NetherRaidModule::new);
-    public static final RegistryObject<IAftermathModule> RAID_MODULE = ModuleRegistry.AFTERMATH_MODULE.register(BaseRaid.IDENTIFIER, BaseRaidModule::new);
-
-    public static final RegistryObject<IAftermath<IAftermathModule>> BASE_RAID = ModuleRegistry.AFTERMATH.register(BaseRaid.IDENTIFIER, BaseRaid::new);
-
 
     public static final RegistryObject<IConditionModule> LEVEL_CONDITION = ModuleRegistry.CONDITION_MODULE.register(StructureConditionModule.IDENTIFIER, StructureConditionModule::new);
     public static final RegistryObject<IConditionModule> BIOMES_CONDITION = ModuleRegistry.CONDITION_MODULE.register(BiomesConditionModule.IDENTIFIER, BiomesConditionModule::new);

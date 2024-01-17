@@ -1,10 +1,12 @@
 package com.pancake.surviving_the_aftermath.common.module.weighted;
 
+import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
+import com.pancake.surviving_the_aftermath.util.RegistryUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.item.Item;
@@ -36,4 +38,14 @@ public class ItemWeightedModule extends BaseWeightedModule<Item> {
         return ModAftermathModule.ITEM_WEIGHTED.get();
     }
 
+    public static class Builder {
+        private List<WeightedEntry.Wrapper<Item>> list = Lists.newArrayList();
+        public ItemWeightedModule.Builder add(String item, int weight) {
+            this.list.add(WeightedEntry.wrap(RegistryUtil.getItemFromRegistryName(item), weight));
+            return this;
+        }
+        public ItemWeightedModule build() {
+            return new ItemWeightedModule(list);
+        }
+    }
 }

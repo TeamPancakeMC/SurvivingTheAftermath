@@ -12,37 +12,29 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public interface IAftermath<T extends IAftermathModule> extends IModule<IAftermath<T>> {
-    Supplier<Codec<IAftermath<IAftermathModule>>> CODEC = () -> ModuleRegistry.AFTERMATH_REGISTRY.get().getCodec()
+public interface IAftermath extends IModule<IAftermath> {
+    Supplier<Codec<IAftermath>> CODEC = () -> ModuleRegistry.AFTERMATH_REGISTRY.get().getCodec()
             .dispatch("aftermath", IAftermath::type, IAftermath::codec);
-    boolean isCreate(Level level, BlockPos pos,Player player);
-    void tick();
-    boolean isEnd();
-    boolean isLose();
-    void ready();
-    void end();
-    void lose();
-    void updatePlayers();
-    void updateProgress();
-    void spawnRewards();
-    Predicate<? super ServerPlayer> validPlayer();
-
     ResourceLocation getRegistryName();
-    AftermathState getState();
-    Level getLevel();
-    Set<UUID> getPlayers();
-    Set<UUID> getEnemies();
+
+    boolean isCreate(Level level, BlockPos pos, @Nullable Player player);
+    void createRewards();
+
+    void updateProgress();
+
+    void tick();
     IAftermathModule getModule();
+
+    boolean isEnd();
     UUID getUUID();
-    float getProgressPercent();
 
+    void setLevel(ServerLevel level);
 
-
-    void insertTag(LivingEntity entity);
-    void setLevel(Level level);
+    AftermathState getState();
 }

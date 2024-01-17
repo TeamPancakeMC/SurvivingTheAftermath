@@ -41,4 +41,15 @@ public class WeatherConditionModule extends LevelConditionModule{
     public String getWeather() {
         return weather;
     }
+
+    public static class Builder {
+        private final String weather;
+
+        public Builder(String weather) {
+            this.weather = weather;
+        }
+        public WeatherConditionModule build() {
+            return new WeatherConditionModule(weather);
+        }
+    }
 }

@@ -38,4 +38,15 @@ public class XpConditionModule extends PlayerConditionModule{
     public int getXp() {
         return xp;
     }
+
+    public static class Builder {
+        private final int xp;
+
+        public Builder(int xp) {
+            this.xp = xp;
+        }
+        public XpConditionModule build() {
+            return new XpConditionModule(xp);
+        }
+    }
 }

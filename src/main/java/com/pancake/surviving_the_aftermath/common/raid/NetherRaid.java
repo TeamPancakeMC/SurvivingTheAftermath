@@ -1,35 +1,38 @@
 package com.pancake.surviving_the_aftermath.common.raid;
 
-import com.mojang.serialization.Codec;
-import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
-import com.pancake.surviving_the_aftermath.api.IAftermath;
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
-import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
-import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
+import com.pancake.surviving_the_aftermath.api.AftermathState;
+import com.pancake.surviving_the_aftermath.api.PortalShapeAccessor;
+import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.portal.PortalShape;
 
-public class NetherRaid{
-//    public static final String IDENTIFIER = "nether_raid";
-//
-//    @Override
-//    public Codec<? extends IAftermath<IAftermathModule>> codec() {
-//        return null;
-//    }
-//
-//    @Override
-//    public IAftermath<IAftermathModule> type() {
-//        return null;
-//    }
-//
-//    @Override
-//    public ResourceLocation getRegistryName() {
-//        return SurvivingTheAftermath.asResource(IDENTIFIER);
-//    }
-//
-//    @Override
-//    public void insertTag(LivingEntity entity) {
-//        entity.getPersistentData().put(IDENTIFIER, StringTag.valueOf("enemies"));
-//    }
+import java.util.*;
+
+public class NetherRaid extends BaseRaid {
+    public static final String IDENTIFIER = "nether_raid";
+    private PortalShape portalShape;
+    public NetherRaid(ServerLevel level, BlockPos startPos,PortalShape portalShape) {
+        super(level, startPos);
+        this.portalShape = portalShape;
+    }
+
+    public NetherRaid() {
+    }
+
+    @Override
+    public void setMobSpawnPos(ServerLevel serverLevel, String metadata, BlockPos startPos, BlockPos metaPos) {
+        Optional<PortalShape> optional = PortalShape.findEmptyPortalShape(serverLevel, metaPos, Direction.Axis.X);
+        if (optional.isPresent()) {
+            PortalShapeAccessor portalShapeMixin = (PortalShapeAccessor) optional.get();
+            BlockPos bottomLeft = portalShapeMixin.survivingTheAftermath$getBottomLeft();
+            int height = portalShapeMixin.survivingTheAftermath$getHeight();
+            int width = portalShapeMixin.survivingTheAftermath$getWidth();
+            Direction rightDir = portalShapeMixin.survivingTheAftermath$getRightDir();
+            BlockPos.betweenClosed(bottomLeft, bottomLeft.relative(Direction.UP, height - 1).relative(rightDir, width - 1))
+                    .forEach(blockPos -> spawnPos.add(new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ())));
+        }
+    }
 }

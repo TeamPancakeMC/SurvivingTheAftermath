@@ -8,6 +8,7 @@ import com.pancake.surviving_the_aftermath.common.init.ModCapability;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -18,9 +19,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class AftermathCap implements INBTSerializable<CompoundTag> {
     private static final AftermathManager AFTERMATH_MANAGER = AftermathManager.getInstance();
-    private final Level level;
+    private final ServerLevel level;
 
-    public AftermathCap(Level level) { this.level = level;}
+    public AftermathCap(ServerLevel level) { this.level = level;}
 
     @Override
     public CompoundTag serializeNBT() {
@@ -54,7 +55,7 @@ public class AftermathCap implements INBTSerializable<CompoundTag> {
     public static class Provider implements ICapabilitySerializable<CompoundTag> {
         private final LazyOptional<AftermathCap> instance;
 
-        public Provider(Level level) {
+        public Provider(ServerLevel level) {
             instance = LazyOptional.of(() -> new AftermathCap(level));
         }
 

@@ -66,7 +66,7 @@ public abstract class AftermathModuleProviders<T extends BaseAftermathModule> im
                                 GsonHelper.writeValue(jsonwriter, jsonElement, KEY_COMPARATOR);
                             }
                             Path path = this.output.getOutputFolder(PackOutput.Target.DATA_PACK)
-                                    .resolve(this.modId).resolve("aftermath").resolve(module.getJsonName().toLowerCase() + ".json");
+                                    .resolve(this.modId).resolve("aftermath").resolve(module.getModuleName().toLowerCase() + ".json");
                             output.writeIfNeeded(path, bytearrayoutputstream.toByteArray(), hashingoutputstream.hash());
                         } catch (IOException ioexception) {
                             LOGGER.error("Failed to save file to {}", output, ioexception);

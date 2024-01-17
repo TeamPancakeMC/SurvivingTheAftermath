@@ -1,53 +1,28 @@
 package com.pancake.surviving_the_aftermath.common.event;
 
-import com.google.gson.JsonElement;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.JsonOps;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
-import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
-import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
-import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
-import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoader;
-import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
-import com.pancake.surviving_the_aftermath.common.init.ModStructures;
-import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
-import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
-import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
-import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
-import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoModule;
-import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
-import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
-import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
-import com.pancake.surviving_the_aftermath.util.RegistryUtil;
 import com.pancake.surviving_the_aftermath.util.StructureUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.StructureManager;
-import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructureStart;
-import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BeaconBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.NetherPortalBlock;
+import net.minecraft.world.level.block.entity.BeaconBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.portal.PortalShape;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Mod.EventBusSubscriber
@@ -58,22 +33,35 @@ public class PlayerEvent {
     public static void onPlayerInteractRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         Level level = event.getLevel();
         InteractionHand hand = event.getHand();
+        Player player = event.getEntity();
         if (level.isClientSide() || hand != InteractionHand.MAIN_HAND) {
             return;
         }
 
         BlockPos pos = event.getPos();
-//        new BaseRaid<>(level, event.getPos(), event.getEntity());
-
-//        System.out.println(AftermathModuleLoader.AFTERMATH_MODULE_MAP);
 
 
-//        if (level instanceof ServerLevel serverLevel){
-//            StructureUtils.handleDataMarker(serverLevel, pos, SurvivingTheAftermath.asResource("nether_invasion_portal"), (serverLevel1, metadata, blockPos) -> {
-//
-//            });
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof BeaconBlockEntity && player.getMainHandItem() == Items.NETHER_STAR.getDefaultInstance()) {
+            BeaconBlockEntity beaconBlockEntity = (BeaconBlockEntity) blockEntity;
+            if (!beaconBlockEntity.getBeamSections().isEmpty()) {
+                player.getMainHandItem().shrink(1);
+
+
+            }
+        }
+    }
+
+    public static void createPortal(LevelAccessor world, BlockPos pos) {
+        // Try to find an empty portal shape on the X axis
+//        Optional<PortalShape> optional = PortalShape.findEmptyPortalShape(world, pos.above(), Direction.Axis.X);
+////        System.out.println("optional = " + optional);
+////        optional = net.minecraftforge.event.ForgeEventFactory.onTrySpawnPortal(world, pos.above(), optional);
+////        System.out.println("optional = " + optional);
+//        if (optional.isPresent()) {
+//            optional.get().createPortalBlocks();
+//            return;
 //        }
-
     }
 
 

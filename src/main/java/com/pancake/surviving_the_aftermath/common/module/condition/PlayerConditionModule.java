@@ -11,6 +11,6 @@ public abstract class PlayerConditionModule implements IConditionModule {
     public PlayerConditionModule() {
     }
 
-    public abstract boolean checkCondition(@Nullable Player player);
+    public abstract boolean checkCondition(Player player);
 
 }

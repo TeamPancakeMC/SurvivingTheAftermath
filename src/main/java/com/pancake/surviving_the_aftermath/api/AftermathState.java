@@ -1,5 +1,7 @@
 package com.pancake.surviving_the_aftermath.api;
 
+import com.mojang.serialization.Codec;
+
 public enum AftermathState {
     START("start", 0),
     READY("ready", 1),
@@ -8,7 +10,7 @@ public enum AftermathState {
     LOSE("lose", 4),
     CELEBRATING("celebrating", 5),
     END("end", 6);
-
+    public static final Codec<AftermathState> CODEC = Codec.STRING.xmap(AftermathState::valueOf, AftermathState::name);
     private final String name;
     private final int index;
 

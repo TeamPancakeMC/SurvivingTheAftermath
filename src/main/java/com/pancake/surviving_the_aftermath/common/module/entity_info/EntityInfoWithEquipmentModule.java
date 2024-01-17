@@ -8,6 +8,7 @@ import com.pancake.surviving_the_aftermath.api.module.IWeightedModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
 import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
+import com.pancake.surviving_the_aftermath.util.RegistryUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.WeightedEntry;
@@ -26,7 +27,8 @@ public class EntityInfoWithEquipmentModule extends EntityInfoModule {
             BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("entity_type").forGetter(EntityInfoModule::getEntityType),
             IAmountModule.CODEC.get().fieldOf("amount_module").forGetter(EntityInfoModule::getAmountModule),
             Codec.list(WeightedEntry.Wrapper.codec(BuiltInRegistries.ITEM.byNameCodec()))
-                    .xmap(ItemWeightedModule::new, ItemWeightedModule::getList).fieldOf("equipment").forGetter(EntityInfoWithEquipmentModule::getEquipment)
+                    .xmap(ItemWeightedModule::new, ItemWeightedModule::getList).fieldOf("equipment").forGetter(EntityInfoWithEquipmentModule::getEquipment),
+            Codec.BOOL.fieldOf("can_drop").forGetter(EntityInfoWithEquipmentModule::isCanDrop)
     ).apply(instance, EntityInfoWithEquipmentModule::new));
 
     private ItemWeightedModule getEquipment() {
@@ -34,10 +36,13 @@ public class EntityInfoWithEquipmentModule extends EntityInfoModule {
     }
 
     private ItemWeightedModule equipment;
+    private boolean canDrop = true;
 
-    public EntityInfoWithEquipmentModule(EntityType<?> entityType, IAmountModule amountModule, ItemWeightedModule equipment) {
+
+    public EntityInfoWithEquipmentModule(EntityType<?> entityType, IAmountModule amountModule, ItemWeightedModule equipment,boolean canDrop) {
         super(entityType, amountModule);
         this.equipment = equipment;
+        this.canDrop = canDrop;
     }
 
     public EntityInfoWithEquipmentModule() {
@@ -61,9 +66,42 @@ public class EntityInfoWithEquipmentModule extends EntityInfoModule {
         return CODEC;
     }
 
+    public boolean isCanDrop() {
+        return canDrop;
+    }
+
     @Override
     public IEntityInfoModule type() {
         return ModAftermathModule.ENTITY_INFO_EQUIPMENT.get();
     }
 
+
+    public static class Builder {
+        private final EntityType<?> entityType;
+        private IAmountModule amountModule;
+        private ItemWeightedModule equipment;
+        private boolean canDrop;
+
+        public Builder(String entityType) {
+            this.entityType = RegistryUtil.getEntityTypeFromRegistryName(entityType);
+        }
+        public Builder canDrop(boolean canDrop) {
+            this.canDrop = canDrop;
+            return this;
+        }
+
+        public Builder amountModule(IAmountModule amountModule) {
+            this.amountModule = amountModule;
+            return this;
+        }
+
+        public Builder equipment(ItemWeightedModule equipment) {
+            this.equipment = equipment;
+            return this;
+        }
+
+        public EntityInfoWithEquipmentModule build() {
+            return new EntityInfoWithEquipmentModule(entityType, amountModule, equipment,canDrop);
+        }
+    }
 }

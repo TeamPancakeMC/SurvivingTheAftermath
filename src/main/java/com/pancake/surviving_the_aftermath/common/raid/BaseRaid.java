@@ -1,113 +1,179 @@
 package com.pancake.surviving_the_aftermath.common.raid;
 
+import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
+import com.pancake.surviving_the_aftermath.api.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
-import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
+import com.pancake.surviving_the_aftermath.api.module.IConditionModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
+import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
+import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithEquipmentModule;
 import com.pancake.surviving_the_aftermath.common.raid.api.IRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.util.CodecUtils;
 import com.pancake.surviving_the_aftermath.util.RandomUtils;
+import com.pancake.surviving_the_aftermath.util.StructureUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.portal.PortalShape;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 
-public class BaseRaid extends BaseAftermath<BaseRaidModule> implements IRaid {
+import static java.util.Arrays.stream;
+
+public class BaseRaid extends BaseAftermath implements IRaid {
     public static final String IDENTIFIER = "raid";
     public static final Codec<BaseRaid> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             CodecUtils.UUID_CODEC.fieldOf("uuid").forGetter(BaseRaid::getUUID),
-            CodecUtils.setOf(CodecUtils.UUID_CODEC).fieldOf("players").forGetter(BaseRaid::getPlayers),
-            CodecUtils.setOf(CodecUtils.UUID_CODEC).fieldOf("enemies").forGetter(BaseRaid::getEnemies),
-            CodecUtils.setOf(BlockPos.CODEC).fieldOf("spawn_pos").forGetter(BaseRaid::getSpawnPos),
+            AftermathState.CODEC.fieldOf("state").forGetter(BaseRaid::getState),
             BaseRaidModule.CODEC.fieldOf("module").forGetter(BaseRaid::getModule),
-            BlockPos.CODEC.fieldOf("center_pos").forGetter(BaseRaid::getCenterPos),
-            Codec.FLOAT.fieldOf("progress_percent").forGetter(BaseRaid::getProgressPercent),
-            Codec.INT.fieldOf("reward_time").forGetter(BaseRaid::getRewardTime),
-            Codec.INT.fieldOf("current_wave").forGetter(BaseRaid::getCurrentWave),
-            Codec.INT.fieldOf("total_enemy").forGetter(BaseRaid::getTotalEnemy)
+            CodecUtils.setOf(CodecUtils.UUID_CODEC).fieldOf("players").forGetter(BaseRaid::getPlayers),
+            Codec.FLOAT.fieldOf("progressPercent").forGetter(BaseRaid::getProgressPercent),
+            BlockPos.CODEC.fieldOf("startPos").forGetter(BaseRaid::getStartPos),
+            Codec.INT.fieldOf("readyTime").forGetter(BaseRaid::getReadyTime),
+            Codec.INT.fieldOf("rewardTime").forGetter(BaseRaid::getRewardTime)
     ).apply(instance, BaseRaid::new));
 
-    protected int currentWave = -1;
-    protected int totalEnemy = 0;
-
-
-    public BaseRaid(UUID uuid,Set<UUID> players, Set<UUID> enemies, Set<BlockPos> spawnPos,BaseRaidModule module, BlockPos centerPos, float progressPercent, int rewardTime, int currentWave, int totalEnemy) {
-        super(players, enemies,spawnPos, module, centerPos, progressPercent, rewardTime);
-        this.currentWave = currentWave;
-        this.totalEnemy = totalEnemy;
+    public BaseRaid(UUID uuid,AftermathState state,BaseRaidModule module, Set<UUID> players, float progressPercent,BlockPos startPos,int readyTime,int rewardTime) {
+        super(state,module, players, progressPercent);
+        this.startPos = startPos;
+        this.readyTime = readyTime;
+        this.rewardTime = rewardTime;
     }
 
-    public BaseRaid(Level level, BlockPos pos){
-        super(level,pos);
+    public BaseRaid(ServerLevel level,BlockPos startPos) {
+        super(level);
+        this.startPos = startPos;
+        SetSpawnPos(level,startPos);
+        this.readyTime = getModule().getReadyTime();
+        this.rewardTime = getModule().getReadyTime();
     }
+//    public BaseRaid(BaseRaidModule module,ServerLevel level,BlockPos startPos) {
+//        super(module,level);
+//        this.startPos = startPos;
+//        SetSpawnPos(level,startPos);
+//        this.readyTime = getModule().getReadyTime();
+//        this.rewardTime = getModule().getReadyTime();
+//    }
+
 
     public BaseRaid() {
-
     }
-
-
+    protected Set<UUID> enemies = Sets.newLinkedHashSet();
+    protected Set<BlockPos> spawnPos = Sets.newHashSet();
+    protected int currentWave = -1;
+    protected int totalEnemy = 0;
+    public BlockPos startPos;
+    private int readyTime;
+    public int rewardTime;
 
     @Override
     public void tick() {
         super.tick();
+
+        if (state == AftermathState.START){
+            state = AftermathState.READY;
+        }
+
+        if (state == AftermathState.ONGOING){
+            checkNextWave();
+            spawnWave();
+            EnemyTotalRatio();
+        }
+
         if (state == AftermathState.CELEBRATING){
+            System.out.println("庆祝状态 :" + rewardTime);
             if (rewardTime <= 0){
                 end();
                 return;
             }
-            spawnRewards();
+            createRewards();
             rewardTime--;
+        }
+        System.out.println("state: " + state);
+    }
+    private void EnemyTotalRatio(){
+        if (enemies.isEmpty()) return;
+        this.progressPercent = enemies.size() / (float) totalEnemy;
+    }
+
+    protected void spawnWave() {
+        if (enemies.isEmpty() && state == AftermathState.ONGOING){
+            getModule().getWaves().get(currentWave).forEach(this::spawnEntities);
+        }
+        enemies.removeIf(uuid -> level.getEntity(uuid) == null);
+    }
+
+    private void spawnEntities(IEntityInfoModule entityInfoModule) {
+        if (players.isEmpty()) return;
+        List<LazyOptional<Entity>> arrayList = entityInfoModule.spawnEntity(level);
+        for (LazyOptional<Entity> lazyOptional : arrayList) {
+            lazyOptional.ifPresent(entity -> {
+                if (entity instanceof Mob mob) {
+                    if (entityInfoModule instanceof EntityInfoWithEquipmentModule entityInfoWithEquipmentModule){
+                        mob.setCanPickUpLoot(entityInfoWithEquipmentModule.isCanDrop());
+                    }
+                    setMobSpawn(level,mob);
+                }
+            });
         }
     }
 
     @Override
-    public void ready() {
-
+    public void createRewards() {
+        BlockPos blockPos = RandomUtils.getRandomElement(spawnPos);
+        Direction dir = Direction.Plane.HORIZONTAL.stream().filter(d -> level.isEmptyBlock(blockPos.relative(d))
+                && !spawnPos.contains(blockPos.relative(d))).findFirst().orElse(Direction.UP);
+        Vec3 vec = Vec3.atCenterOf(blockPos);
+        getModule().getRewards().getWeightedList().getRandomValue(level.random).ifPresent(reward -> {
+            ItemEntity itemEntity = new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(reward),
+                    dir.getStepX() * 0.2, 0.2, dir.getStepZ() * 0.2f);
+            itemEntity.setInvulnerable(true);
+            level.addFreshEntity(itemEntity);
+        });
+        System.out.println("createRewards");
     }
 
-    @Override
-    public boolean isCreate(Level level, BlockPos pos, @Nullable Player player) {
-        boolean create = super.isCreate(level, pos, player);
-        Map<UUID, IAftermath<IAftermathModule>> aftermathMap = MANAGER.getAftermathMap();
-        boolean noneMatch = aftermathMap.values().stream()
-                .filter(aftermath -> aftermath instanceof IRaid)
-                .map(aftermath -> (IRaid) aftermath)
-                .noneMatch(raid -> raid.getCenterPos().distSqr(centerPos) < Math.pow(raid.getRadius(), 2));
-        return create && noneMatch;
-    }
+    private void setMobSpawn(ServerLevel level, Mob mob) {
+        mob.setPersistenceRequired();
+        mob.setTarget(randomPlayersUnderAttack());
 
-    @Override
-    public ResourceLocation getRegistryName() {
-        return SurvivingTheAftermath.asResource(IDENTIFIER);
-    }
+        System.out.println("spawnPos size :" + spawnPos.size());
 
-    @Override
-    public void insertTag(LivingEntity entity) {
-        entity.getPersistentData().put(IDENTIFIER, StringTag.valueOf("enemies"));
-    }
+        BlockPos blockPos = RandomUtils.getRandomElement(spawnPos);
+        mob.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
 
+        if (join(mob)) {
+            level.addFreshEntityWithPassengers(mob);
+        }
+    }
     public Player randomPlayersUnderAttack(){
         return level.getPlayerByUUID(RandomUtils.getRandomElement(getPlayers()));
     }
+
     public boolean join(Entity entity) {
         if (state == AftermathState.ONGOING &&
-                Math.sqrt(entity.blockPosition().distSqr(centerPos)) < getRadius() &&
+                Math.sqrt(entity.blockPosition().distSqr(startPos)) < getRadius() &&
                 enemies.add(entity.getUUID())) {
             totalEnemy++;
             return true;
@@ -115,9 +181,11 @@ public class BaseRaid extends BaseAftermath<BaseRaidModule> implements IRaid {
         return false;
     }
 
+
     protected void checkNextWave(){
         if (enemies.isEmpty()){
-            if(this.currentWave >= module.getWaves().size() - 1) {
+            if(this.currentWave >= getModule().getWaves().size() - 1) {
+                state = AftermathState.VICTORY;
             } else {
                 currentWave++;
                 totalEnemy = 0;
@@ -125,61 +193,70 @@ public class BaseRaid extends BaseAftermath<BaseRaidModule> implements IRaid {
         }
     }
 
-    protected void spawnWave() {
-        if (level instanceof ServerLevel serverLevel){
-            if (enemies.isEmpty() && state == AftermathState.ONGOING){
-                module.getWaves().get(currentWave).forEach(this::spawnEntities);
-            }
-            enemies.removeIf(uuid -> serverLevel.getEntity(uuid) == null);
-        }
-
+    @Override
+    public boolean isCreate(Level level, BlockPos pos, @Nullable Player player) {
+        boolean create = super.isCreate(level, pos, player);
+        boolean noneMatch = AftermathManager.getInstance().getAftermathMap().values().stream()
+                .filter(aftermath -> aftermath instanceof IRaid)
+                .map(aftermath -> (IRaid) aftermath)
+                .noneMatch(raid -> raid.getStartPos().distSqr(startPos) < Math.pow(raid.getRadius(), 2));
+        return create && noneMatch;
     }
-
-
-    protected List<LazyOptional<Entity>> spawnEntities(IEntityInfoModule module) {
-        if (players.isEmpty()) return Collections.emptyList();
-        List<LazyOptional<Entity>> arrayList = Collections.emptyList();
+    public void SetSpawnPos(Level level, BlockPos pos) {
         if (level instanceof ServerLevel serverLevel) {
-            arrayList = module.spawnEntity(serverLevel);
-            for (LazyOptional<Entity> lazyOptional : arrayList) {
-                lazyOptional.ifPresent(entity -> {
-                    if (entity instanceof Mob mob) {
-                        setMobSpawn(serverLevel,mob);
+            List<IConditionModule> conditions = getModule().getConditions();
+            if (conditions == null){
+                startPos = pos;
+                spawnPos.add(pos);
+                return;
+            }
+            Optional<StructureConditionModule> module = conditions.stream()
+                    .filter(condition -> condition instanceof StructureConditionModule)
+                    .map(condition -> (StructureConditionModule) condition)
+                    .findFirst();
+            if (module.isPresent()){
+                StructureUtils.handleDataMarker(serverLevel, pos, SurvivingTheAftermath.asResource("nether_invasion_portal"), (serverLevel1, metadata, blockInfo, startPos) -> {
+                    this.startPos = startPos;
+                    BlockPos metaPos = blockInfo.pos();
+                    setMobSpawnPos(serverLevel1,metadata,startPos,metaPos);
 
-                    }
+                    System.out.println("handleDataMarker");
                 });
+            }else {
+                startPos = pos;
+                spawnPos.add(pos);
+
+                System.out.println("SetSpawnPos");
             }
         }
-        return arrayList;
     }
-
-    private void setMobSpawn(ServerLevel serverLevel, Mob mob) {
-        mob.setPersistenceRequired();
-        mob.setTarget(randomPlayersUnderAttack());
-
-        BlockPos blockPos = spawnPos.stream().findAny().orElse(centerPos);
-        mob.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-
-        join(mob);
-        serverLevel.addFreshEntityWithPassengers(mob);
-    }
-
-    public int getCurrentWave() {
-        return currentWave;
-    }
-
-    public int getTotalEnemy() {
-        return totalEnemy;
+    public void setMobSpawnPos(ServerLevel serverLevel, String metadata, BlockPos startPos, BlockPos metaPos) {
+        spawnPos.add(metaPos);
     }
 
     @Override
-    public BlockPos getCenterPos() {
-        return centerPos;
+    public void updateProgress() {
+        super.updateProgress();
+
+        if (state == AftermathState.READY){
+            ready();
+        }
+    }
+
+
+    public void ready(){
+        if (readyTime <= 0){
+            state = AftermathState.ONGOING;
+            return;
+        }
+        this.progressPercent = 1 - (float) readyTime / getModule().getReadyTime();
+        readyTime--;
     }
 
     @Override
-    public int getRadius() {
-        return 50;
+    public Predicate<? super ServerPlayer> validPlayer() {
+        Predicate<ServerPlayer> predicate = (Predicate<ServerPlayer>) super.validPlayer();
+        return predicate.and((player) -> Math.sqrt(player.distanceToSqr(Vec3.atCenterOf(startPos))) < getRadius());
     }
 
     @Override
@@ -188,12 +265,35 @@ public class BaseRaid extends BaseAftermath<BaseRaidModule> implements IRaid {
     }
 
     @Override
-    public Codec<? extends IAftermath<IAftermathModule>> codec() {
+    public Codec<? extends IAftermath> codec() {
         return CODEC;
     }
 
     @Override
-    public IAftermath<IAftermathModule> type() {
+    public IAftermath type() {
         return ModAftermathModule.BASE_RAID.get();
+    }
+
+
+    @Override
+    public ResourceLocation getRegistryName() {
+        return SurvivingTheAftermath.asResource(IDENTIFIER);
+    }
+
+    @Override
+    public BlockPos getStartPos() {
+        return startPos;
+    }
+
+    @Override
+    public int getRadius() {
+        return 50;
+    }
+    private int getReadyTime() {
+        return readyTime;
+    }
+
+    public int getRewardTime() {
+        return rewardTime;
     }
 }

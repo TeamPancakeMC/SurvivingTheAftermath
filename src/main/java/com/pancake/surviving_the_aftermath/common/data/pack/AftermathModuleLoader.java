@@ -8,15 +8,20 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
+import com.pancake.surviving_the_aftermath.api.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.Constant;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
+import com.pancake.surviving_the_aftermath.compat.kubejs.event.AftermathEvents;
+import com.pancake.surviving_the_aftermath.compat.kubejs.event.AftermathModifyEventJS;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
 import java.util.Map;
 
 public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
@@ -42,5 +47,12 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
                         AFTERMATH_MODULE_MAP.put(ResourceLocation.tryParse(string), aftermathModule);
                     });
         });
+
+        AFTERMATH_MODULE_MAP.asMap().forEach((resourceLocation, aftermathModules) -> {
+            AftermathEvents.MODIFY.post(new AftermathModifyEventJS(resourceLocation, aftermathModules)).pass();
+        });
+
+        AftermathManager.getInstance().fillAftermathModuleMap(AFTERMATH_MODULE_MAP);
+
     }
 }

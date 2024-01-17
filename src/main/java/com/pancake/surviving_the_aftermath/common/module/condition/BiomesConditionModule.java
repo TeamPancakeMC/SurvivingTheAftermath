@@ -40,4 +40,15 @@ public class BiomesConditionModule extends LevelConditionModule{
     public IConditionModule type() {
         return ModAftermathModule.BIOMES_CONDITION.get();
     }
+
+    public static class Builder {
+        private final String biomes;
+
+        public Builder (String biomes) {
+            this.biomes = biomes;
+        }
+        public BiomesConditionModule build() {
+            return new BiomesConditionModule(biomes);
+        }
+    }
 }

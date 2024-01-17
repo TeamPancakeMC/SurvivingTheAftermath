@@ -14,8 +14,8 @@ import net.minecraftforge.registries.*;
 import java.util.function.Supplier;
 
 public class ModuleRegistry {
-    public static final DeferredRegister<IAftermath<IAftermathModule>> AFTERMATH = DeferredRegister.create(Keys.AFTERMATH, SurvivingTheAftermath.MOD_ID);
-    public static Supplier<IForgeRegistry<IAftermath<IAftermathModule>>> AFTERMATH_REGISTRY = AFTERMATH.makeRegistry(RegistryBuilder::new);
+    public static final DeferredRegister<IAftermath> AFTERMATH = DeferredRegister.create(Keys.AFTERMATH, SurvivingTheAftermath.MOD_ID);
+    public static Supplier<IForgeRegistry<IAftermath>> AFTERMATH_REGISTRY = AFTERMATH.makeRegistry(RegistryBuilder::new);
     public static final DeferredRegister<IAftermathModule> AFTERMATH_MODULE = DeferredRegister.create(Keys.AFTERMATH_MODULE, SurvivingTheAftermath.MOD_ID);
     public static Supplier<IForgeRegistry<IAftermathModule>> AFTERMATH_MODULE_REGISTRY = AFTERMATH_MODULE.makeRegistry(RegistryBuilder::new);
 
@@ -43,7 +43,7 @@ public class ModuleRegistry {
 
 
     public static final class Keys {
-        public static final ResourceKey<Registry<IAftermath<IAftermathModule>>> AFTERMATH = key("aftermath");
+        public static final ResourceKey<Registry<IAftermath>> AFTERMATH = key("aftermath");
         public static final ResourceKey<Registry<IAftermathModule>> AFTERMATH_MODULE = key("aftermath_module");
         public static final ResourceKey<Registry<IAmountModule>> AMOUNT = key("amount");
         public static final ResourceKey<Registry<IEntityInfoModule>> ENTITY_INFO = key("entity_info");

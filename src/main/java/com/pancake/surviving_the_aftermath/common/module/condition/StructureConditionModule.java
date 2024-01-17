@@ -60,4 +60,15 @@ public class StructureConditionModule extends LevelConditionModule{
     public String getStructure() {
         return structure;
     }
+
+    public static class Builder {
+        private final String structure;
+
+        public Builder(String structure) {
+            this.structure = structure;
+        }
+        public StructureConditionModule build() {
+            return new StructureConditionModule(structure);
+        }
+    }
 }

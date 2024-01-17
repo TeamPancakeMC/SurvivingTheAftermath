@@ -29,9 +29,9 @@ public class YAxisHeightConditionModule extends LevelConditionModule{
         if (flag == 0) {
             return pos.getY() == yAxisHeight;
         } else if (flag == 1) {
-            return pos.getY() < yAxisHeight;
-        } else if (flag == 2) {
             return pos.getY() > yAxisHeight;
+        } else if (flag == -1) {
+            return pos.getY() < yAxisHeight;
         }
         return false;
     }
@@ -52,5 +52,21 @@ public class YAxisHeightConditionModule extends LevelConditionModule{
     @Override
     public IConditionModule type() {
         return ModAftermathModule.Y_AXIS_HEIGHT_CONDITION.get();
+    }
+
+    public static class Builder {
+        private final int yAxisHeight;
+        private int flag;
+
+        public Builder(int yAxisHeight) {
+            this.yAxisHeight = yAxisHeight;
+        }
+        public Builder flag(int flag) {
+            this.flag = flag;
+            return this;
+        }
+        public YAxisHeightConditionModule build() {
+            return new YAxisHeightConditionModule(yAxisHeight, flag);
+        }
     }
 }

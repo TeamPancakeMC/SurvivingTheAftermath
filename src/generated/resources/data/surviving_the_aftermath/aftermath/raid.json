@@ -6,6 +6,9 @@
       "value": "surviving_the_aftermath:nether_invasion_portal"
     }
   ],
+  "name": "raid",
+  "ready_time": 100,
+  "reward_time": 100,
   "rewards": [
     {
       "data": "minecraft:stone",
@@ -34,6 +37,7 @@
           "amount": "surviving_the_aftermath:integer_amount",
           "value": 1
         },
+        "can_drop": false,
         "entity_info": "surviving_the_aftermath:entity_info_equipment",
         "entity_type": "minecraft:pig",
         "equipment": [

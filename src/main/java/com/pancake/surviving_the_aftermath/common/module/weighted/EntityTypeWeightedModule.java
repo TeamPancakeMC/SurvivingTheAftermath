@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
+import com.pancake.surviving_the_aftermath.util.RegistryUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.entity.EntityType;
@@ -37,14 +38,12 @@ public class EntityTypeWeightedModule extends BaseWeightedModule<EntityType<?>> 
         return ModAftermathModule.ENTITY_TYPE_WEIGHTED.get();
     }
 
-    public static class Builder{
+    public static class Builder {
         private List<WeightedEntry.Wrapper<EntityType<?>>> list;
-
-        public Builder list(List<WeightedEntry.Wrapper<EntityType<?>>> list) {
-            this.list = list;
+        public Builder add(String entityType, int weight) {
+            this.list.add(WeightedEntry.wrap(RegistryUtil.getEntityTypeFromRegistryName(entityType), weight));
             return this;
         }
-
         public EntityTypeWeightedModule build() {
             return new EntityTypeWeightedModule(list);
         }

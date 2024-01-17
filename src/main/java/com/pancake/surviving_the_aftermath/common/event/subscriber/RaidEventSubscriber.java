@@ -1,10 +1,13 @@
 package com.pancake.surviving_the_aftermath.common.event.subscriber;
 
 
+import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.AftermathManager;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
 import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
+import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
+import com.pancake.surviving_the_aftermath.util.StructureUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -36,14 +39,9 @@ public class RaidEventSubscriber {
     public static void onBlock(BlockEvent.PortalSpawnEvent event) {
         LevelAccessor level = event.getLevel();
         if (level instanceof ServerLevel serverLevel) {
-            PortalShape.findEmptyPortalShape(serverLevel, event.getPos(), Direction.Axis.X).ifPresent(portalShape -> {
-                portalShape.createPortalBlocks();
-                BaseRaid netherRaid = new BaseRaid(serverLevel, event.getPos());
-                AftermathManager instance = AftermathManager.getInstance();
-                if (instance.create(netherRaid, serverLevel, event.getPos(), null)) {
-                    event.setCanceled(true);
-                }
-            });
+            NetherRaid netherRaid = new NetherRaid(serverLevel,event.getPos(),event.getPortalSize());
+            AftermathManager instance = AftermathManager.getInstance();
+            instance.create(netherRaid, serverLevel, event.getPos(), null);
         }
     }
 }

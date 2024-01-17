@@ -2,6 +2,7 @@ package com.pancake.surviving_the_aftermath.common.init;
 
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.common.capability.AftermathCap;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -20,8 +21,8 @@ public class ModCapability{
 
     @SubscribeEvent
     public static void attachLevelCapability(AttachCapabilitiesEvent<Level> event) {
-        if (event.getObject().dimension() == Level.OVERWORLD) {
-            event.addCapability(SurvivingTheAftermath.asResource("aftermath_cap"), new AftermathCap.Provider(event.getObject()));
+        if (event.getObject().dimension() == Level.OVERWORLD && event.getObject() instanceof ServerLevel serverLevel) {
+            event.addCapability(SurvivingTheAftermath.asResource("aftermath_cap"), new AftermathCap.Provider(serverLevel));
         }
     }
 

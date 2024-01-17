@@ -7,6 +7,7 @@ import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
+import com.pancake.surviving_the_aftermath.util.RegistryUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -61,4 +62,20 @@ public class EntityInfoModule implements IEntityInfoModule {
         return ModAftermathModule.ENTITY_INFO.get();
     }
 
+    public static class Builder {
+        private final EntityType<?> entityType;
+        private IAmountModule amountModule;
+
+        public Builder(String entityType) {
+            this.entityType = RegistryUtil.getEntityTypeFromRegistryName(entityType);
+        }
+
+        public Builder amountModule(IAmountModule amountModule) {
+            this.amountModule = amountModule;
+            return this;
+        }
+        public EntityInfoModule build() {
+            return new EntityInfoModule(entityType, amountModule);
+        }
+    }
 }
