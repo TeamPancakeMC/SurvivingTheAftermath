@@ -20,7 +20,7 @@ import java.util.Optional;
 public abstract class BaseAftermathModule implements IAftermathModule {
     public String name;
     protected ItemWeightedModule rewards;
-    protected List<IConditionModule> conditions;
+    protected List<IConditionModule> conditions = Lists.newArrayList();
 
     public BaseAftermathModule(String name,ItemWeightedModule rewards, List<IConditionModule> conditions) {
         this.name = name;
@@ -34,7 +34,7 @@ public abstract class BaseAftermathModule implements IAftermathModule {
 
     @Override
     public boolean isCreate(Level level, BlockPos pos, @Nullable Player player) {
-        if (conditions == null) return true;
+        if (conditions.isEmpty()) return true;
 
         for (IConditionModule condition : conditions) {
             if (condition instanceof LevelConditionModule levelConditionModule) {

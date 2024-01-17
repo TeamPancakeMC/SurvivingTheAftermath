@@ -32,6 +32,9 @@ public class ModuleRegistry {
     public static final DeferredRegister<IConditionModule> CONDITION_MODULE = DeferredRegister.create(Keys.CONDITION, SurvivingTheAftermath.MOD_ID);
     public static Supplier<IForgeRegistry<IConditionModule>> CONDITION_REGISTRY = CONDITION_MODULE.makeRegistry(RegistryBuilder::new);
 
+    public static final DeferredRegister<IPredicateModule> PREDICATE_MODULE = DeferredRegister.create(Keys.PREDICATE, SurvivingTheAftermath.MOD_ID);
+    public static Supplier<IForgeRegistry<IPredicateModule>> PREDICATE_REGISTRY = PREDICATE_MODULE.makeRegistry(RegistryBuilder::new);
+
     public static void register(IEventBus bus) {
         AFTERMATH.register(bus);
         AFTERMATH_MODULE.register(bus);
@@ -49,6 +52,7 @@ public class ModuleRegistry {
         public static final ResourceKey<Registry<IEntityInfoModule>> ENTITY_INFO = key("entity_info");
         public static final ResourceKey<Registry<IWeightedModule<?>>> WEIGHTED = key("weighted");
         public static final ResourceKey<Registry<IConditionModule>> CONDITION = key("condition");
+        public static final ResourceKey<Registry<IPredicateModule>> PREDICATE = key("predicate");
 
 
 

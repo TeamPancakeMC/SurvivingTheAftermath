@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.AftermathManager;
+import com.pancake.surviving_the_aftermath.api.SpawnPosHandler;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
@@ -29,9 +30,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.portal.PortalShape;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
@@ -64,17 +62,17 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     public BaseRaid(ServerLevel level,BlockPos startPos) {
         super(level);
         this.startPos = startPos;
-        SetSpawnPos(level,startPos);
+        SetSpawnPos(this::defaultSetSpawnPos);
         this.readyTime = getModule().getReadyTime();
         this.rewardTime = getModule().getReadyTime();
     }
-//    public BaseRaid(BaseRaidModule module,ServerLevel level,BlockPos startPos) {
-//        super(module,level);
-//        this.startPos = startPos;
-//        SetSpawnPos(level,startPos);
-//        this.readyTime = getModule().getReadyTime();
-//        this.rewardTime = getModule().getReadyTime();
-//    }
+    public BaseRaid(BaseRaidModule module,ServerLevel level,BlockPos startPos) {
+        super(module,level);
+        this.startPos = startPos;
+        SetSpawnPos(this::defaultSetSpawnPos);
+        this.readyTime = getModule().getReadyTime();
+        this.rewardTime = getModule().getReadyTime();
+    }
 
 
     public BaseRaid() {
@@ -202,12 +200,16 @@ public class BaseRaid extends BaseAftermath implements IRaid {
                 .noneMatch(raid -> raid.getStartPos().distSqr(startPos) < Math.pow(raid.getRadius(), 2));
         return create && noneMatch;
     }
-    public void SetSpawnPos(Level level, BlockPos pos) {
-        if (level instanceof ServerLevel serverLevel) {
+    public void SetSpawnPos(SpawnPosHandler handler) {
+        handler.handleSpawnPos(this.level,this.startPos);
+    }
+
+    private void defaultSetSpawnPos(Level level,BlockPos startPos) {
+        if (level instanceof  ServerLevel serverLevel){
             List<IConditionModule> conditions = getModule().getConditions();
             if (conditions == null){
-                startPos = pos;
-                spawnPos.add(pos);
+                startPos = startPos;
+                spawnPos.add(startPos);
                 return;
             }
             Optional<StructureConditionModule> module = conditions.stream()
@@ -215,21 +217,18 @@ public class BaseRaid extends BaseAftermath implements IRaid {
                     .map(condition -> (StructureConditionModule) condition)
                     .findFirst();
             if (module.isPresent()){
-                StructureUtils.handleDataMarker(serverLevel, pos, SurvivingTheAftermath.asResource("nether_invasion_portal"), (serverLevel1, metadata, blockInfo, startPos) -> {
-                    this.startPos = startPos;
+                StructureUtils.handleDataMarker(serverLevel, startPos, SurvivingTheAftermath.asResource("nether_invasion_portal"), (serverLevel1, metadata, blockInfo, startPos1) -> {
+                    this.startPos = startPos1;
                     BlockPos metaPos = blockInfo.pos();
-                    setMobSpawnPos(serverLevel1,metadata,startPos,metaPos);
-
-                    System.out.println("handleDataMarker");
+                    setMobSpawnPos(serverLevel1,metadata,startPos1,metaPos);
                 });
             }else {
-                startPos = pos;
-                spawnPos.add(pos);
-
-                System.out.println("SetSpawnPos");
+                startPos = startPos;
+                spawnPos.add(startPos);
             }
         }
     }
+
     public void setMobSpawnPos(ServerLevel serverLevel, String metadata, BlockPos startPos, BlockPos metaPos) {
         spawnPos.add(metaPos);
     }
@@ -295,5 +294,13 @@ public class BaseRaid extends BaseAftermath implements IRaid {
 
     public int getRewardTime() {
         return rewardTime;
+    }
+
+    public Set<BlockPos> getSpawnPos() {
+        return spawnPos;
+    }
+
+    public void addSpawnPos(BlockPos pos) {
+        spawnPos.add(pos);
     }
 }

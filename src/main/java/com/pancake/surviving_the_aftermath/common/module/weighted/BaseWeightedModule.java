@@ -6,6 +6,7 @@ import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedEntry.Wrapper;
 
 import java.util.List;
+import java.util.Map;
 
 
 public abstract class BaseWeightedModule<T> implements IWeightedModule<T> {

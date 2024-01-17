@@ -43,11 +43,11 @@ public abstract class BaseAftermath implements IAftermath {
         this.module = getRandomAftermathModule();
         this.state = AftermathState.START;
     }
-//    public BaseAftermath(BaseRaidModule module, ServerLevel level) {
-//        this.level = level;
-//        this.module = module;
-//        this.state = AftermathState.START;
-//    }
+    public BaseAftermath(BaseRaidModule module, ServerLevel level) {
+        this.level = level;
+        this.module = module;
+        this.state = AftermathState.START;
+    }
 
 
     public BaseAftermath() {

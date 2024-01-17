@@ -7,12 +7,21 @@ import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModu
 import com.pancake.surviving_the_aftermath.common.module.condition.*;
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithEquipmentModule;
+import com.pancake.surviving_the_aftermath.common.module.predicate.AttributePredicate;
+import com.pancake.surviving_the_aftermath.common.module.predicate.EffectPredicate;
+import com.pancake.surviving_the_aftermath.common.module.predicate.EquipmentPredicate;
+import com.pancake.surviving_the_aftermath.common.module.predicate.NBTPredicate;
+import com.pancake.surviving_the_aftermath.common.module.weighted.AttributeWeightedModule;
+import com.pancake.surviving_the_aftermath.common.module.weighted.EffectWeightedModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.EntityTypeWeightedModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
 import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.RegistryObject;
@@ -35,10 +44,20 @@ public class ModAftermathModule {
 
     public static final RegistryObject<IWeightedModule<EntityType<?>>> ENTITY_TYPE_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(EntityTypeWeightedModule.IDENTIFIER, EntityTypeWeightedModule::new);
     public static final RegistryObject<IWeightedModule<Item>> ITEM_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(ItemWeightedModule.IDENTIFIER, ItemWeightedModule::new);
+    public static final RegistryObject<IWeightedModule<MobEffectInstance>> EFFECT_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(EffectWeightedModule.IDENTIFIER,EffectWeightedModule::new);
+    public static final RegistryObject<IWeightedModule<AttributeWeightedModule.AttributeInfo>> ATTRIBUTE_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(AttributeWeightedModule.IDENTIFIER,AttributeWeightedModule::new);
 
     public static final RegistryObject<IConditionModule> LEVEL_CONDITION = ModuleRegistry.CONDITION_MODULE.register(StructureConditionModule.IDENTIFIER, StructureConditionModule::new);
     public static final RegistryObject<IConditionModule> BIOMES_CONDITION = ModuleRegistry.CONDITION_MODULE.register(BiomesConditionModule.IDENTIFIER, BiomesConditionModule::new);
     public static final RegistryObject<IConditionModule> Y_AXIS_HEIGHT_CONDITION = ModuleRegistry.CONDITION_MODULE.register(YAxisHeightConditionModule.IDENTIFIER, YAxisHeightConditionModule::new);
     public static final RegistryObject<IConditionModule> WEATHER_CONDITION = ModuleRegistry.CONDITION_MODULE.register(WeatherConditionModule.IDENTIFIER, WeatherConditionModule::new);
     public static final RegistryObject<IConditionModule> XP_CONDITION = ModuleRegistry.CONDITION_MODULE.register(XpConditionModule.IDENTIFIER, XpConditionModule::new);
+
+
+    public static final RegistryObject<IPredicateModule> NBT_PREDICATE = ModuleRegistry.PREDICATE_MODULE.register(NBTPredicate.IDENTIFIER, NBTPredicate::new);
+    public static final RegistryObject<IPredicateModule> EQUIPMENT_PREDICATE = ModuleRegistry.PREDICATE_MODULE.register(EquipmentPredicate.IDENTIFIER, EquipmentPredicate::new);
+    public static final RegistryObject<IPredicateModule> EFFECT_PREDICATE = ModuleRegistry.PREDICATE_MODULE.register(EffectPredicate.IDENTIFIER, EffectPredicate::new);
+    public static final RegistryObject<IPredicateModule> ATTRIBUTE_PREDICATE = ModuleRegistry.PREDICATE_MODULE.register(AttributePredicate.IDENTIFIER, AttributePredicate::new);
+
+
 }
