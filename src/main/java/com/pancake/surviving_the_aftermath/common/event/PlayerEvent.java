@@ -1,11 +1,35 @@
 package com.pancake.surviving_the_aftermath.common.event;
 
+import com.google.gson.JsonElement;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
+import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
+import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
+import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
+import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
+import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
+import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoModule;
+import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithPredicateModule;
+import com.pancake.surviving_the_aftermath.common.module.predicate.AttributePredicate;
+import com.pancake.surviving_the_aftermath.common.module.predicate.EffectPredicate;
+import com.pancake.surviving_the_aftermath.common.module.predicate.EquipmentPredicate;
+import com.pancake.surviving_the_aftermath.common.module.predicate.NBTPredicate;
+import com.pancake.surviving_the_aftermath.common.module.weighted.AttributeWeightedModule;
+import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
+import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.util.StructureUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -38,32 +62,6 @@ public class PlayerEvent {
             return;
         }
 
-        BlockPos pos = event.getPos();
 
-
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof BeaconBlockEntity && player.getMainHandItem() == Items.NETHER_STAR.getDefaultInstance()) {
-            BeaconBlockEntity beaconBlockEntity = (BeaconBlockEntity) blockEntity;
-            if (!beaconBlockEntity.getBeamSections().isEmpty()) {
-                player.getMainHandItem().shrink(1);
-
-
-            }
-        }
     }
-
-    public static void createPortal(LevelAccessor world, BlockPos pos) {
-        // Try to find an empty portal shape on the X axis
-//        Optional<PortalShape> optional = PortalShape.findEmptyPortalShape(world, pos.above(), Direction.Axis.X);
-////        System.out.println("optional = " + optional);
-////        optional = net.minecraftforge.event.ForgeEventFactory.onTrySpawnPortal(world, pos.above(), optional);
-////        System.out.println("optional = " + optional);
-//        if (optional.isPresent()) {
-//            optional.get().createPortalBlocks();
-//            return;
-//        }
-    }
-
-
-
 }

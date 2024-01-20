@@ -16,6 +16,8 @@ import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
 import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
+import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
+import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -56,23 +58,27 @@ public abstract class AftermathModuleProviders<T extends BaseAftermathModule> im
                     .encodeStart(JsonOps.INSTANCE, module)
                     .resultOrPartial(SurvivingTheAftermath.LOGGER::error)
                     .ifPresent(jsonElement -> {
-                        try {
-                            ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
-                            HashingOutputStream hashingoutputstream = new HashingOutputStream(Hashing.sha1(), bytearrayoutputstream);
-
-                            try (JsonWriter jsonwriter = new JsonWriter(new OutputStreamWriter(hashingoutputstream, StandardCharsets.UTF_8))) {
-                                jsonwriter.setSerializeNulls(false);
-                                jsonwriter.setIndent("  ");
-                                GsonHelper.writeValue(jsonwriter, jsonElement, KEY_COMPARATOR);
-                            }
-                            Path path = this.output.getOutputFolder(PackOutput.Target.DATA_PACK)
-                                    .resolve(this.modId).resolve("aftermath").resolve(module.getModuleName().toLowerCase() + ".json");
-                            output.writeIfNeeded(path, bytearrayoutputstream.toByteArray(), hashingoutputstream.hash());
-                        } catch (IOException ioexception) {
-                            LOGGER.error("Failed to save file to {}", output, ioexception);
-                        }
+                        Save(output, module, jsonElement);
                     });
         }), Util.backgroundExecutor());
+    }
+
+    private void Save(CachedOutput output, T module, JsonElement jsonElement) {
+        try {
+            ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
+            HashingOutputStream hashingoutputstream = new HashingOutputStream(Hashing.sha1(), bytearrayoutputstream);
+
+            try (JsonWriter jsonwriter = new JsonWriter(new OutputStreamWriter(hashingoutputstream, StandardCharsets.UTF_8))) {
+                jsonwriter.setSerializeNulls(false);
+                jsonwriter.setIndent("  ");
+                GsonHelper.writeValue(jsonwriter, jsonElement, KEY_COMPARATOR);
+            }
+            Path path = this.output.getOutputFolder(PackOutput.Target.DATA_PACK)
+                    .resolve(this.modId).resolve("aftermath").resolve(module.getModuleName().toLowerCase() + ".json");
+            output.writeIfNeeded(path, bytearrayoutputstream.toByteArray(), hashingoutputstream.hash());
+        } catch (IOException ioexception) {
+            LOGGER.error("Failed to save file to {}", output, ioexception);
+        }
     }
 
 

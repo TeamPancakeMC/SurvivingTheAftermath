@@ -13,10 +13,8 @@ import java.util.List;
 public class EffectWeightedModule extends BaseWeightedModule<MobEffectInstance> {
     public static final String IDENTIFIER = "effect_weighted";
 
-    public static final Codec<EffectWeightedModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            WeightedEntry.Wrapper.codec(CodecUtils.MOB_EFFECT_INSTANCE_CODEC)
-                    .listOf().fieldOf("list").forGetter(EffectWeightedModule::getList)
-    ).apply(instance, EffectWeightedModule::new));
+    public static final Codec<EffectWeightedModule> CODEC = Codec.list(WeightedEntry.Wrapper.codec(CodecUtils.MOB_EFFECT_INSTANCE_CODEC))
+            .xmap(EffectWeightedModule::new, EffectWeightedModule::getList);
 
     public EffectWeightedModule(List<WeightedEntry.Wrapper<MobEffectInstance>> list) {
         super(list);

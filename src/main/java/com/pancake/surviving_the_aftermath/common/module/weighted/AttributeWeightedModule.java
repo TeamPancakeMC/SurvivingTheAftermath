@@ -15,9 +15,8 @@ import java.util.List;
 public class AttributeWeightedModule extends BaseWeightedModule<AttributeWeightedModule.AttributeInfo>{
     public static final String IDENTIFIER = "attribute_weighted";
 
-    public static final Codec<AttributeWeightedModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            WeightedEntry.Wrapper.codec(AttributeInfo.CODEC).listOf().fieldOf("list").forGetter(AttributeWeightedModule::getList)
-    ).apply(instance, AttributeWeightedModule::new));
+    public static final Codec<AttributeWeightedModule> CODEC = Codec.list(WeightedEntry.Wrapper.codec(AttributeInfo.CODEC))
+            .xmap(AttributeWeightedModule::new, AttributeWeightedModule::getList);
 
     public AttributeWeightedModule(List<WeightedEntry.Wrapper<AttributeInfo>> list) {
         super(list);

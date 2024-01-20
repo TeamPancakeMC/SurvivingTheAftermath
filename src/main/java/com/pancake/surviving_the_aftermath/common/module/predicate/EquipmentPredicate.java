@@ -5,14 +5,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IPredicateModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
+import com.pancake.surviving_the_aftermath.util.RegistryUtil;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
 
 public class EquipmentPredicate implements IPredicateModule {
     public static final String IDENTIFIER = "equipment";
     public static final Codec<EquipmentPredicate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ItemWeightedModule.CODEC.fieldOf("equipment").forGetter(EquipmentPredicate::getEquipment),
+            ItemWeightedModule.CODEC.fieldOf("item").forGetter(EquipmentPredicate::getEquipment),
             Codec.BOOL.fieldOf("can_drop").forGetter(EquipmentPredicate::canDrop)
     ).apply(instance, EquipmentPredicate::new));
 
@@ -48,7 +50,7 @@ public class EquipmentPredicate implements IPredicateModule {
     @Override
     public void apply(LivingEntity livingEntity) {
         if (livingEntity instanceof Mob mob){
-            if (!canDrop){
+            if (canDrop){
                 for (var slot : EquipmentSlot.values()) {
                     mob.setDropChance(slot, 0);
                 }
@@ -59,7 +61,22 @@ public class EquipmentPredicate implements IPredicateModule {
                         mob.equipItemIfPossible(item.getDefaultInstance());
                     });
         }
+    }
 
+    public static class Builder {
+        private ItemWeightedModule.Builder equipment = new ItemWeightedModule.Builder();
+        private boolean canDrop;
 
+        public Builder add(String item,int weight){
+            equipment.add(item,weight);
+            return this;
+        }
+        public Builder canDrop(boolean canDrop){
+            this.canDrop = canDrop;
+            return this;
+        }
+        public EquipmentPredicate build(){
+            return new EquipmentPredicate(equipment.build(), canDrop);
+        }
     }
 }

@@ -1,12 +1,17 @@
 package com.pancake.surviving_the_aftermath.common.module.predicate;
 
+import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.pancake.surviving_the_aftermath.api.module.IPredicateModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.AttributeWeightedModule;
+import com.pancake.surviving_the_aftermath.common.module.weighted.EffectWeightedModule;
+import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 
+import java.util.List;
 import java.util.UUID;
 
 public class AttributePredicate implements IPredicateModule {
@@ -50,5 +55,17 @@ public class AttributePredicate implements IPredicateModule {
                         instance.addTransientModifier(attributeInfo.attributeModifier());
                     }
                 });
+    }
+
+    public static class Builder {
+        private List<WeightedEntry.Wrapper<AttributeWeightedModule.AttributeInfo>> attributes = Lists.newArrayList();
+
+        public Builder add(AttributeWeightedModule.AttributeInfo instance, int weight){
+            attributes.add(WeightedEntry.wrap(instance,weight));
+            return this;
+        }
+        public AttributePredicate build(){
+            return new AttributePredicate(new AttributeWeightedModule(attributes));
+        }
     }
 }

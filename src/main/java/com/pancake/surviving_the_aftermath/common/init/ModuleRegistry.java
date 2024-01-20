@@ -42,6 +42,7 @@ public class ModuleRegistry {
         ENTITY_INFO_MODULE.register(bus);
         WEIGHTED_MODULE.register(bus);
         CONDITION_MODULE.register(bus);
+        PREDICATE_MODULE.register(bus);
     }
 
 

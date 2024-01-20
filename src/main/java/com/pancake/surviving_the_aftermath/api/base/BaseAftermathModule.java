@@ -8,6 +8,7 @@ import com.pancake.surviving_the_aftermath.common.module.condition.LevelConditio
 import com.pancake.surviving_the_aftermath.common.module.condition.PlayerConditionModule;
 import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
+import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 
 public abstract class BaseAftermathModule implements IAftermathModule {
-    public String name;
+    protected String name;
     protected ItemWeightedModule rewards;
     protected List<IConditionModule> conditions = Lists.newArrayList();
 
@@ -91,20 +92,24 @@ public abstract class BaseAftermathModule implements IAftermathModule {
         return this;
     }
 
-    public static class Builder<T extends BaseAftermathModule> {
-        protected  T module;
-        public Builder(T module,String name) {
-            this.module = module;
-            module.setName(name);
+    public static class Builder<T extends IAftermathModule> {
+        protected T module;
+        protected List<IConditionModule> conditions = Lists.newArrayList();
+        protected ItemWeightedModule rewards;
+        protected String name;
+        public Builder(String name) {
+            this.name = name;
         }
-//        public Builder<T> name(String name) {
-//            module.setName(name);
-//            return this;
-//        }
+
         public Builder<T> rewards(ItemWeightedModule Rewards) {
-            module.setRewards(Rewards);
+            this.rewards = Rewards;
             return this;
         }
+        public Builder<T> addCondition(IConditionModule module){
+            this.conditions.add(module);
+            return this;
+        }
+
         public T build() {
             return module;
         }

@@ -1,5 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.raid.module;
 
+import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
@@ -78,21 +79,49 @@ public class BaseRaidModule extends BaseAftermathModule implements IRaidModule {
         return SurvivingTheAftermath.asResource(IDENTIFIER);
     }
 
-    public static class Builder extends BaseAftermathModule.Builder<BaseRaidModule> {
+    public static class Builder {
+        protected List<IConditionModule> conditions = Lists.newArrayList();
+        protected ItemWeightedModule rewards;
+        protected String name;
+
+
+        private List<List<IEntityInfoModule>> waves = Lists.newArrayList();
+        private int readyTime;
+        private int rewardTime;
+
         public Builder(String name) {
-            super(new BaseRaidModule(),name);
+            this.name = name;
         }
+
+        public Builder rewards(ItemWeightedModule Rewards) {
+            this.rewards = Rewards;
+            return this;
+        }
+        public Builder addCondition(IConditionModule module){
+            this.conditions.add(module);
+            return this;
+        }
+
         public Builder waves(List<List<IEntityInfoModule>> waves) {
-            module.setWaves(waves);
+            this.waves = waves;
+            return this;
+        }
+
+        public Builder addWave(List<IEntityInfoModule> waves){
+            this.waves.add(waves);
             return this;
         }
         public Builder readyTime(int readyTime) {
-            module.setReadyTime(readyTime);
+            this.readyTime = readyTime;
             return this;
         }
         public Builder rewardTime(int rewardTime) {
-            module.setRewardTime(rewardTime);
+            this.rewardTime = rewardTime;
             return this;
+        }
+
+        public BaseRaidModule build() {
+            return new BaseRaidModule(name,rewards,conditions,waves,readyTime,rewardTime);
         }
 
     }

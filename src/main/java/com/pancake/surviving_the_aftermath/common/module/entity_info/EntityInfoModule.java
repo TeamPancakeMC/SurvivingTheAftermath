@@ -63,8 +63,8 @@ public class EntityInfoModule implements IEntityInfoModule {
     }
 
     public static class Builder {
-        private final EntityType<?> entityType;
-        private IAmountModule amountModule;
+        protected final EntityType<?> entityType;
+        protected IAmountModule amountModule;
 
         public Builder(String entityType) {
             this.entityType = RegistryUtil.getEntityTypeFromRegistryName(entityType);

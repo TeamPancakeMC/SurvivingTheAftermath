@@ -25,7 +25,7 @@ import java.util.List;
 
 
 public class EntityInfoWithPredicateModule extends EntityInfoModule {
-    public static final String IDENTIFIER = "entity_info_equipment";
+    public static final String IDENTIFIER = "entity_info_predicate";
     public static final Codec<EntityInfoWithPredicateModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("entity_type").forGetter(EntityInfoModule::getEntityType),
             IAmountModule.CODEC.get().fieldOf("amount_module").forGetter(EntityInfoModule::getAmountModule),
@@ -51,7 +51,6 @@ public class EntityInfoWithPredicateModule extends EntityInfoModule {
         arrayList.forEach(lazyOptional -> lazyOptional.ifPresent(entity -> {
             if (entity instanceof LivingEntity livingEntity){
                 if (predicateModules.isEmpty()) return;
-
                 predicateModules.forEach(predicateModule -> predicateModule.apply(livingEntity));
             }
         }));
@@ -65,5 +64,23 @@ public class EntityInfoWithPredicateModule extends EntityInfoModule {
     @Override
     public IEntityInfoModule type() {
         return ModAftermathModule.ENTITY_INFO_PREDICATE.get();
+    }
+
+
+    public static class Builder extends EntityInfoModule.Builder{
+        private List<IPredicateModule> predicateModules = Lists.newArrayList();
+
+        public Builder(String entityType) {
+            super(entityType);
+        }
+
+        public Builder add(IPredicateModule predicate){
+            predicateModules.add(predicate);
+            return this;
+        }
+
+        public EntityInfoModule build() {
+            return new EntityInfoWithPredicateModule(entityType,amountModule,predicateModules);
+        }
     }
 }

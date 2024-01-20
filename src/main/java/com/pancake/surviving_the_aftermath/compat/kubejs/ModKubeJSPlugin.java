@@ -11,6 +11,7 @@ import com.pancake.surviving_the_aftermath.compat.kubejs.event.AftermathEvents;
 import com.pancake.surviving_the_aftermath.util.StructureUtils;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModKubeJSPlugin extends KubeJSPlugin {
 
@@ -21,6 +22,7 @@ public class ModKubeJSPlugin extends KubeJSPlugin {
     public void registerBindings(BindingsEvent event) {
         event.add("AftermathManager", AftermathManager.class);
         event.add("StructureUtils", StructureUtils.class);
+        event.add("ResourceLocation", ResourceLocation.class);
         event.add("BaseRaid", BaseRaid.class);
         event.add("BaseRaidModule", BaseRaidModule.Builder.class);
         event.add("IntegerAmountModule", IntegerAmountModule.Builder.class);

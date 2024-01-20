@@ -39,7 +39,7 @@ public class RaidEventSubscriber {
     public static void onBlock(BlockEvent.PortalSpawnEvent event) {
         LevelAccessor level = event.getLevel();
         if (level instanceof ServerLevel serverLevel) {
-            NetherRaid netherRaid = new NetherRaid(serverLevel,event.getPos(),event.getPortalSize());
+            NetherRaid netherRaid = new NetherRaid(serverLevel,event.getPos());
             AftermathManager instance = AftermathManager.getInstance();
             instance.create(netherRaid, serverLevel, event.getPos(), null);
         }

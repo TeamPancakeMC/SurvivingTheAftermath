@@ -20,7 +20,7 @@ public class NBTPredicate implements IPredicateModule {
     public NBTPredicate() {
     }
 
-    public<T> void add(String key, T value) {
+    public<T> NBTPredicate add(String key, T value) {
         if (value instanceof Integer integer) {
             nbt.putInt(key, integer);
         } else if (value instanceof String string) {
@@ -46,6 +46,7 @@ public class NBTPredicate implements IPredicateModule {
         } else if (value instanceof byte[] bytes) {
             nbt.putByteArray(key, bytes);
         }
+        return this;
     }
 
     @Override
@@ -65,5 +66,16 @@ public class NBTPredicate implements IPredicateModule {
     @Override
     public void apply(LivingEntity livingEntity) {
         livingEntity.readAdditionalSaveData(nbt);
+    }
+
+    public static class Builder {
+        private NBTPredicate predicate;
+        public<T> Builder add(String key, T value) {
+            predicate.add(key,value);
+            return this;
+        }
+        public NBTPredicate build(){
+            return predicate;
+        }
     }
 }

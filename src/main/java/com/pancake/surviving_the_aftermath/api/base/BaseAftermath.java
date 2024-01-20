@@ -52,6 +52,8 @@ public abstract class BaseAftermath implements IAftermath {
 
     public BaseAftermath() {
     }
+
+    protected abstract void init();
     @Override
     public void tick() {
         if (isEnd()) return;
@@ -61,7 +63,6 @@ public abstract class BaseAftermath implements IAftermath {
         if (state == AftermathState.VICTORY){
             this.progressPercent = 0;
             state = AftermathState.CELEBRATING;
-            System.out.println("设置为庆祝状态");
         }
     }
 

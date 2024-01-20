@@ -17,10 +17,8 @@ import java.util.stream.Collectors;
 public class EntityTypeWeightedModule extends BaseWeightedModule<EntityType<?>> {
     public static final String IDENTIFIER = "entity_type_weighted";
 
-    public static final Codec<EntityTypeWeightedModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            WeightedEntry.Wrapper.codec(BuiltInRegistries.ENTITY_TYPE.byNameCodec())
-                    .listOf().fieldOf("list").forGetter(EntityTypeWeightedModule::getList)
-    ).apply(instance, EntityTypeWeightedModule::new));
+    public static final Codec<EntityTypeWeightedModule> CODEC = Codec.list(WeightedEntry.Wrapper.codec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()))
+            .xmap(EntityTypeWeightedModule::new, EntityTypeWeightedModule::getList);
 
     public EntityTypeWeightedModule(List<WeightedEntry.Wrapper<EntityType<?>>> list) {
         super(list);

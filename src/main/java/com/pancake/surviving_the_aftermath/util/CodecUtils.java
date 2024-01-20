@@ -19,7 +19,7 @@ public class CodecUtils {
     public static final Codec<AttributeModifier.Operation> ATTRIBUTE_MODIFIER_OPERATION_CODEC = Codec.INT
             .xmap(AttributeModifier.Operation::fromValue, AttributeModifier.Operation::toValue);
     public static final Codec<AttributeModifier> ATTRIBUTE_MODIFIER_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("uuid").forGetter(AttributeModifier::getName),
+            Codec.STRING.fieldOf("name").forGetter(AttributeModifier::getName),
             Codec.DOUBLE.fieldOf("amount").forGetter(AttributeModifier::getAmount),
             ATTRIBUTE_MODIFIER_OPERATION_CODEC.fieldOf("operation").forGetter(AttributeModifier::getOperation)
     ).apply(instance, AttributeModifier::new));

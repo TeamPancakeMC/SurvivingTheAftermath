@@ -1,5 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.module.predicate;
 
+import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IPredicateModule;
@@ -8,6 +9,7 @@ import com.pancake.surviving_the_aftermath.common.module.weighted.EffectWeighted
 import com.pancake.surviving_the_aftermath.common.module.weighted.EntityTypeWeightedModule;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.List;
@@ -41,5 +43,17 @@ public class EffectPredicate implements IPredicateModule {
     public void apply(LivingEntity livingEntity) {
         effects.getWeightedList().getRandomValue(livingEntity.getRandom())
                 .ifPresent(livingEntity::addEffect);
+    }
+
+    public static class Builder {
+        private List<WeightedEntry.Wrapper<MobEffectInstance>> effectInstances = Lists.newArrayList();
+
+        public Builder add(MobEffectInstance instance,int weight){
+            effectInstances.add(WeightedEntry.wrap(instance,weight));
+            return this;
+        }
+        public EffectPredicate build(){
+            return new EffectPredicate(new EffectWeightedModule(effectInstances));
+        }
     }
 }

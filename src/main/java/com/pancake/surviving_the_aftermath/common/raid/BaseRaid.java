@@ -26,6 +26,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -49,34 +50,13 @@ public class BaseRaid extends BaseAftermath implements IRaid {
             Codec.FLOAT.fieldOf("progressPercent").forGetter(BaseRaid::getProgressPercent),
             BlockPos.CODEC.fieldOf("startPos").forGetter(BaseRaid::getStartPos),
             Codec.INT.fieldOf("readyTime").forGetter(BaseRaid::getReadyTime),
-            Codec.INT.fieldOf("rewardTime").forGetter(BaseRaid::getRewardTime)
+            Codec.INT.fieldOf("rewardTime").forGetter(BaseRaid::getRewardTime),
+            CodecUtils.setOf(BlockPos.CODEC).fieldOf("spawnPos").forGetter(BaseRaid::getSpawnPos),
+            CodecUtils.setOf(CodecUtils.UUID_CODEC).fieldOf("enemies").forGetter(BaseRaid::getEnemies),
+            Codec.INT.fieldOf("currentWave").forGetter(BaseRaid::getCurrentWave),
+            Codec.INT.fieldOf("totalEnemy").forGetter(BaseRaid::getTotalEnemy)
     ).apply(instance, BaseRaid::new));
 
-    public BaseRaid(UUID uuid,AftermathState state,BaseRaidModule module, Set<UUID> players, float progressPercent,BlockPos startPos,int readyTime,int rewardTime) {
-        super(state,module, players, progressPercent);
-        this.startPos = startPos;
-        this.readyTime = readyTime;
-        this.rewardTime = rewardTime;
-    }
-
-    public BaseRaid(ServerLevel level,BlockPos startPos) {
-        super(level);
-        this.startPos = startPos;
-        SetSpawnPos(this::defaultSetSpawnPos);
-        this.readyTime = getModule().getReadyTime();
-        this.rewardTime = getModule().getReadyTime();
-    }
-    public BaseRaid(BaseRaidModule module,ServerLevel level,BlockPos startPos) {
-        super(module,level);
-        this.startPos = startPos;
-        SetSpawnPos(this::defaultSetSpawnPos);
-        this.readyTime = getModule().getReadyTime();
-        this.rewardTime = getModule().getReadyTime();
-    }
-
-
-    public BaseRaid() {
-    }
     protected Set<UUID> enemies = Sets.newLinkedHashSet();
     protected Set<BlockPos> spawnPos = Sets.newHashSet();
     protected int currentWave = -1;
@@ -84,7 +64,42 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     public BlockPos startPos;
     private int readyTime;
     public int rewardTime;
+    public BaseRaid(UUID uuid, AftermathState state, BaseRaidModule module, Set<UUID> players, Float progressPercent, BlockPos startPos, Integer readyTime, Integer rewardTime,
+                    Set<BlockPos> spawnPos, Set<UUID> enemies, Integer currentWave, Integer totalEnemy) {
+        super(state, module, players, progressPercent);
+        this.startPos = startPos;
+        this.readyTime = readyTime;
+        this.rewardTime = rewardTime;
+        this.spawnPos = spawnPos;
+        this.enemies = enemies;
+        this.currentWave = currentWave;
+        this.totalEnemy = totalEnemy;
+        init();
+    }
 
+    public BaseRaid(ServerLevel level,BlockPos startPos) {
+        super(level);
+        this.startPos = startPos;
+        init();
+    }
+    public BaseRaid(BaseRaidModule module,ServerLevel level,BlockPos startPos) {
+        super(module,level);
+        this.startPos = startPos;
+        init();
+    }
+
+
+    public BaseRaid() {
+    }
+
+
+
+    @Override
+    protected void init() {
+        SetSpawnPos(this::defaultSetSpawnPos);
+        this.readyTime = getModule().getReadyTime();
+        this.rewardTime = getModule().getReadyTime();
+    }
     @Override
     public void tick() {
         super.tick();
@@ -100,7 +115,6 @@ public class BaseRaid extends BaseAftermath implements IRaid {
         }
 
         if (state == AftermathState.CELEBRATING){
-            System.out.println("庆祝状态 :" + rewardTime);
             if (rewardTime <= 0){
                 end();
                 return;
@@ -108,8 +122,8 @@ public class BaseRaid extends BaseAftermath implements IRaid {
             createRewards();
             rewardTime--;
         }
-        System.out.println("state: " + state);
     }
+
     private void EnemyTotalRatio(){
         if (enemies.isEmpty()) return;
         this.progressPercent = enemies.size() / (float) totalEnemy;
@@ -146,17 +160,20 @@ public class BaseRaid extends BaseAftermath implements IRaid {
             itemEntity.setInvulnerable(true);
             level.addFreshEntity(itemEntity);
         });
-        System.out.println("createRewards");
     }
 
-    private void setMobSpawn(ServerLevel level, Mob mob) {
+    public void setMobSpawn(ServerLevel level, Mob mob) {
         mob.setPersistenceRequired();
-        mob.setTarget(randomPlayersUnderAttack());
+        Player target = randomPlayersUnderAttack();
+        mob.getBrain().setMemory(MemoryModuleType.ANGRY_AT, target.getUUID());
+        mob.setTarget(target);
 
-        System.out.println("spawnPos size :" + spawnPos.size());
-
-        BlockPos blockPos = RandomUtils.getRandomElement(spawnPos);
-        mob.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        try {
+            BlockPos blockPos = RandomUtils.getRandomElement(spawnPos);
+            mob.moveTo(blockPos.getX() + 0.5, blockPos.getY() , blockPos.getZ()+ 0.5);
+        } catch (NullPointerException e){
+            mob.moveTo(this.startPos.getX() + 0.5, this.startPos.getY() , this.startPos.getZ()+ 0.5);
+        }
 
         if (join(mob)) {
             level.addFreshEntityWithPassengers(mob);
@@ -214,7 +231,7 @@ public class BaseRaid extends BaseAftermath implements IRaid {
                     .map(condition -> (StructureConditionModule) condition)
                     .findFirst();
             if (module.isPresent()){
-                StructureUtils.handleDataMarker(serverLevel, startPos, SurvivingTheAftermath.asResource("nether_invasion_portal"), (serverLevel1, metadata, blockInfo, startPos1) -> {
+                StructureUtils.handleDataMarker(serverLevel, startPos, module.get().getResourceLocation(), (serverLevel1, metadata, blockInfo, startPos1) -> {
                     this.startPos = startPos1;
                     BlockPos metaPos = blockInfo.pos();
                     setMobSpawnPos(serverLevel1,metadata,startPos1,metaPos);
@@ -299,5 +316,17 @@ public class BaseRaid extends BaseAftermath implements IRaid {
 
     public void addSpawnPos(BlockPos pos) {
         spawnPos.add(pos);
+    }
+
+    public Set<UUID> getEnemies() {
+        return enemies;
+    }
+
+    public int getCurrentWave() {
+        return currentWave;
+    }
+
+    public int getTotalEnemy() {
+        return totalEnemy;
     }
 }
