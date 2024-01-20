@@ -16,6 +16,7 @@ import com.pancake.surviving_the_aftermath.common.module.condition.StructureCond
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithPredicateModule;
 import com.pancake.surviving_the_aftermath.common.raid.api.IRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
+import com.pancake.surviving_the_aftermath.util.AftermathEventUtil;
 import com.pancake.surviving_the_aftermath.util.CodecUtils;
 import com.pancake.surviving_the_aftermath.util.RandomUtils;
 import com.pancake.surviving_the_aftermath.util.StructureUtils;
@@ -105,7 +106,7 @@ public class BaseRaid extends BaseAftermath implements IRaid {
         super.tick();
 
         if (state == AftermathState.START){
-            state = AftermathState.READY;
+            AftermathEventUtil.ready(this,players,level);
         }
 
         if (state == AftermathState.ONGOING){
@@ -197,7 +198,7 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     protected void checkNextWave(){
         if (enemies.isEmpty()){
             if(this.currentWave >= getModule().getWaves().size() - 1) {
-                state = AftermathState.VICTORY;
+                AftermathEventUtil.victory(this,players,level);
             } else {
                 currentWave++;
                 totalEnemy = 0;
@@ -222,8 +223,8 @@ public class BaseRaid extends BaseAftermath implements IRaid {
         if (level instanceof  ServerLevel serverLevel){
             List<IConditionModule> conditions = getModule().getConditions();
             if (conditions == null){
-                startPos = startPos;
-                spawnPos.add(startPos);
+                this.startPos = startPos;
+                this.spawnPos.add(startPos);
                 return;
             }
             Optional<StructureConditionModule> module = conditions.stream()
@@ -237,8 +238,8 @@ public class BaseRaid extends BaseAftermath implements IRaid {
                     setMobSpawnPos(serverLevel1,metadata,startPos1,metaPos);
                 });
             }else {
-                startPos = startPos;
-                spawnPos.add(startPos);
+                this.startPos = startPos;
+                this.spawnPos.add(startPos);
             }
         }
     }
@@ -259,7 +260,7 @@ public class BaseRaid extends BaseAftermath implements IRaid {
 
     public void ready(){
         if (readyTime <= 0){
-            state = AftermathState.ONGOING;
+            AftermathEventUtil.ongoing(this,players,level);
             return;
         }
         this.progressPercent = 1 - (float) readyTime / getModule().getReadyTime();
@@ -291,6 +292,16 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     @Override
     public ResourceLocation getRegistryName() {
         return SurvivingTheAftermath.asResource(IDENTIFIER);
+    }
+
+    @Override
+    public ResourceLocation getBarsResource() {
+        return null;
+    }
+
+    @Override
+    public int[] getBarsOffset() {
+        return null;
     }
 
     @Override

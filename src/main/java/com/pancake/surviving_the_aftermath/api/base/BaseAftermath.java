@@ -6,6 +6,8 @@ import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoader;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
+import com.pancake.surviving_the_aftermath.compat.kubejs.util.AftermathEventJsUtil;
+import com.pancake.surviving_the_aftermath.util.AftermathEventUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
@@ -41,12 +43,12 @@ public abstract class BaseAftermath implements IAftermath {
     public BaseAftermath(ServerLevel level) {
         this.level = level;
         this.module = getRandomAftermathModule();
-        this.state = AftermathState.START;
+        AftermathEventUtil.start(this,players,level);
     }
     public BaseAftermath(BaseRaidModule module, ServerLevel level) {
         this.level = level;
         this.module = module;
-        this.state = AftermathState.START;
+        AftermathEventUtil.start(this,players,level);
     }
 
 
@@ -54,6 +56,7 @@ public abstract class BaseAftermath implements IAftermath {
     }
 
     protected abstract void init();
+
     @Override
     public void tick() {
         if (isEnd()) return;
@@ -62,7 +65,7 @@ public abstract class BaseAftermath implements IAftermath {
 
         if (state == AftermathState.VICTORY){
             this.progressPercent = 0;
-            state = AftermathState.CELEBRATING;
+            AftermathEventUtil.celebrating(this,players,level);
         }
     }
 
@@ -126,6 +129,11 @@ public abstract class BaseAftermath implements IAftermath {
     }
 
     @Override
+    public void setState(AftermathState state) {
+        this.state = state;
+    }
+
+    @Override
     public boolean isEnd() {
         return state == AftermathState.END;
     }
@@ -136,7 +144,11 @@ public abstract class BaseAftermath implements IAftermath {
     }
 
     public void end(){
-        state = AftermathState.END;
+        AftermathEventUtil.end(this,players,level);
+        progress.removeAllPlayers();
+    }
+    public void lose(){
+        AftermathEventUtil.lose(this,players,level);
         progress.removeAllPlayers();
     }
 }

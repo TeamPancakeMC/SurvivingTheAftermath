@@ -22,6 +22,9 @@ public interface IAftermath extends IModule<IAftermath> {
     Supplier<Codec<IAftermath>> CODEC = () -> ModuleRegistry.AFTERMATH_REGISTRY.get().getCodec()
             .dispatch("aftermath", IAftermath::type, IAftermath::codec);
     ResourceLocation getRegistryName();
+    ResourceLocation getBarsResource();
+
+    int[] getBarsOffset();
 
     boolean isCreate(Level level, BlockPos pos, @Nullable Player player);
     void createRewards();
@@ -37,4 +40,6 @@ public interface IAftermath extends IModule<IAftermath> {
     void setLevel(ServerLevel level);
 
     AftermathState getState();
+
+    void setState(AftermathState state);
 }

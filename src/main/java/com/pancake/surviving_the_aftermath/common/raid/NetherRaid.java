@@ -1,6 +1,7 @@
 package com.pancake.surviving_the_aftermath.common.raid;
 
 import com.google.common.collect.ImmutableList;
+import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.PortalShapeAccessor;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
@@ -9,6 +10,7 @@ import com.pancake.surviving_the_aftermath.common.structure.NetherRaidStructure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
@@ -29,6 +31,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class NetherRaid extends BaseRaid {
+    private static final ResourceLocation BARS_RESOURCE = SurvivingTheAftermath.asResource("textures/gui/nether_raid_bars.png");
     public static final String IDENTIFIER = "nether_raid";
     private PortalShape portalShape;
     private Direction rightDir;
@@ -132,5 +135,15 @@ public class NetherRaid extends BaseRaid {
                 }
             });
         }
+    }
+
+    @Override
+    public ResourceLocation getBarsResource() {
+        return BARS_RESOURCE;
+    }
+
+    @Override
+    public int[] getBarsOffset() {
+        return new int[]{192,23,182,4,5,4};
     }
 }

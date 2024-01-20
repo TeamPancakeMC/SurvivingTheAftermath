@@ -5,7 +5,6 @@ import com.mojang.logging.LogUtils;
 
 import com.pancake.surviving_the_aftermath.common.data.datagen.EventSubscriber;
 import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoader;
-import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModStructurePieceTypes;
 import com.pancake.surviving_the_aftermath.common.init.ModStructureTypes;
 import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
