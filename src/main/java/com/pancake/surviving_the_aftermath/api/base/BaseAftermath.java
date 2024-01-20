@@ -6,8 +6,7 @@ import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoader;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
-import com.pancake.surviving_the_aftermath.compat.kubejs.util.AftermathEventJsUtil;
-import com.pancake.surviving_the_aftermath.util.AftermathEventUtil;
+import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
@@ -28,8 +27,8 @@ public abstract class BaseAftermath implements IAftermath {
 
     protected Set<UUID> players = Sets.newHashSet();
 
-    protected final ServerBossEvent progress = new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
-    protected final UUID uuid = progress.getId();
+    protected ServerBossEvent progress = new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
+    protected UUID uuid = progress.getId();
     protected float progressPercent = progress.getProgress();
 
 
@@ -76,7 +75,8 @@ public abstract class BaseAftermath implements IAftermath {
 
     public void updatePlayers() {
         final Set<ServerPlayer> oldPlayers = Sets.newHashSet(progress.getPlayers());
-        final Set<ServerPlayer> newPlayers = Sets.newHashSet(level.getPlayers(this.validPlayer()));
+        List<ServerPlayer> players1 = level.getPlayers(this.validPlayer());
+        final Set<ServerPlayer> newPlayers = Sets.newHashSet(players1);
         players.clear();
         newPlayers.stream()
                 .filter(player -> !oldPlayers.contains(player))

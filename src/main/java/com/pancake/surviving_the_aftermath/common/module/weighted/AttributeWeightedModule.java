@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
-import com.pancake.surviving_the_aftermath.util.CodecUtils;
+import com.pancake.surviving_the_aftermath.common.util.CodecUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.entity.ai.attributes.Attribute;

@@ -1,12 +1,16 @@
 package com.pancake.surviving_the_aftermath.common.raid;
 
 import com.google.common.collect.ImmutableList;
-import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
+import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.PortalShapeAccessor;
+import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.common.structure.NetherRaidStructure;
+import com.pancake.surviving_the_aftermath.common.util.CodecUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -31,10 +35,29 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class NetherRaid extends BaseRaid {
-    private static final ResourceLocation BARS_RESOURCE = SurvivingTheAftermath.asResource("textures/gui/nether_raid_bars.png");
+    public static final ResourceLocation BARS_RESOURCE = new ResourceLocation("surviving_the_aftermath:textures/gui/nether_raid_bars.png");
     public static final String IDENTIFIER = "nether_raid";
+    public static final Codec<NetherRaid> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            AftermathState.CODEC.fieldOf("state").forGetter(BaseRaid::getState),
+            BaseRaidModule.CODEC.fieldOf("module").forGetter(BaseRaid::getModule),
+            CodecUtils.setOf(CodecUtils.UUID_CODEC).fieldOf("players").forGetter(BaseRaid::getPlayers),
+            Codec.FLOAT.fieldOf("progressPercent").forGetter(BaseRaid::getProgressPercent),
+            BlockPos.CODEC.fieldOf("startPos").forGetter(BaseRaid::getStartPos),
+            Codec.INT.fieldOf("readyTime").forGetter(BaseRaid::getReadyTime),
+            Codec.INT.fieldOf("rewardTime").forGetter(BaseRaid::getRewardTime),
+            CodecUtils.setOf(BlockPos.CODEC).fieldOf("spawnPos").forGetter(BaseRaid::getSpawnPos),
+            CodecUtils.setOf(CodecUtils.UUID_CODEC).fieldOf("enemies").forGetter(BaseRaid::getEnemies),
+            Codec.INT.fieldOf("currentWave").forGetter(BaseRaid::getCurrentWave),
+            Codec.INT.fieldOf("totalEnemy").forGetter(BaseRaid::getTotalEnemy)
+    ).apply(instance, NetherRaid::new));
+
+    public NetherRaid(AftermathState state, BaseRaidModule module, Set<UUID> players, Float progressPercent, BlockPos startPos, Integer readyTime, Integer rewardTime, Set<BlockPos> spawnPos, Set<UUID> enemies, Integer currentWave, Integer totalEnemy) {
+        super(state, module, players, progressPercent, startPos, readyTime, rewardTime, spawnPos, enemies, currentWave, totalEnemy);
+    }
+
     private PortalShape portalShape;
     private Direction rightDir;
+
 
     public NetherRaid(ServerLevel level, BlockPos startPos) {
         super(level, startPos);
@@ -145,5 +168,15 @@ public class NetherRaid extends BaseRaid {
     @Override
     public int[] getBarsOffset() {
         return new int[]{192,23,182,4,5,4};
+    }
+
+    @Override
+    public Codec<? extends IAftermath> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public IAftermath type() {
+        return ModAftermathModule.NETHER_RAID.get();
     }
 }

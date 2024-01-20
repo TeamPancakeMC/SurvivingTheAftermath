@@ -1,4 +1,4 @@
-package com.pancake.surviving_the_aftermath.util;
+package com.pancake.surviving_the_aftermath.common.util;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;

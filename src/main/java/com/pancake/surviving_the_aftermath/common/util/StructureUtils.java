@@ -1,4 +1,4 @@
-package com.pancake.surviving_the_aftermath.util;
+package com.pancake.surviving_the_aftermath.common.util;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;

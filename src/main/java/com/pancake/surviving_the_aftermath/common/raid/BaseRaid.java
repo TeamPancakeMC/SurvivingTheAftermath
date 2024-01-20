@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.AftermathManager;
-import com.pancake.surviving_the_aftermath.api.SpawnPosHandler;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
@@ -13,13 +12,12 @@ import com.pancake.surviving_the_aftermath.api.module.IConditionModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
-import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithPredicateModule;
 import com.pancake.surviving_the_aftermath.common.raid.api.IRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
-import com.pancake.surviving_the_aftermath.util.AftermathEventUtil;
-import com.pancake.surviving_the_aftermath.util.CodecUtils;
-import com.pancake.surviving_the_aftermath.util.RandomUtils;
-import com.pancake.surviving_the_aftermath.util.StructureUtils;
+import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
+import com.pancake.surviving_the_aftermath.common.util.CodecUtils;
+import com.pancake.surviving_the_aftermath.common.util.RandomUtils;
+import com.pancake.surviving_the_aftermath.common.util.StructureUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -44,7 +42,6 @@ import static java.util.Arrays.stream;
 public class BaseRaid extends BaseAftermath implements IRaid {
     public static final String IDENTIFIER = "raid";
     public static final Codec<BaseRaid> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            CodecUtils.UUID_CODEC.fieldOf("uuid").forGetter(BaseRaid::getUUID),
             AftermathState.CODEC.fieldOf("state").forGetter(BaseRaid::getState),
             BaseRaidModule.CODEC.fieldOf("module").forGetter(BaseRaid::getModule),
             CodecUtils.setOf(CodecUtils.UUID_CODEC).fieldOf("players").forGetter(BaseRaid::getPlayers),
@@ -65,7 +62,7 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     public BlockPos startPos;
     private int readyTime;
     public int rewardTime;
-    public BaseRaid(UUID uuid, AftermathState state, BaseRaidModule module, Set<UUID> players, Float progressPercent, BlockPos startPos, Integer readyTime, Integer rewardTime,
+    public BaseRaid(AftermathState state, BaseRaidModule module, Set<UUID> players, Float progressPercent, BlockPos startPos, Integer readyTime, Integer rewardTime,
                     Set<BlockPos> spawnPos, Set<UUID> enemies, Integer currentWave, Integer totalEnemy) {
         super(state, module, players, progressPercent);
         this.startPos = startPos;
@@ -75,7 +72,6 @@ public class BaseRaid extends BaseAftermath implements IRaid {
         this.enemies = enemies;
         this.currentWave = currentWave;
         this.totalEnemy = totalEnemy;
-        init();
     }
 
     public BaseRaid(ServerLevel level,BlockPos startPos) {
@@ -270,7 +266,7 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     @Override
     public Predicate<? super ServerPlayer> validPlayer() {
         Predicate<ServerPlayer> predicate = (Predicate<ServerPlayer>) super.validPlayer();
-        return predicate.and((player) -> Math.sqrt(player.distanceToSqr(Vec3.atCenterOf(startPos))) < getRadius());
+        return predicate.and(player -> Math.sqrt(player.distanceToSqr(Vec3.atCenterOf(startPos))) < getRadius());
     }
 
     @Override
@@ -313,7 +309,7 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     public int getRadius() {
         return 50;
     }
-    private int getReadyTime() {
+    public int getReadyTime() {
         return readyTime;
     }
 
@@ -339,5 +335,10 @@ public class BaseRaid extends BaseAftermath implements IRaid {
 
     public int getTotalEnemy() {
         return totalEnemy;
+    }
+
+    @FunctionalInterface
+    public interface SpawnPosHandler {
+        void handleSpawnPos(Level level, BlockPos pos);
     }
 }

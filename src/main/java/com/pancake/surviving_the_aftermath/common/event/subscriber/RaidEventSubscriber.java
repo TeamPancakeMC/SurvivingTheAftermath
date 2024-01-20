@@ -1,21 +1,15 @@
 package com.pancake.surviving_the_aftermath.common.event.subscriber;
 
 
-import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.AftermathManager;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
-import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
-import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
-import com.pancake.surviving_the_aftermath.util.StructureUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.portal.PortalShape;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

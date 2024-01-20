@@ -3,7 +3,7 @@ package com.pancake.surviving_the_aftermath.common.module.condition;
 import com.mojang.serialization.Codec;
 import com.pancake.surviving_the_aftermath.api.module.IConditionModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
-import com.pancake.surviving_the_aftermath.util.RegistryUtil;
+import com.pancake.surviving_the_aftermath.common.util.RegistryUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;

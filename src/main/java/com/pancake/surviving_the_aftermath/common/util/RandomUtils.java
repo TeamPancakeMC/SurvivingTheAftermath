@@ -1,4 +1,4 @@
-package com.pancake.surviving_the_aftermath.util;
+package com.pancake.surviving_the_aftermath.common.util;
 
 import java.util.Collection;
 import java.util.List;

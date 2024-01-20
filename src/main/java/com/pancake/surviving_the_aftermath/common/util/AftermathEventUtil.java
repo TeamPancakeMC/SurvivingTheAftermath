@@ -1,4 +1,4 @@
-package com.pancake.surviving_the_aftermath.util;
+package com.pancake.surviving_the_aftermath.common.util;
 
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.IAftermath;

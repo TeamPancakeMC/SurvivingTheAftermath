@@ -6,18 +6,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.api.module.IPredicateModule;
-import com.pancake.surviving_the_aftermath.api.module.IWeightedModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
-import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
-import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
-import com.pancake.surviving_the_aftermath.util.RegistryUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 
