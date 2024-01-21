@@ -28,11 +28,10 @@ public abstract class BaseAftermath implements IAftermath {
     public ServerLevel level;
     public IAftermathModule module;
     public AftermathState state;
-
     protected Set<UUID> players = Sets.newHashSet();
     protected List<ITracker> trackers = Lists.newArrayList();
-    protected ServerBossEvent progress = new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
-    protected UUID uuid = progress.getId();
+    protected final ServerBossEvent progress = new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
+    protected final UUID uuid = progress.getId();
     protected float progressPercent = progress.getProgress();
 
 
@@ -47,21 +46,21 @@ public abstract class BaseAftermath implements IAftermath {
     public BaseAftermath(ServerLevel level) {
         this.level = level;
         this.module = getRandomAftermathModule();
-        AftermathEventUtil.start(this,players,level);
-        bindTrackers();
     }
     public BaseAftermath(BaseRaidModule module, ServerLevel level) {
         this.level = level;
         this.module = module;
-        AftermathEventUtil.start(this,players,level);
-        bindTrackers();
     }
 
 
     public BaseAftermath() {
     }
 
-    protected abstract void init();
+    protected void init(){
+        updatePlayers();
+        bindTrackers();
+        AftermathEventUtil.start(this,players,level);
+    }
 
     @Override
     public void tick() {
@@ -149,7 +148,6 @@ public abstract class BaseAftermath implements IAftermath {
     public AftermathState getState() {
         return state;
     }
-
     @Override
     public void setLevel(ServerLevel level) {
         this.level = level;

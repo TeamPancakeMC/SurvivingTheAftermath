@@ -13,12 +13,16 @@ import com.pancake.surviving_the_aftermath.common.init.ModStructures;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import com.pancake.surviving_the_aftermath.common.structure.NetherRaidStructure;
 import com.pancake.surviving_the_aftermath.common.util.CodecUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
@@ -60,14 +64,12 @@ public class NetherRaid extends BaseRaid {
                       Set<BlockPos> spawnPos, Set<UUID> enemies, Integer currentWave, Integer totalEnemy,List<ITracker> trackers) {
         super(state, module, players, progressPercent, startPos, readyTime, rewardTime, spawnPos, enemies, currentWave, totalEnemy,trackers);
     }
-
     private PortalShape portalShape;
-    private Direction rightDir;
 
 
-    public NetherRaid(ServerLevel level, BlockPos startPos,PortalShape portalShape) {
+    public NetherRaid(ServerLevel level, BlockPos startPos) {
         super(level, startPos);
-        this.portalShape = portalShape;
+
     }
 
     public NetherRaid() {
@@ -75,7 +77,7 @@ public class NetherRaid extends BaseRaid {
 
     @Override
     protected void init() {
-        setDir(level,startPos);
+        setDir(this.level,this.startPos);
         super.init();
     }
 
@@ -95,7 +97,6 @@ public class NetherRaid extends BaseRaid {
     private void setDir(ServerLevel serverLevel,BlockPos pos){
         PortalShape.findEmptyPortalShape(serverLevel, pos, Direction.Axis.X).ifPresent(portalShape -> {
             PortalShapeAccessor portalShapeMixin = (PortalShapeAccessor) portalShape;
-            this.rightDir = portalShapeMixin.survivingTheAftermath$getRightDir();
             this.portalShape = portalShape;
         });
     }
@@ -124,6 +125,10 @@ public class NetherRaid extends BaseRaid {
             ghast.setPos(ghast.getX(), ghast.getY() + 20, ghast.getZ());
         }
 
+
+        Direction dir = Direction.Plane.HORIZONTAL.stream().filter(d -> level.isEmptyBlock(mob.blockPosition().relative(d))
+                && !spawnPos.contains(mob.blockPosition().relative(d))).findFirst().orElse(Direction.UP);
+        mob.setDeltaMovement(dir.getStepX() * 0.25, dir.getStepY() * 0.25, dir.getStepZ() * 0.25);
     }
 
     @Override
@@ -131,6 +136,12 @@ public class NetherRaid extends BaseRaid {
         super.spawnWave();
         if (enemies.isEmpty() && state == AftermathState.ONGOING){
             updateStructure();
+
+            ClientLevel level = Minecraft.getInstance().level;
+            if (level != null) {
+                level.playLocalSound(startPos.getX(), startPos.getY(), startPos.getZ(),
+                        SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(2).get(), SoundSource.NEUTRAL, 3.0F, 1.0F, false);
+            }
         }
     }
 

@@ -65,15 +65,15 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     protected Set<BlockPos> spawnPos = Sets.newHashSet();
     protected int currentWave = -1;
     protected int totalEnemy = 0;
-    public BlockPos startPos;
     private int readyTime;
     public int rewardTime;
+    public BlockPos startPos;
     public BaseRaid(AftermathState state, BaseRaidModule module, Set<UUID> players, Float progressPercent, BlockPos startPos, Integer readyTime, Integer rewardTime,
                     Set<BlockPos> spawnPos, Set<UUID> enemies, Integer currentWave, Integer totalEnemy,List<ITracker> trackers) {
-        super(state, module, players, progressPercent,trackers);
-        this.startPos = startPos;
+        super(state, module,players, progressPercent,trackers);
         this.readyTime = readyTime;
         this.rewardTime = rewardTime;
+        this.startPos = startPos;
         this.spawnPos = spawnPos;
         this.enemies = enemies;
         this.currentWave = currentWave;
@@ -99,9 +99,10 @@ public class BaseRaid extends BaseAftermath implements IRaid {
 
     @Override
     protected void init() {
-        SetSpawnPos(this::defaultSetSpawnPos);
+        super.init();
         this.readyTime = getModule().getReadyTime();
         this.rewardTime = getModule().getReadyTime();
+        SetSpawnPos(this::defaultSetSpawnPos);
     }
     @Override
     public void tick() {
@@ -173,6 +174,10 @@ public class BaseRaid extends BaseAftermath implements IRaid {
         addTrackers(new RaidMobBattleTracker().setUUID(uuid));
     }
 
+    @Override
+    public BlockPos getStartPos() {
+        return startPos;
+    }
     public void setMobSpawn(ServerLevel level, Mob mob) {
         mob.setPersistenceRequired();
         Player target = randomPlayersUnderAttack();
@@ -280,7 +285,7 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     @Override
     public Predicate<? super ServerPlayer> validPlayer() {
         Predicate<ServerPlayer> predicate = (Predicate<ServerPlayer>) super.validPlayer();
-        return predicate.and(player -> Math.sqrt(player.distanceToSqr(Vec3.atCenterOf(startPos))) < getRadius());
+        return predicate.and(player -> Math.sqrt(player.distanceToSqr(Vec3.atCenterOf(this.startPos))) < getRadius());
     }
 
     @Override
@@ -334,11 +339,6 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     @Override
     public int[] getBarsOffset() {
         return null;
-    }
-
-    @Override
-    public BlockPos getStartPos() {
-        return startPos;
     }
 
     @Override

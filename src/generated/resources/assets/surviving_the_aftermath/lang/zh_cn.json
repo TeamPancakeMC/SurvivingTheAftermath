@@ -1,0 +1,7 @@
+{
+  "itemGroup.surviving_the_aftermath": "劫后余生",
+  "message.surviving_the_aftermath.nether_raid.start": "你感受到空气愈发炎热......",
+  "message.surviving_the_aftermath.nether_raid.victory": "望着最后一颗火星熄灭，你感觉它们不会再回来了，暂时......",
+  "message.surviving_the_aftermath.tracker.escape": "请勿战斗过程逃跑，否则你将付出代价，倒计时开始......%s",
+  "message.surviving_the_aftermath.tracker.personal_fail": "你虽然失败了但是可以继续相信你的队友"
+}

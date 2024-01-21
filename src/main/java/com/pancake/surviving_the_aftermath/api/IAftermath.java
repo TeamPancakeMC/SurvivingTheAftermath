@@ -41,6 +41,8 @@ public interface IAftermath extends IModule<IAftermath> {
     boolean isEnd();
     UUID getUUID();
 
+    BlockPos getStartPos();
+
     void setLevel(ServerLevel level);
 
     AftermathState getState();
