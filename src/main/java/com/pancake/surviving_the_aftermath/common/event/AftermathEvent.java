@@ -26,6 +26,22 @@ public abstract class AftermathEvent extends Event implements IAftermathEvent {
         this.level = level;
     }
 
+    public IAftermath getAftermath() {
+        return aftermath;
+    }
+
+    public IAftermathModule getModule() {
+        return module;
+    }
+
+    public Set<UUID> getPlayers() {
+        return players;
+    }
+
+    public ServerLevel getLevel() {
+        return level;
+    }
+
     @Override
     public Event getForge() {
         return this;

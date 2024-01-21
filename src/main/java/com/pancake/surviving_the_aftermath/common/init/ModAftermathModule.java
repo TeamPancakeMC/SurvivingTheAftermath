@@ -1,7 +1,11 @@
 package com.pancake.surviving_the_aftermath.common.init;
 
 import com.pancake.surviving_the_aftermath.api.IAftermath;
+import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.api.module.*;
+import com.pancake.surviving_the_aftermath.common.event.tracker.MobBattleTracker;
+import com.pancake.surviving_the_aftermath.common.event.tracker.RaidMobBattleTracker;
+import com.pancake.surviving_the_aftermath.common.event.tracker.RaidPlayerBattleTracker;
 import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.condition.*;
@@ -18,10 +22,8 @@ import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedMo
 import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
 import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.RegistryObject;
@@ -33,19 +35,18 @@ public class ModAftermathModule {
     public static final RegistryObject<IAftermath> NETHER_RAID = ModuleRegistry.AFTERMATH.register(NetherRaid.IDENTIFIER, NetherRaid::new);
 
 
+    public static final RegistryObject<IEntityInfoModule> ENTITY_INFO = ModuleRegistry.ENTITY_INFO_MODULE.register(EntityInfoModule.IDENTIFIER, EntityInfoModule::new);
+    public static final RegistryObject<IEntityInfoModule> ENTITY_INFO_PREDICATE = ModuleRegistry.ENTITY_INFO_MODULE.register(EntityInfoWithPredicateModule.IDENTIFIER, EntityInfoWithPredicateModule::new);
 
-    public static final RegistryObject<IEntityInfoModule> ENTITY_INFO = ModuleRegistry.ENTITY_INFO_MODULE.register(EntityInfoModule.IDENTIFIER,EntityInfoModule::new);
-    public static final RegistryObject<IEntityInfoModule> ENTITY_INFO_PREDICATE = ModuleRegistry.ENTITY_INFO_MODULE.register(EntityInfoWithPredicateModule.IDENTIFIER,EntityInfoWithPredicateModule::new);
 
-
-    public static final RegistryObject<IAmountModule> INTEGER_AMOUNT =  ModuleRegistry.AMOUNT_MODULE.register(IntegerAmountModule.IDENTIFIER, IntegerAmountModule::new);
-    public static final RegistryObject<IAmountModule> RANDOM_AMOUNT =  ModuleRegistry.AMOUNT_MODULE.register(RandomAmountModule.IDENTIFIER, RandomAmountModule::new);
+    public static final RegistryObject<IAmountModule> INTEGER_AMOUNT = ModuleRegistry.AMOUNT_MODULE.register(IntegerAmountModule.IDENTIFIER, IntegerAmountModule::new);
+    public static final RegistryObject<IAmountModule> RANDOM_AMOUNT = ModuleRegistry.AMOUNT_MODULE.register(RandomAmountModule.IDENTIFIER, RandomAmountModule::new);
 
 
     public static final RegistryObject<IWeightedModule<EntityType<?>>> ENTITY_TYPE_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(EntityTypeWeightedModule.IDENTIFIER, EntityTypeWeightedModule::new);
     public static final RegistryObject<IWeightedModule<Item>> ITEM_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(ItemWeightedModule.IDENTIFIER, ItemWeightedModule::new);
-    public static final RegistryObject<IWeightedModule<MobEffectInstance>> EFFECT_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(EffectWeightedModule.IDENTIFIER,EffectWeightedModule::new);
-    public static final RegistryObject<IWeightedModule<AttributeWeightedModule.AttributeInfo>> ATTRIBUTE_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(AttributeWeightedModule.IDENTIFIER,AttributeWeightedModule::new);
+    public static final RegistryObject<IWeightedModule<MobEffectInstance>> EFFECT_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(EffectWeightedModule.IDENTIFIER, EffectWeightedModule::new);
+    public static final RegistryObject<IWeightedModule<AttributeWeightedModule.AttributeInfo>> ATTRIBUTE_WEIGHTED = ModuleRegistry.WEIGHTED_MODULE.register(AttributeWeightedModule.IDENTIFIER, AttributeWeightedModule::new);
 
     public static final RegistryObject<IConditionModule> LEVEL_CONDITION = ModuleRegistry.CONDITION_MODULE.register(StructureConditionModule.IDENTIFIER, StructureConditionModule::new);
     public static final RegistryObject<IConditionModule> BIOMES_CONDITION = ModuleRegistry.CONDITION_MODULE.register(BiomesConditionModule.IDENTIFIER, BiomesConditionModule::new);
@@ -60,4 +61,19 @@ public class ModAftermathModule {
     public static final RegistryObject<IPredicateModule> ATTRIBUTE_PREDICATE = ModuleRegistry.PREDICATE_MODULE.register(AttributePredicate.IDENTIFIER, AttributePredicate::new);
 
 
+    public static final RegistryObject<ITracker> RAID_PLAYER_BATTLE_TRACKER = ModuleRegistry.TRACKER_MODULE.register("raid_player_battle_tracker", RaidPlayerBattleTracker::new);
+    public static final RegistryObject<ITracker> MOB_BATTLE_TRACKER = ModuleRegistry.TRACKER_MODULE.register("mob_battle_tracker", MobBattleTracker::new);
+    public static final RegistryObject<ITracker> RAID_MOB_BATTLE_TRACKER = ModuleRegistry.TRACKER_MODULE.register("raid_mob_battle_tracker", RaidMobBattleTracker::new);
+
+
+
+
+
+
+
+
+
 }
+
+
+

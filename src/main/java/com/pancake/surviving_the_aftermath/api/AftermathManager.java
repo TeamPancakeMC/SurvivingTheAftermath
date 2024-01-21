@@ -34,18 +34,18 @@ public class AftermathManager {
             IAftermath aftermath = iterator.next();
             if (aftermath.isEnd()) {
                 iterator.remove();
+                aftermath.getTrackers().forEach(ITracker::unregister);
             } else {
                 aftermath.tick();
             }
         }
     }
 
-    private void remove(IAftermath aftermath) {
-        AFTERMATH_MAP.remove(aftermath.getUUID());
-    }
+
 
     private void add(IAftermath aftermath) {
         AFTERMATH_MAP.put(aftermath.getUUID(), aftermath);
+        aftermath.getTrackers().forEach(ITracker::register);
     }
 
     public Map<UUID, IAftermath> getAftermathMap() {

@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -32,6 +33,9 @@ public interface IAftermath extends IModule<IAftermath> {
     void updateProgress();
 
     void tick();
+
+    List<ITracker> getTrackers();
+
     IAftermathModule getModule();
 
     boolean isEnd();
@@ -42,4 +46,8 @@ public interface IAftermath extends IModule<IAftermath> {
     AftermathState getState();
 
     void setState(AftermathState state);
+
+    void lose();
+
+    Set<UUID> getEnemies();
 }

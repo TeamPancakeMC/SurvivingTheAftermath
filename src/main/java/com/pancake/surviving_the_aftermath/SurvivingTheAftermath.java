@@ -3,8 +3,10 @@ package com.pancake.surviving_the_aftermath;
 import com.mojang.logging.LogUtils;
 
 
+import com.pancake.surviving_the_aftermath.common.config.AftermathConfig;
 import com.pancake.surviving_the_aftermath.common.data.datagen.EventSubscriber;
 import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoader;
+import com.pancake.surviving_the_aftermath.common.init.ModMobEffects;
 import com.pancake.surviving_the_aftermath.common.init.ModStructurePieceTypes;
 import com.pancake.surviving_the_aftermath.common.init.ModStructureTypes;
 import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
@@ -13,7 +15,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
@@ -26,12 +30,14 @@ public class SurvivingTheAftermath {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
         bus.addListener(EventSubscriber::onGatherData);
-//        bus.addListener(ModuleRegistry::onNewRegistry);
         ModuleRegistry.register(bus);
+        ModMobEffects.MOB_EFFECTS.register(bus);
 
         ModStructurePieceTypes.STRUCTURE_PIECE_TYPES.register(bus);
         ModStructureTypes.STRUCTURE_TYPES.register(bus);
         MinecraftForge.EVENT_BUS.addListener(this::onDataPackLoad);
+
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AftermathConfig.SPEC);
     }
 
     @SubscribeEvent

@@ -1,14 +1,12 @@
 package com.pancake.surviving_the_aftermath.common.init;
 
-import com.mojang.serialization.Codec;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
+import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.api.module.*;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.*;
 
 import java.util.function.Supplier;
@@ -35,6 +33,10 @@ public class ModuleRegistry {
     public static final DeferredRegister<IPredicateModule> PREDICATE_MODULE = DeferredRegister.create(Keys.PREDICATE, SurvivingTheAftermath.MOD_ID);
     public static Supplier<IForgeRegistry<IPredicateModule>> PREDICATE_REGISTRY = PREDICATE_MODULE.makeRegistry(RegistryBuilder::new);
 
+
+    public static final DeferredRegister<ITracker> TRACKER_MODULE = DeferredRegister.create(Keys.TRACKER, SurvivingTheAftermath.MOD_ID);
+    public static Supplier<IForgeRegistry<ITracker>> TRACKER_REGISTRY = TRACKER_MODULE.makeRegistry(RegistryBuilder::new);
+
     public static void register(IEventBus bus) {
         AFTERMATH.register(bus);
         AFTERMATH_MODULE.register(bus);
@@ -43,6 +45,7 @@ public class ModuleRegistry {
         WEIGHTED_MODULE.register(bus);
         CONDITION_MODULE.register(bus);
         PREDICATE_MODULE.register(bus);
+        TRACKER_MODULE.register(bus);
     }
 
 
@@ -54,7 +57,7 @@ public class ModuleRegistry {
         public static final ResourceKey<Registry<IWeightedModule<?>>> WEIGHTED = key("weighted");
         public static final ResourceKey<Registry<IConditionModule>> CONDITION = key("condition");
         public static final ResourceKey<Registry<IPredicateModule>> PREDICATE = key("predicate");
-
+        public static final ResourceKey<Registry<ITracker>> TRACKER = key("tracker");
 
 
         private static <T> ResourceKey<Registry<T>> key(String name)

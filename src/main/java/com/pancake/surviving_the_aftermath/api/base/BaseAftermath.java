@@ -1,8 +1,10 @@
 package com.pancake.surviving_the_aftermath.api.base;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
+import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.common.data.pack.AftermathModuleLoader;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
@@ -13,6 +15,8 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -26,28 +30,31 @@ public abstract class BaseAftermath implements IAftermath {
     public AftermathState state;
 
     protected Set<UUID> players = Sets.newHashSet();
-
+    protected List<ITracker> trackers = Lists.newArrayList();
     protected ServerBossEvent progress = new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
     protected UUID uuid = progress.getId();
     protected float progressPercent = progress.getProgress();
 
 
-    public BaseAftermath(AftermathState state,IAftermathModule module, Set<UUID> players, float progressPercent) {
+    public BaseAftermath(AftermathState state,IAftermathModule module, Set<UUID> players, float progressPercent,List<ITracker> trackers) {
         this.state = state;
         this.module = module;
         this.players = players;
         this.progressPercent = progressPercent;
+        this.trackers = trackers;
     }
 
     public BaseAftermath(ServerLevel level) {
         this.level = level;
         this.module = getRandomAftermathModule();
         AftermathEventUtil.start(this,players,level);
+        bindTrackers();
     }
     public BaseAftermath(BaseRaidModule module, ServerLevel level) {
         this.level = level;
         this.module = module;
         AftermathEventUtil.start(this,players,level);
+        bindTrackers();
     }
 
 
@@ -61,11 +68,20 @@ public abstract class BaseAftermath implements IAftermath {
         if (isEnd()) return;
         updateProgress();
         updatePlayers();
-
+        updateInsertTag();
         if (state == AftermathState.VICTORY){
             this.progressPercent = 0;
             AftermathEventUtil.celebrating(this,players,level);
         }
+    }
+
+    public void updateInsertTag() {
+        this.players.forEach(uuid -> {
+            Entity entity = level.getEntity(uuid);
+            if (entity instanceof LivingEntity livingEntity){
+                insertTag(livingEntity);
+            }
+        });
     }
 
     @Override
@@ -100,6 +116,17 @@ public abstract class BaseAftermath implements IAftermath {
     public void createRewards() {
 
     }
+
+    protected abstract void bindTrackers();
+    protected void addTrackers(ITracker tracker){
+        trackers.add(tracker);
+    }
+
+    @Override
+    public List<ITracker> getTrackers() {
+        return trackers;
+    }
+
     @Override
     public IAftermathModule getModule() {
         return module;
@@ -132,7 +159,6 @@ public abstract class BaseAftermath implements IAftermath {
     public void setState(AftermathState state) {
         this.state = state;
     }
-
     @Override
     public boolean isEnd() {
         return state == AftermathState.END;
@@ -147,8 +173,12 @@ public abstract class BaseAftermath implements IAftermath {
         AftermathEventUtil.end(this,players,level);
         progress.removeAllPlayers();
     }
+    @Override
     public void lose(){
         AftermathEventUtil.lose(this,players,level);
         progress.removeAllPlayers();
+        end();
     }
+
+    public abstract void insertTag(LivingEntity entity);
 }

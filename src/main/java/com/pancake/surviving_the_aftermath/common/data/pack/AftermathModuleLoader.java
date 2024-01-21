@@ -10,6 +10,7 @@ import com.mojang.serialization.JsonOps;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
+import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import com.pancake.surviving_the_aftermath.compat.kubejs.event.AftermathEvents;
 import com.pancake.surviving_the_aftermath.compat.kubejs.event.AftermathModifyEventJS;
 import com.pancake.surviving_the_aftermath.compat.kubejs.util.AftermathEventJsUtil;
@@ -48,9 +49,7 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
         });
 
 
-        if (ModList.get().isLoaded("kubejs")) {
-            AFTERMATH_MODULE_MAP.asMap().forEach(AftermathEventJsUtil::modify);
-        }
+        AFTERMATH_MODULE_MAP.asMap().forEach(AftermathEventUtil::modify);
 
         AftermathManager.getInstance().fillAftermathModuleMap(AFTERMATH_MODULE_MAP);
 

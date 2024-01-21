@@ -5,7 +5,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
-import com.pancake.surviving_the_aftermath.api.PortalShapeAccessor;
+import com.pancake.surviving_the_aftermath.api.ITracker;
+import com.pancake.surviving_the_aftermath.common.accessor.PortalShapeAccessor;
+import com.pancake.surviving_the_aftermath.common.event.tracker.RaidPlayerBattleTracker;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
@@ -14,8 +16,10 @@ import com.pancake.surviving_the_aftermath.common.util.CodecUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.Ghast;
@@ -48,19 +52,22 @@ public class NetherRaid extends BaseRaid {
             CodecUtils.setOf(BlockPos.CODEC).fieldOf("spawnPos").forGetter(BaseRaid::getSpawnPos),
             CodecUtils.setOf(CodecUtils.UUID_CODEC).fieldOf("enemies").forGetter(BaseRaid::getEnemies),
             Codec.INT.fieldOf("currentWave").forGetter(BaseRaid::getCurrentWave),
-            Codec.INT.fieldOf("totalEnemy").forGetter(BaseRaid::getTotalEnemy)
+            Codec.INT.fieldOf("totalEnemy").forGetter(BaseRaid::getTotalEnemy),
+            Codec.list(ITracker.CODEC.get()).fieldOf("trackers").forGetter(NetherRaid::getTrackers)
     ).apply(instance, NetherRaid::new));
 
-    public NetherRaid(AftermathState state, BaseRaidModule module, Set<UUID> players, Float progressPercent, BlockPos startPos, Integer readyTime, Integer rewardTime, Set<BlockPos> spawnPos, Set<UUID> enemies, Integer currentWave, Integer totalEnemy) {
-        super(state, module, players, progressPercent, startPos, readyTime, rewardTime, spawnPos, enemies, currentWave, totalEnemy);
+    public NetherRaid(AftermathState state, BaseRaidModule module, Set<UUID> players, Float progressPercent, BlockPos startPos, Integer readyTime, Integer rewardTime,
+                      Set<BlockPos> spawnPos, Set<UUID> enemies, Integer currentWave, Integer totalEnemy,List<ITracker> trackers) {
+        super(state, module, players, progressPercent, startPos, readyTime, rewardTime, spawnPos, enemies, currentWave, totalEnemy,trackers);
     }
 
     private PortalShape portalShape;
     private Direction rightDir;
 
 
-    public NetherRaid(ServerLevel level, BlockPos startPos) {
+    public NetherRaid(ServerLevel level, BlockPos startPos,PortalShape portalShape) {
         super(level, startPos);
+        this.portalShape = portalShape;
     }
 
     public NetherRaid() {
@@ -74,13 +81,15 @@ public class NetherRaid extends BaseRaid {
 
     @Override
     public void setMobSpawnPos(ServerLevel serverLevel, String metadata, BlockPos startPos, BlockPos pos) {
-        PortalShapeAccessor portalShapeMixin = (PortalShapeAccessor) portalShape;
-        BlockPos bottomLeft = portalShapeMixin.survivingTheAftermath$getBottomLeft();
-        int height = portalShapeMixin.survivingTheAftermath$getHeight();
-        int width = portalShapeMixin.survivingTheAftermath$getWidth();
-        Direction rightDir = portalShapeMixin.survivingTheAftermath$getRightDir();
-        BlockPos.betweenClosed(bottomLeft, bottomLeft.relative(Direction.UP, height - 1).relative(rightDir, width - 1))
+        if (metadata.equals("spawnPos")){
+            PortalShapeAccessor shape = (PortalShapeAccessor) this.portalShape;
+            BlockPos bottomLeft = shape.survivingTheAftermath$getBottomLeft();
+            Direction dir = shape.survivingTheAftermath$getRightDir();
+            int height = shape.survivingTheAftermath$getHeight();
+            int width = shape.survivingTheAftermath$getWidth();
+            BlockPos.betweenClosed(bottomLeft, bottomLeft.relative(Direction.UP, height - 1).relative(dir, width - 1))
                 .forEach(blockPos -> spawnPos.add(new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ())));
+        }
     }
 
     private void setDir(ServerLevel serverLevel,BlockPos pos){
@@ -89,6 +98,12 @@ public class NetherRaid extends BaseRaid {
             this.rightDir = portalShapeMixin.survivingTheAftermath$getRightDir();
             this.portalShape = portalShape;
         });
+    }
+
+    @Override
+    protected void bindTrackers() {
+        super.bindTrackers();
+        addTrackers(new RaidPlayerBattleTracker().setUUID(uuid));
     }
 
     @Override
@@ -158,6 +173,12 @@ public class NetherRaid extends BaseRaid {
                 }
             });
         }
+    }
+
+    @Override
+    public void insertTag(LivingEntity entity) {
+        super.insertTag(entity);
+        entity.getPersistentData().put(IDENTIFIER, StringTag.valueOf("enemies"));
     }
 
     @Override

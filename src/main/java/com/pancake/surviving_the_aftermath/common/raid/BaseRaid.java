@@ -7,9 +7,12 @@ import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
+import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
 import com.pancake.surviving_the_aftermath.api.module.IConditionModule;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
+import com.pancake.surviving_the_aftermath.common.event.tracker.MobBattleTracker;
+import com.pancake.surviving_the_aftermath.common.event.tracker.RaidMobBattleTracker;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
 import com.pancake.surviving_the_aftermath.common.raid.api.IRaid;
@@ -20,10 +23,12 @@ import com.pancake.surviving_the_aftermath.common.util.RandomUtils;
 import com.pancake.surviving_the_aftermath.common.util.StructureUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -52,7 +57,8 @@ public class BaseRaid extends BaseAftermath implements IRaid {
             CodecUtils.setOf(BlockPos.CODEC).fieldOf("spawnPos").forGetter(BaseRaid::getSpawnPos),
             CodecUtils.setOf(CodecUtils.UUID_CODEC).fieldOf("enemies").forGetter(BaseRaid::getEnemies),
             Codec.INT.fieldOf("currentWave").forGetter(BaseRaid::getCurrentWave),
-            Codec.INT.fieldOf("totalEnemy").forGetter(BaseRaid::getTotalEnemy)
+            Codec.INT.fieldOf("totalEnemy").forGetter(BaseRaid::getTotalEnemy),
+            Codec.list(ITracker.CODEC.get()).fieldOf("trackers").forGetter(BaseRaid::getTrackers)
     ).apply(instance, BaseRaid::new));
 
     protected Set<UUID> enemies = Sets.newLinkedHashSet();
@@ -63,8 +69,8 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     private int readyTime;
     public int rewardTime;
     public BaseRaid(AftermathState state, BaseRaidModule module, Set<UUID> players, Float progressPercent, BlockPos startPos, Integer readyTime, Integer rewardTime,
-                    Set<BlockPos> spawnPos, Set<UUID> enemies, Integer currentWave, Integer totalEnemy) {
-        super(state, module, players, progressPercent);
+                    Set<BlockPos> spawnPos, Set<UUID> enemies, Integer currentWave, Integer totalEnemy,List<ITracker> trackers) {
+        super(state, module, players, progressPercent,trackers);
         this.startPos = startPos;
         this.readyTime = readyTime;
         this.rewardTime = rewardTime;
@@ -106,12 +112,14 @@ public class BaseRaid extends BaseAftermath implements IRaid {
         }
 
         if (state == AftermathState.ONGOING){
+            AftermathEventUtil.ongoing(this,players,level);
             checkNextWave();
             spawnWave();
             EnemyTotalRatio();
         }
 
         if (state == AftermathState.CELEBRATING){
+            AftermathEventUtil.celebrating(this,players,level);
             if (rewardTime <= 0){
                 end();
                 return;
@@ -157,6 +165,12 @@ public class BaseRaid extends BaseAftermath implements IRaid {
             itemEntity.setInvulnerable(true);
             level.addFreshEntity(itemEntity);
         });
+    }
+
+    @Override
+    protected void bindTrackers() {
+        addTrackers(new MobBattleTracker().setUUID(uuid));
+        addTrackers(new RaidMobBattleTracker().setUUID(uuid));
     }
 
     public void setMobSpawn(ServerLevel level, Mob mob) {
@@ -291,6 +305,28 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     }
 
     @Override
+    public void updateInsertTag() {
+        super.updateInsertTag();
+        this.enemies.forEach(uuid -> {
+            Entity entity = level.getEntity(uuid);
+            if (entity instanceof LivingEntity livingEntity){
+                insertTag(livingEntity);
+            }
+        });
+    }
+
+    @Override
+    public void insertTag(LivingEntity entity){
+        entity.getPersistentData().put(IDENTIFIER, StringTag.valueOf("enemies"));
+        entity.getPersistentData().putUUID("raid_uuid", this.uuid);
+
+        if (entity instanceof Player player){
+            player.getPersistentData().put(IDENTIFIER, StringTag.valueOf("players"));
+            player.getPersistentData().putUUID("raid_uuid", this.uuid);
+        }
+    }
+
+    @Override
     public ResourceLocation getBarsResource() {
         return null;
     }
@@ -325,6 +361,7 @@ public class BaseRaid extends BaseAftermath implements IRaid {
         spawnPos.add(pos);
     }
 
+    @Override
     public Set<UUID> getEnemies() {
         return enemies;
     }
