@@ -69,7 +69,6 @@ public class NetherRaid extends BaseRaid {
 
     public NetherRaid(ServerLevel level, BlockPos startPos) {
         super(level, startPos);
-
     }
 
     public NetherRaid() {

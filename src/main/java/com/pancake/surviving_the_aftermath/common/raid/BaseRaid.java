@@ -83,12 +83,10 @@ public class BaseRaid extends BaseAftermath implements IRaid {
     public BaseRaid(ServerLevel level,BlockPos startPos) {
         super(level);
         this.startPos = startPos;
-        init();
     }
     public BaseRaid(BaseRaidModule module,ServerLevel level,BlockPos startPos) {
         super(module,level);
         this.startPos = startPos;
-        init();
     }
 
 

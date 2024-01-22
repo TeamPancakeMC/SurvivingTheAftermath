@@ -1,5 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.capability;
 
+import com.google.common.collect.Sets;
 import com.pancake.surviving_the_aftermath.common.init.ModCapability;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.ListTag;
@@ -16,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public class StageCap implements INBTSerializable<ListTag> {
-    private Set<String> stages;
+public class AftermathStageCap implements INBTSerializable<ListTag> {
+    private Set<String> stages = Sets.newHashSet();
 
     @Override
     public ListTag serializeNBT() {
@@ -40,38 +41,38 @@ public class StageCap implements INBTSerializable<ListTag> {
     }
 
     public static void addStage(Player player, String stage) {
-        StageCap.get(player).ifPresent(stageCap -> stageCap.getStages().add(stage));
+        AftermathStageCap.get(player).ifPresent(stageCap -> stageCap.getStages().add(stage));
     }
     public static void addStage(Level level, String stage) {
-        StageCap.get(level).ifPresent(stageCap -> stageCap.getStages().add(stage));
+        AftermathStageCap.get(level).ifPresent(stageCap -> stageCap.getStages().add(stage));
     }
 
     public static void removeStage(Player player, String stage) {
-        StageCap.get(player).ifPresent(stageCap -> stageCap.getStages().remove(stage));
+        AftermathStageCap.get(player).ifPresent(stageCap -> stageCap.getStages().remove(stage));
     }
     public static void removeStage(Level level, String stage) {
-        StageCap.get(level).ifPresent(stageCap -> stageCap.getStages().remove(stage));
+        AftermathStageCap.get(level).ifPresent(stageCap -> stageCap.getStages().remove(stage));
     }
 
     public static boolean hasStage(Player player, String stage) {
-        return StageCap.get(player).map(stageCap -> stageCap.getStages().contains(stage)).orElse(false);
+        return AftermathStageCap.get(player).map(stageCap -> stageCap.getStages().contains(stage)).orElse(false);
     }
     public static boolean hasStage(Level level, String stage) {
-        return StageCap.get(level).map(stageCap -> stageCap.getStages().contains(stage)).orElse(false);
+        return AftermathStageCap.get(level).map(stageCap -> stageCap.getStages().contains(stage)).orElse(false);
     }
 
-    public static LazyOptional<StageCap> get(Player player) {
+    public static LazyOptional<AftermathStageCap> get(Player player) {
         return player.getCapability(ModCapability.STAGE_CAP);
     }
-    public static LazyOptional<StageCap> get(Level level) {
+    public static LazyOptional<AftermathStageCap> get(Level level) {
         return level.getCapability(ModCapability.STAGE_CAP);
     }
 
     public static class Provider implements ICapabilitySerializable<ListTag> {
-        private final LazyOptional<StageCap> instance;
+        private final LazyOptional<AftermathStageCap> instance;
 
         public Provider() {
-            instance = LazyOptional.of(StageCap::new);
+            instance = LazyOptional.of(AftermathStageCap::new);
         }
 
         @Override

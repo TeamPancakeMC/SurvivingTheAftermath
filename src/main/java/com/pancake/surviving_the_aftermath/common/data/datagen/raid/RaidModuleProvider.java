@@ -4,6 +4,8 @@ import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.data.datagen.AftermathModuleProviders;
 import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
+import com.pancake.surviving_the_aftermath.common.module.condition.LevelStageConditionModule;
+import com.pancake.surviving_the_aftermath.common.module.condition.PlayerStageConditionModule;
 import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithPredicateModule;
@@ -107,6 +109,7 @@ public class RaidModuleProvider extends AftermathModuleProviders<BaseRaidModule>
                 .addWave(waves2)
                 .rewards(itemGoldenModule)
                 .addCondition(new StructureConditionModule("surviving_the_aftermath:nether_invasion_portal"))
+                .addCondition(new LevelStageConditionModule("111"))
                 .build();
 
 

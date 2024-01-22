@@ -8,9 +8,12 @@ import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.EffectWeightedModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.EntityTypeWeightedModule;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
@@ -50,6 +53,14 @@ public class EffectPredicate implements IPredicateModule {
 
         public Builder add(MobEffectInstance instance,int weight){
             effectInstances.add(WeightedEntry.wrap(instance,weight));
+            return this;
+        }
+        public Builder add(MobEffect mobEffect, int duration, int amplifier ,int weight){
+            effectInstances.add(WeightedEntry.wrap(new MobEffectInstance(mobEffect,duration,amplifier),weight));
+            return this;
+        }
+        public Builder add(String mobEffect, int duration, int amplifier ,int weight){
+            effectInstances.add(WeightedEntry.wrap(new MobEffectInstance(ForgeRegistries.MOB_EFFECTS.getValue(ResourceLocation.tryParse(mobEffect)),duration,amplifier),weight));
             return this;
         }
         public EffectPredicate build(){

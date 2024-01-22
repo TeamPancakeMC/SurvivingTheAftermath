@@ -9,7 +9,9 @@ import com.pancake.surviving_the_aftermath.common.module.weighted.EffectWeighted
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 import java.util.List;
 import java.util.UUID;
@@ -62,6 +64,10 @@ public class AttributePredicate implements IPredicateModule {
 
         public Builder add(AttributeWeightedModule.AttributeInfo instance, int weight){
             attributes.add(WeightedEntry.wrap(instance,weight));
+            return this;
+        }
+        public Builder add(Attribute attribute, AttributeModifier modifier, int weight){
+            attributes.add(WeightedEntry.wrap(new AttributeWeightedModule.AttributeInfo(attribute,modifier),weight));
             return this;
         }
         public AttributePredicate build(){

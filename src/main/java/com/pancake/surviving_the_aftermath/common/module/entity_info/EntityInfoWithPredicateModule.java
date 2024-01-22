@@ -66,6 +66,9 @@ public class EntityInfoWithPredicateModule extends EntityInfoModule {
         public Builder(String entityType) {
             super(entityType);
         }
+        public Builder(EntityType<?> entityType) {
+            super(entityType);
+        }
 
         public Builder add(IPredicateModule predicate){
             predicateModules.add(predicate);

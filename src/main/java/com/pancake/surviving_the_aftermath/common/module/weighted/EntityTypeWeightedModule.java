@@ -34,6 +34,11 @@ public class EntityTypeWeightedModule extends BaseWeightedModule<EntityType<?>> 
 
     public static class Builder {
         private List<WeightedEntry.Wrapper<EntityType<?>>> list;
+        public Builder add(EntityType<?> entityType, int weight) {
+            this.list.add(WeightedEntry.wrap(entityType, weight));
+            return this;
+        }
+
         public Builder add(String entityType, int weight) {
             this.list.add(WeightedEntry.wrap(RegistryUtil.getEntityTypeFromRegistryName(entityType), weight));
             return this;

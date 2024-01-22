@@ -63,6 +63,17 @@ public abstract class BaseAftermath implements IAftermath {
     }
 
     @Override
+    public boolean isCreate(Level level, BlockPos pos, @Nullable Player player) {
+        return module.isCreate(level, pos, player);
+    }
+
+    @Override
+    public IAftermath Create() {
+        init();
+        return this;
+    }
+
+    @Override
     public void tick() {
         if (isEnd()) return;
         updateProgress();
@@ -105,12 +116,6 @@ public abstract class BaseAftermath implements IAftermath {
     public Predicate<? super ServerPlayer> validPlayer() {
         return (Predicate<ServerPlayer>) player -> !player.isSpectator();
     }
-
-    @Override
-    public boolean isCreate(Level level, BlockPos pos, @Nullable Player player) {
-        return module.isCreate(level, pos, player);
-    }
-
     @Override
     public void createRewards() {
 

@@ -52,4 +52,6 @@ public interface IAftermath extends IModule<IAftermath> {
     void lose();
 
     Set<UUID> getEnemies();
+
+    IAftermath Create();
 }

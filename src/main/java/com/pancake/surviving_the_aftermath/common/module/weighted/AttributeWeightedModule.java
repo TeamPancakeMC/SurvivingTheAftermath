@@ -6,9 +6,11 @@ import com.pancake.surviving_the_aftermath.api.module.IWeightedModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.util.CodecUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
@@ -41,5 +43,26 @@ public class AttributeWeightedModule extends BaseWeightedModule<AttributeWeighte
                 BuiltInRegistries.ATTRIBUTE.byNameCodec().fieldOf("attribute").forGetter(AttributeInfo::attribute),
                 CodecUtils.ATTRIBUTE_MODIFIER_CODEC.fieldOf("attribute_modifier").forGetter(AttributeInfo::attributeModifier)
         ).apply(instance, AttributeInfo::new));
+    }
+
+    public static class Builder {
+        private List<WeightedEntry.Wrapper<AttributeInfo>> attributes;
+
+        public Builder add(Attribute attribute, AttributeModifier modifier, int weight){
+            attributes.add(WeightedEntry.wrap(new AttributeInfo(attribute,modifier), weight));
+            return this;
+        }
+
+        public Builder add(String attribute, String name, double amount, int operation, int weight){
+            attributes.add(WeightedEntry.wrap(new AttributeInfo(ForgeRegistries.ATTRIBUTES.getValue(ResourceLocation.tryParse(attribute)),
+                    new AttributeModifier(name, amount, AttributeModifier.Operation.fromValue(operation))),
+                    weight)
+            );
+            return this;
+        }
+
+        public AttributeWeightedModule build() {
+            return new AttributeWeightedModule(attributes);
+        }
     }
 }

@@ -58,7 +58,7 @@ public class AftermathManager {
 
     public boolean create(IAftermath aftermath, Level level, BlockPos pos, @Nullable ServerPlayer player) {
         if (aftermath.isCreate(level, pos, player)) {
-            add(aftermath);
+            add(aftermath.Create());
             return true;
         }
         return false;

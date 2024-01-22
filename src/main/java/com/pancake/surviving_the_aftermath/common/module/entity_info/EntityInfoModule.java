@@ -68,6 +68,10 @@ public class EntityInfoModule implements IEntityInfoModule {
             this.entityType = RegistryUtil.getEntityTypeFromRegistryName(entityType);
         }
 
+        public Builder(EntityType<?> entityType) {
+            this.entityType = entityType;
+        }
+
         public Builder amountModule(IAmountModule amountModule) {
             this.amountModule = amountModule;
             return this;

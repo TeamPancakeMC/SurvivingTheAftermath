@@ -2,6 +2,10 @@
   "aftermath_module": "surviving_the_aftermath:raid",
   "conditions": [
     {
+      "condition": "surviving_the_aftermath:level_stage_condition",
+      "value": "111"
+    },
+    {
       "condition": "surviving_the_aftermath:structure_condition",
       "value": "surviving_the_aftermath:nether_invasion_portal"
     }

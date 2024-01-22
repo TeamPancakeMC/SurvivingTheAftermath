@@ -37,6 +37,11 @@ public class ItemWeightedModule extends BaseWeightedModule<Item> {
 
     public static class Builder {
         private List<WeightedEntry.Wrapper<Item>> list = Lists.newArrayList();
+        public ItemWeightedModule.Builder add(Item item, int weight) {
+            this.list.add(WeightedEntry.wrap(item, weight));
+            return this;
+        }
+
         public ItemWeightedModule.Builder add(String item, int weight) {
             this.list.add(WeightedEntry.wrap(RegistryUtil.getItemFromRegistryName(item), weight));
             return this;

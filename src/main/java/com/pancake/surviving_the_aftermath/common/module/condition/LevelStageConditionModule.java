@@ -1,15 +1,11 @@
 package com.pancake.surviving_the_aftermath.common.module.condition;
 
-import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.pancake.surviving_the_aftermath.api.module.IConditionModule;
-import com.pancake.surviving_the_aftermath.common.capability.StageCap;
+import com.pancake.surviving_the_aftermath.common.capability.AftermathStageCap;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
-import com.pancake.surviving_the_aftermath.common.util.CodecUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-
-import java.util.Set;
 
 public class LevelStageConditionModule extends LevelConditionModule{
     public static final String IDENTIFIER = "level_stage_condition";
@@ -25,7 +21,7 @@ public class LevelStageConditionModule extends LevelConditionModule{
 
     @Override
     public boolean checkCondition(Level level, BlockPos pos) {
-        return StageCap.get(level).orElse(new StageCap()).getStages().contains(stage);
+        return AftermathStageCap.get(level).orElse(new AftermathStageCap()).getStages().contains(stage);
     }
 
     public String getStage() {
@@ -40,5 +36,17 @@ public class LevelStageConditionModule extends LevelConditionModule{
     @Override
     public IConditionModule type() {
         return ModAftermathModule.LEVEL_STAGE_CONDITION.get();
+    }
+
+    public static class Builder {
+        private final String stage;
+
+        public Builder(String stage) {
+            this.stage = stage;
+        }
+
+        public LevelStageConditionModule build() {
+            return new LevelStageConditionModule(stage);
+        }
     }
 }

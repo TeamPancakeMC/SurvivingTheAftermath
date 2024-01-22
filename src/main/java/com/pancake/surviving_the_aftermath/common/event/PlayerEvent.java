@@ -1,14 +1,12 @@
 package com.pancake.surviving_the_aftermath.common.event;
 
+import com.pancake.surviving_the_aftermath.common.capability.AftermathStageCap;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.Set;
-import java.util.UUID;
 
 @Mod.EventBusSubscriber
 public class PlayerEvent {
@@ -21,6 +19,10 @@ public class PlayerEvent {
         Player player = event.getEntity();
         if (level.isClientSide() || hand != InteractionHand.MAIN_HAND) {
             return;
+        }
+
+        if (player.isShiftKeyDown()){
+            AftermathStageCap.addStage(level, "111");
         }
 
 

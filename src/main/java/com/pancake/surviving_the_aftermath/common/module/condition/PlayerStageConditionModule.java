@@ -2,7 +2,7 @@ package com.pancake.surviving_the_aftermath.common.module.condition;
 
 import com.mojang.serialization.Codec;
 import com.pancake.surviving_the_aftermath.api.module.IConditionModule;
-import com.pancake.surviving_the_aftermath.common.capability.StageCap;
+import com.pancake.surviving_the_aftermath.common.capability.AftermathStageCap;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import net.minecraft.world.entity.player.Player;
 
@@ -21,7 +21,7 @@ public class PlayerStageConditionModule extends PlayerConditionModule{
 
     @Override
     public boolean checkCondition(Player player) {
-        return StageCap.get(player).orElse(new StageCap()).getStages().contains(stage);
+        return AftermathStageCap.get(player).orElse(new AftermathStageCap()).getStages().contains(stage);
     }
 
     public String getStage() {
@@ -37,4 +37,18 @@ public class PlayerStageConditionModule extends PlayerConditionModule{
     public IConditionModule type() {
         return ModAftermathModule.PLAYER_STAGE_CONDITION.get();
     }
+
+
+    public static class Builder {
+        private final String stage;
+
+        public Builder(String stage) {
+            this.stage = stage;
+        }
+
+        public PlayerStageConditionModule build() {
+            return new PlayerStageConditionModule(stage);
+        }
+    }
+
 }

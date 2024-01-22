@@ -8,6 +8,7 @@ import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedMo
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
 
 public class EquipmentPredicate implements IPredicateModule {
     public static final String IDENTIFIER = "equipment";
@@ -66,6 +67,10 @@ public class EquipmentPredicate implements IPredicateModule {
         private boolean canDrop;
 
         public Builder add(String item,int weight){
+            equipment.add(item,weight);
+            return this;
+        }
+        public Builder add(Item item, int weight){
             equipment.add(item,weight);
             return this;
         }
