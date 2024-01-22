@@ -1,0 +1,834 @@
+{
+  "aftermath_module": "surviving_the_aftermath:raid",
+  "conditions": [
+    {
+      "condition": "surviving_the_aftermath:structure_condition",
+      "value": "surviving_the_aftermath:nether_invasion_portal"
+    }
+  ],
+  "name": "common",
+  "ready_time": 100,
+  "reward_time": 100,
+  "rewards": [
+    {
+      "data": "minecraft:gold_ingot",
+      "weight": 100
+    },
+    {
+      "data": "minecraft:diamond",
+      "weight": 10
+    },
+    {
+      "data": "minecraft:emerald",
+      "weight": 20
+    },
+    {
+      "data": "minecraft:enchanted_golden_apple",
+      "weight": 2
+    },
+    {
+      "data": "minecraft:netherite_scrap",
+      "weight": 2
+    }
+  ],
+  "waves": [
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 5,
+          "min": 4
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:piglin"
+      }
+    ],
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 5,
+          "min": 4
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:hoglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 5,
+          "min": 4
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:zombified_piglin"
+      }
+    ],
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 5,
+          "min": 4
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:piglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:integer_amount",
+          "value": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:hoglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:integer_amount",
+          "value": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:magma_cube"
+      }
+    ],
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 5,
+          "min": 4
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:piglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:hoglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:magma_cube"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:integer_amount",
+          "value": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:blaze"
+      }
+    ],
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:piglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:hoglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:magma_cube"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:integer_amount",
+          "value": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:blaze"
+      }
+    ],
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_predicate",
+        "entity_type": "minecraft:piglin",
+        "predicate_modules": [
+          {
+            "can_drop": false,
+            "entity_info": "surviving_the_aftermath:equipment",
+            "item": [
+              {
+                "data": "minecraft:golden_sword",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_helmet",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_chestplate",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_leggings",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_boots",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 3,
+          "min": 2
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:hoglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:magma_cube"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 3,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:ghast"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:integer_amount",
+          "value": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:blaze"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_predicate",
+        "entity_type": "minecraft:piglin_brute",
+        "predicate_modules": [
+          {
+            "can_drop": false,
+            "entity_info": "surviving_the_aftermath:equipment",
+            "item": [
+              {
+                "data": "minecraft:golden_sword",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_helmet",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_chestplate",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_leggings",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_boots",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_predicate",
+        "entity_type": "minecraft:piglin",
+        "predicate_modules": [
+          {
+            "can_drop": false,
+            "entity_info": "surviving_the_aftermath:equipment",
+            "item": [
+              {
+                "data": "minecraft:golden_sword",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_helmet",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_chestplate",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_leggings",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_boots",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:hoglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 4,
+          "min": 2
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:magma_cube"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 3,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:ghast"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:integer_amount",
+          "value": 2
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:blaze"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 2,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_predicate",
+        "entity_type": "minecraft:piglin_brute",
+        "predicate_modules": [
+          {
+            "can_drop": false,
+            "entity_info": "surviving_the_aftermath:equipment",
+            "item": [
+              {
+                "data": "minecraft:golden_sword",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_helmet",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_chestplate",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_leggings",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_boots",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_predicate",
+        "entity_type": "minecraft:piglin",
+        "predicate_modules": [
+          {
+            "can_drop": false,
+            "entity_info": "surviving_the_aftermath:equipment",
+            "item": [
+              {
+                "data": "minecraft:golden_sword",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_helmet",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_chestplate",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_leggings",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_boots",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 4,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:hoglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 4,
+          "min": 2
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:magma_cube"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 5,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:ghast"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:integer_amount",
+          "value": 4
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:blaze"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 3,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_predicate",
+        "entity_type": "minecraft:piglin_brute",
+        "predicate_modules": [
+          {
+            "can_drop": false,
+            "entity_info": "surviving_the_aftermath:equipment",
+            "item": [
+              {
+                "data": "minecraft:golden_sword",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_helmet",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_chestplate",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_leggings",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_boots",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 6,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_predicate",
+        "entity_type": "minecraft:piglin",
+        "predicate_modules": [
+          {
+            "can_drop": false,
+            "entity_info": "surviving_the_aftermath:equipment",
+            "item": [
+              {
+                "data": "minecraft:golden_sword",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_helmet",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_chestplate",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_leggings",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_boots",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 6,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:hoglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 6,
+          "min": 2
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:magma_cube"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 5,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:ghast"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:integer_amount",
+          "value": 4
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:blaze"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 6,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_predicate",
+        "entity_type": "minecraft:piglin_brute",
+        "predicate_modules": [
+          {
+            "can_drop": false,
+            "entity_info": "surviving_the_aftermath:equipment",
+            "item": [
+              {
+                "data": "minecraft:golden_sword",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_helmet",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_chestplate",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_leggings",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_boots",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 5,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_predicate",
+        "entity_type": "minecraft:piglin",
+        "predicate_modules": [
+          {
+            "can_drop": false,
+            "entity_info": "surviving_the_aftermath:equipment",
+            "item": [
+              {
+                "data": "minecraft:golden_sword",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_helmet",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_chestplate",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_leggings",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_boots",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 5,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:hoglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 5,
+          "min": 2
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:magma_cube"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 5,
+          "min": 1
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:ghast"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:integer_amount",
+          "value": 4
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:blaze"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 6,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_predicate",
+        "entity_type": "minecraft:piglin_brute",
+        "predicate_modules": [
+          {
+            "can_drop": false,
+            "entity_info": "surviving_the_aftermath:equipment",
+            "item": [
+              {
+                "data": "minecraft:golden_sword",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_helmet",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_chestplate",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_leggings",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:golden_boots",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 10,
+          "min": 5
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_predicate",
+        "entity_type": "minecraft:piglin",
+        "predicate_modules": [
+          {
+            "can_drop": false,
+            "entity_info": "surviving_the_aftermath:equipment",
+            "item": [
+              {
+                "data": "minecraft:netherite_sword",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:netherite_helmet",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:netherite_chestplate",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:netherite_leggings",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:netherite_boots",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 10,
+          "min": 5
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:hoglin"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 10,
+          "min": 4
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:magma_cube"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 10,
+          "min": 3
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:ghast"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:integer_amount",
+          "value": 5
+        },
+        "entity_info": "surviving_the_aftermath:entity_info",
+        "entity_type": "minecraft:blaze"
+      },
+      {
+        "amount_module": {
+          "amount": "surviving_the_aftermath:random_amount",
+          "max": 10,
+          "min": 5
+        },
+        "entity_info": "surviving_the_aftermath:entity_info_predicate",
+        "entity_type": "minecraft:piglin_brute",
+        "predicate_modules": [
+          {
+            "can_drop": false,
+            "entity_info": "surviving_the_aftermath:equipment",
+            "item": [
+              {
+                "data": "minecraft:netherite_sword",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:netherite_helmet",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:netherite_chestplate",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:netherite_leggings",
+                "weight": 1
+              },
+              {
+                "data": "minecraft:netherite_boots",
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  ]
+}

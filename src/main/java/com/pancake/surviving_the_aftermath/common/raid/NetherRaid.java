@@ -108,9 +108,6 @@ public class NetherRaid extends BaseRaid {
 
     @Override
     public void setMobSpawn(ServerLevel level, Mob mob) {
-        super.setMobSpawn(level, mob);
-
-
         if (mob instanceof AbstractPiglin piglin) {
             piglin.setImmuneToZombification(true);
         }
@@ -121,13 +118,15 @@ public class NetherRaid extends BaseRaid {
             slime.finalizeSpawn(level, level.getCurrentDifficultyAt(slime.blockPosition()), MobSpawnType.EVENT, null, null);
         }
         if (mob instanceof Ghast ghast) {
-            ghast.setPos(ghast.getX(), ghast.getY() + 20, ghast.getZ());
+            ghast.moveTo(ghast.getX(), ghast.getY() + 20, ghast.getZ());
         }
 
 
         Direction dir = Direction.Plane.HORIZONTAL.stream().filter(d -> level.isEmptyBlock(mob.blockPosition().relative(d))
                 && !spawnPos.contains(mob.blockPosition().relative(d))).findFirst().orElse(Direction.UP);
-        mob.setDeltaMovement(dir.getStepX() * 0.25, dir.getStepY() * 0.25, dir.getStepZ() * 0.25);
+        mob.setDeltaMovement(dir.getStepX() * 0.5, dir.getStepY() * 0.5, dir.getStepZ() * 0.5);
+
+        super.setMobSpawn(level, mob);
     }
 
     @Override

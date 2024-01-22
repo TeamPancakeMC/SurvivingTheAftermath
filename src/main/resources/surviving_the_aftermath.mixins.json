@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "surviving_the_aftermath.refmap.json",
   "mixins": [
+    "MoveControlMixin",
     "PortalShapeMixin"
   ],
   "client": [

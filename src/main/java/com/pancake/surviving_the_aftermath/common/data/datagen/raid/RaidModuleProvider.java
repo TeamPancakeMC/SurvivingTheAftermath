@@ -1,7 +1,10 @@
 package com.pancake.surviving_the_aftermath.common.data.datagen.raid;
 
+import com.google.common.collect.Lists;
+import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.data.datagen.AftermathModuleProviders;
+import com.pancake.surviving_the_aftermath.common.init.ModStructures;
 import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.condition.LevelStageConditionModule;
@@ -27,7 +30,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RaidModuleProvider extends AftermathModuleProviders<BaseRaidModule> {
@@ -37,83 +42,416 @@ public class RaidModuleProvider extends AftermathModuleProviders<BaseRaidModule>
 
     @Override
     public void addModules() {
-        RandomAmountModule random12 = new RandomAmountModule.Builder(1, 2).build();
-        RandomAmountModule random23 = new RandomAmountModule.Builder(2, 3).build();
-        RandomAmountModule random34 = new RandomAmountModule.Builder(3, 4).build();
-        RandomAmountModule random45 = new RandomAmountModule.Builder(4, 5).build();
-        RandomAmountModule random56 = new RandomAmountModule.Builder(5, 6).build();
-
-        IntegerAmountModule integer1 = new IntegerAmountModule.Builder(1).build();
-        IntegerAmountModule integer2 = new IntegerAmountModule.Builder(2).build();
-        IntegerAmountModule integer3 = new IntegerAmountModule.Builder(3).build();
-        IntegerAmountModule integer4 = new IntegerAmountModule.Builder(4).build();
-        IntegerAmountModule integer5 = new IntegerAmountModule.Builder(5).build();
-
-
-        ItemWeightedModule itemGoldenModule = new ItemWeightedModule.Builder()
-                .add("minecraft:golden_helmet", 1)
-                .add("minecraft:golden_chestplate", 1)
-                .add("minecraft:golden_leggings", 1)
-                .add("minecraft:golden_boots", 1)
-                .add("minecraft:golden_sword", 1)
+        ItemWeightedModule rewards = new ItemWeightedModule.Builder()
+                .add(Items.GOLD_INGOT,100)
+                .add(Items.DIAMOND,10)
+                .add(Items.EMERALD,20)
+                .add(Items.ENCHANTED_GOLDEN_APPLE,2)
+                .add(Items.NETHERITE_SCRAP,2)
                 .build();
 
-        List<IEntityInfoModule> waves1 = List.of(
-                new EntityInfoModule.Builder("minecraft:piglin")
-                        .amountModule(integer1)
-                        .build(),
-                new EntityInfoModule.Builder("minecraft:hoglin")
-                        .amountModule(random12)
+        ItemWeightedModule goldenEquipment = new ItemWeightedModule.Builder()
+                .add(Items.GOLDEN_SWORD,1)
+                .add(Items.GOLDEN_HELMET,1)
+                .add(Items.GOLDEN_CHESTPLATE,1)
+                .add(Items.GOLDEN_LEGGINGS,1)
+                .add(Items.GOLDEN_BOOTS,1)
+                .build();
+
+        StructureConditionModule structureConditionModule = new StructureConditionModule(ModStructures.NETHER_RAID.location().toString());
+
+
+        List<IEntityInfoModule> wave1 = Lists.newArrayList();
+        wave1.add(new EntityInfoModule.Builder(EntityType.PIGLIN)
+                .amountModule(new RandomAmountModule.Builder(4,5)
                         .build()
-        );
+                )
+                .build());
 
-        List<IEntityInfoModule> waves2 = List.of(
-                new EntityInfoWithPredicateModule.Builder("minecraft:piglin_brute")
-                        .add(new EffectPredicate.Builder()
-                                .add(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,100,2),1)
-                                .add(new MobEffectInstance(MobEffects.LEVITATION,100,2),1)
-                                .build()
-                        )
-                        .add(new AttributePredicate.Builder()
-                                .add(new AttributeWeightedModule.AttributeInfo(Attributes.MAX_HEALTH,
-                                                new AttributeModifier("nether_raid", 5.0, AttributeModifier.Operation.ADDITION))
-                                        ,1)
-                                .build()
-                        )
-                        .amountModule(random23)
-                        .build(),
-                new EntityInfoWithPredicateModule.Builder("minecraft:creeper")
-                        .add(new NBTPredicate()
-                                .add("powered",1)
-                        )
-                        .amountModule(integer1)
-                        .build(),
-                new EntityInfoWithPredicateModule.Builder("minecraft:piglin")
-                        .add(new EquipmentPredicate.Builder()
-                                .canDrop(false)
-                                .add("minecraft:golden_helmet", 1)
-                                .add("minecraft:golden_chestplate", 1)
-                                .add("minecraft:golden_leggings", 1)
-                                .add("minecraft:golden_boots", 1)
-                                .add("minecraft:golden_sword", 1)
-                                .build())
-                        .amountModule(integer1)
+        List<IEntityInfoModule> wave2 = Lists.newArrayList();
+        wave2.add(new EntityInfoModule.Builder(EntityType.HOGLIN)
+                .amountModule(new RandomAmountModule.Builder(4,5)
                         .build()
-        );
+                )
+                .build());
+        wave2.add(new EntityInfoModule.Builder(EntityType.ZOMBIFIED_PIGLIN)
+                .amountModule(new RandomAmountModule.Builder(4,5)
+                        .build()
+                )
+                .build());
+
+        List<IEntityInfoModule> wave3 = Lists.newArrayList();
+        wave3.add(new EntityInfoModule.Builder(EntityType.PIGLIN)
+                .amountModule(new RandomAmountModule.Builder(4,5)
+                        .build()
+                )
+                .build());
+        wave3.add(new EntityInfoModule.Builder(EntityType.HOGLIN)
+                .amountModule(new IntegerAmountModule.Builder(1)
+                        .build()
+                )
+                .build());
+        wave3.add(new EntityInfoModule.Builder(EntityType.MAGMA_CUBE)
+                .amountModule(new IntegerAmountModule.Builder(1)
+                        .build()
+                )
+                .build());
+
+        List<IEntityInfoModule> wave4 = Lists.newArrayList();
+        wave4.add(new EntityInfoModule.Builder(EntityType.PIGLIN)
+                .amountModule(new RandomAmountModule.Builder(4,5)
+                        .build()
+                )
+                .build());
+        wave4.add(new EntityInfoModule.Builder(EntityType.HOGLIN)
+                .amountModule(new RandomAmountModule.Builder(1,2)
+                        .build()
+                )
+                .build());
+        wave4.add(new EntityInfoModule.Builder(EntityType.MAGMA_CUBE)
+                .amountModule(new RandomAmountModule.Builder(1,2)
+                        .build()
+                )
+                .build());
+        wave4.add(new EntityInfoModule.Builder(EntityType.BLAZE)
+                .amountModule(new IntegerAmountModule.Builder(1)
+                        .build()
+                )
+                .build());
+
+        List<IEntityInfoModule> wave5 = Lists.newArrayList();
+        wave5.add(new EntityInfoModule.Builder(EntityType.PIGLIN)
+                .amountModule(new RandomAmountModule.Builder(3,4)
+                        .build()
+                )
+                .build());
+        wave5.add(new EntityInfoModule.Builder(EntityType.HOGLIN)
+                .amountModule(new RandomAmountModule.Builder(1,2)
+                        .build()
+                )
+                .build());
+        wave5.add(new EntityInfoModule.Builder(EntityType.MAGMA_CUBE)
+                .amountModule(new RandomAmountModule.Builder(1,2)
+                        .build()
+                )
+                .build());
+        wave5.add(new EntityInfoModule.Builder(EntityType.BLAZE)
+                .amountModule(new IntegerAmountModule.Builder(1)
+                        .build()
+                )
+                .build());
+
+        List<IEntityInfoModule> wave6 = Lists.newArrayList();
+        wave6.add(new EntityInfoWithPredicateModule.Builder(EntityType.PIGLIN)
+                .add(new EquipmentPredicate.Builder()
+                        .add(Items.GOLDEN_SWORD,1)
+                        .add(Items.GOLDEN_HELMET,1)
+                        .add(Items.GOLDEN_CHESTPLATE,1)
+                        .add(Items.GOLDEN_LEGGINGS,1)
+                        .add(Items.GOLDEN_BOOTS,1)
+                        .canDrop(false)
+                        .build())
+                .amountModule(new RandomAmountModule.Builder(3,4)
+                        .build()
+                )
+                .build());
+        wave6.add(new EntityInfoModule.Builder(EntityType.HOGLIN)
+                .amountModule(new RandomAmountModule.Builder(2,3)
+                        .build()
+                )
+                .build());
+        wave6.add(new EntityInfoModule.Builder(EntityType.MAGMA_CUBE)
+                .amountModule(new RandomAmountModule.Builder(1,2)
+                        .build()
+                )
+                .build());
+        wave6.add(new EntityInfoModule.Builder(EntityType.GHAST)
+                .amountModule(new RandomAmountModule.Builder(1,3)
+                        .build()
+                )
+                .build());
+        wave6.add(new EntityInfoModule.Builder(EntityType.BLAZE)
+                .amountModule(new IntegerAmountModule.Builder(1)
+                        .build()
+                )
+                .build());
+        wave6.add(new EntityInfoWithPredicateModule.Builder(EntityType.PIGLIN_BRUTE)
+                .add(new EquipmentPredicate.Builder()
+                        .add(Items.GOLDEN_SWORD,1)
+                        .add(Items.GOLDEN_HELMET,1)
+                        .add(Items.GOLDEN_CHESTPLATE,1)
+                        .add(Items.GOLDEN_LEGGINGS,1)
+                        .add(Items.GOLDEN_BOOTS,1)
+                        .canDrop(false)
+                        .build())
+                .amountModule(new RandomAmountModule.Builder(1,2)
+                        .build()
+                )
+                .build());
+
+        List<IEntityInfoModule> wave7 = Lists.newArrayList();
+        wave7.add(new EntityInfoWithPredicateModule.Builder(EntityType.PIGLIN)
+                .add(new EquipmentPredicate.Builder()
+                        .add(Items.GOLDEN_SWORD,1)
+                        .add(Items.GOLDEN_HELMET,1)
+                        .add(Items.GOLDEN_CHESTPLATE,1)
+                        .add(Items.GOLDEN_LEGGINGS,1)
+                        .add(Items.GOLDEN_BOOTS,1)
+                        .canDrop(false)
+                        .build())
+                .amountModule(new RandomAmountModule.Builder(3,4)
+                        .build()
+                )
+                .build());
+        wave7.add(new EntityInfoModule.Builder(EntityType.HOGLIN)
+                .amountModule(new RandomAmountModule.Builder(3,4)
+                        .build()
+                )
+                .build());
+        wave7.add(new EntityInfoModule.Builder(EntityType.MAGMA_CUBE)
+                .amountModule(new RandomAmountModule.Builder(2,4)
+                        .build()
+                )
+                .build());
+        wave7.add(new EntityInfoModule.Builder(EntityType.GHAST)
+                .amountModule(new RandomAmountModule.Builder(1,3)
+                        .build()
+                )
+                .build());
+        wave7.add(new EntityInfoModule.Builder(EntityType.BLAZE)
+                .amountModule(new IntegerAmountModule.Builder(2)
+                        .build()
+                )
+                .build());
+        wave7.add(new EntityInfoWithPredicateModule.Builder(EntityType.PIGLIN_BRUTE)
+                .add(new EquipmentPredicate.Builder()
+                        .add(Items.GOLDEN_SWORD,1)
+                        .add(Items.GOLDEN_HELMET,1)
+                        .add(Items.GOLDEN_CHESTPLATE,1)
+                        .add(Items.GOLDEN_LEGGINGS,1)
+                        .add(Items.GOLDEN_BOOTS,1)
+                        .canDrop(false)
+                        .build())
+                .amountModule(new RandomAmountModule.Builder(1,2)
+                        .build()
+                )
+                .build());
+
+        List<IEntityInfoModule> wave8 = Lists.newArrayList();
+        wave8.add(new EntityInfoWithPredicateModule.Builder(EntityType.PIGLIN)
+                .add(new EquipmentPredicate.Builder()
+                        .add(Items.GOLDEN_SWORD,1)
+                        .add(Items.GOLDEN_HELMET,1)
+                        .add(Items.GOLDEN_CHESTPLATE,1)
+                        .add(Items.GOLDEN_LEGGINGS,1)
+                        .add(Items.GOLDEN_BOOTS,1)
+                        .canDrop(false)
+                        .build())
+                .amountModule(new RandomAmountModule.Builder(3,4)
+                        .build()
+                )
+                .build());
+        wave8.add(new EntityInfoModule.Builder(EntityType.HOGLIN)
+                .amountModule(new RandomAmountModule.Builder(3,4)
+                        .build()
+                )
+                .build());
+        wave8.add(new EntityInfoModule.Builder(EntityType.MAGMA_CUBE)
+                .amountModule(new RandomAmountModule.Builder(2,4)
+                        .build()
+                )
+                .build());
+        wave8.add(new EntityInfoModule.Builder(EntityType.GHAST)
+                .amountModule(new RandomAmountModule.Builder(1,5)
+                        .build()
+                )
+                .build());
+        wave8.add(new EntityInfoModule.Builder(EntityType.BLAZE)
+                .amountModule(new IntegerAmountModule.Builder(4)
+                        .build()
+                )
+                .build());
+        wave8.add(new EntityInfoWithPredicateModule.Builder(EntityType.PIGLIN_BRUTE)
+                .add(new EquipmentPredicate.Builder()
+                        .add(Items.GOLDEN_SWORD,1)
+                        .add(Items.GOLDEN_HELMET,1)
+                        .add(Items.GOLDEN_CHESTPLATE,1)
+                        .add(Items.GOLDEN_LEGGINGS,1)
+                        .add(Items.GOLDEN_BOOTS,1)
+                        .canDrop(false)
+                        .build())
+                .amountModule(new RandomAmountModule.Builder(1,3)
+                        .build()
+                )
+                .build());
+
+        List<IEntityInfoModule> wave9 = Lists.newArrayList();
+        wave9.add(new EntityInfoWithPredicateModule.Builder(EntityType.PIGLIN)
+                .add(new EquipmentPredicate.Builder()
+                        .add(Items.GOLDEN_SWORD,1)
+                        .add(Items.GOLDEN_HELMET,1)
+                        .add(Items.GOLDEN_CHESTPLATE,1)
+                        .add(Items.GOLDEN_LEGGINGS,1)
+                        .add(Items.GOLDEN_BOOTS,1)
+                        .canDrop(false)
+                        .build())
+                .amountModule(new RandomAmountModule.Builder(3,6)
+                        .build()
+                )
+                .build());
+        wave9.add(new EntityInfoModule.Builder(EntityType.HOGLIN)
+                .amountModule(new RandomAmountModule.Builder(3,6)
+                        .build()
+                )
+                .build());
+        wave9.add(new EntityInfoModule.Builder(EntityType.MAGMA_CUBE)
+                .amountModule(new RandomAmountModule.Builder(2,6)
+                        .build()
+                )
+                .build());
+        wave9.add(new EntityInfoModule.Builder(EntityType.GHAST)
+                .amountModule(new RandomAmountModule.Builder(1,5)
+                        .build()
+                )
+                .build());
+        wave9.add(new EntityInfoModule.Builder(EntityType.BLAZE)
+                .amountModule(new IntegerAmountModule.Builder(4)
+                        .build()
+                )
+                .build());
+        wave9.add(new EntityInfoWithPredicateModule.Builder(EntityType.PIGLIN_BRUTE)
+                .add(new EquipmentPredicate.Builder()
+                        .add(Items.GOLDEN_SWORD,1)
+                        .add(Items.GOLDEN_HELMET,1)
+                        .add(Items.GOLDEN_CHESTPLATE,1)
+                        .add(Items.GOLDEN_LEGGINGS,1)
+                        .add(Items.GOLDEN_BOOTS,1)
+                        .canDrop(false)
+                        .build())
+                .amountModule(new RandomAmountModule.Builder(3,6)
+                        .build()
+                )
+                .build());
+
+        List<IEntityInfoModule> wave10 = Lists.newArrayList();
+        wave10.add(new EntityInfoWithPredicateModule.Builder(EntityType.PIGLIN)
+                .add(new EquipmentPredicate.Builder()
+                        .add(Items.GOLDEN_SWORD,1)
+                        .add(Items.GOLDEN_HELMET,1)
+                        .add(Items.GOLDEN_CHESTPLATE,1)
+                        .add(Items.GOLDEN_LEGGINGS,1)
+                        .add(Items.GOLDEN_BOOTS,1)
+                        .canDrop(false)
+                        .build())
+                .amountModule(new RandomAmountModule.Builder(3,5)
+                        .build()
+                )
+                .build());
+        wave10.add(new EntityInfoModule.Builder(EntityType.HOGLIN)
+                .amountModule(new RandomAmountModule.Builder(3,5)
+                        .build()
+                )
+                .build());
+        wave10.add(new EntityInfoModule.Builder(EntityType.MAGMA_CUBE)
+                .amountModule(new RandomAmountModule.Builder(2,5)
+                        .build()
+                )
+                .build());
+        wave10.add(new EntityInfoModule.Builder(EntityType.GHAST)
+                .amountModule(new RandomAmountModule.Builder(1,5)
+                        .build()
+                )
+                .build());
+        wave10.add(new EntityInfoModule.Builder(EntityType.BLAZE)
+                .amountModule(new IntegerAmountModule.Builder(4)
+                        .build()
+                )
+                .build());
+        wave10.add(new EntityInfoWithPredicateModule.Builder(EntityType.PIGLIN_BRUTE)
+                .add(new EquipmentPredicate.Builder()
+                        .add(Items.GOLDEN_SWORD,1)
+                        .add(Items.GOLDEN_HELMET,1)
+                        .add(Items.GOLDEN_CHESTPLATE,1)
+                        .add(Items.GOLDEN_LEGGINGS,1)
+                        .add(Items.GOLDEN_BOOTS,1)
+                        .canDrop(false)
+                        .build())
+                .amountModule(new RandomAmountModule.Builder(3,6)
+                        .build()
+                )
+                .build());
+
+        List<IEntityInfoModule> wave11 = Lists.newArrayList();
+        wave11.add(new EntityInfoWithPredicateModule.Builder(EntityType.PIGLIN)
+                .add(new EquipmentPredicate.Builder()
+                        .add(Items.NETHERITE_SWORD,1)
+                        .add(Items.NETHERITE_HELMET,1)
+                        .add(Items.NETHERITE_CHESTPLATE,1)
+                        .add(Items.NETHERITE_LEGGINGS,1)
+                        .add(Items.NETHERITE_BOOTS,1)
+                        .canDrop(false)
+                        .build())
+                .amountModule(new RandomAmountModule.Builder(5,10)
+                        .build()
+                )
+                .build());
+        wave11.add(new EntityInfoModule.Builder(EntityType.HOGLIN)
+                .amountModule(new RandomAmountModule.Builder(5,10)
+                        .build()
+                )
+                .build());
+        wave11.add(new EntityInfoModule.Builder(EntityType.MAGMA_CUBE)
+                .amountModule(new RandomAmountModule.Builder(4,10)
+                        .build()
+                )
+                .build());
+        wave11.add(new EntityInfoModule.Builder(EntityType.GHAST)
+                .amountModule(new RandomAmountModule.Builder(3,10)
+                        .build()
+                )
+                .build());
+        wave11.add(new EntityInfoModule.Builder(EntityType.BLAZE)
+                .amountModule(new IntegerAmountModule.Builder(5)
+                        .build()
+                )
+                .build());
+        wave11.add(new EntityInfoWithPredicateModule.Builder(EntityType.PIGLIN_BRUTE)
+                .add(new EquipmentPredicate.Builder()
+                        .add(Items.NETHERITE_SWORD,1)
+                        .add(Items.NETHERITE_HELMET,1)
+                        .add(Items.NETHERITE_CHESTPLATE,1)
+                        .add(Items.NETHERITE_LEGGINGS,1)
+                        .add(Items.NETHERITE_BOOTS,1)
+                        .canDrop(false)
+                        .build())
+                .amountModule(new RandomAmountModule.Builder(5,10)
+                        .build()
+                )
+                .build());
 
 
-        BaseRaidModule netherRaid = new BaseRaidModule.Builder("nether_raid")
+
+
+
+        BaseRaidModule netherRaidModule = new BaseRaidModule.Builder("common")
                 .readyTime(100)
                 .rewardTime(100)
-                .addWave(waves1)
-                .addWave(waves2)
-                .rewards(itemGoldenModule)
-                .addCondition(new StructureConditionModule("surviving_the_aftermath:nether_invasion_portal"))
-                .addCondition(new LevelStageConditionModule("111"))
+                .rewards(rewards)
+                .addWave(wave1)
+                .addWave(wave2)
+                .addWave(wave3)
+                .addWave(wave4)
+                .addWave(wave5)
+                .addWave(wave6)
+                .addWave(wave7)
+                .addWave(wave8)
+                .addWave(wave9)
+                .addWave(wave10)
+                .addWave(wave11)
+                .addCondition(structureConditionModule)
                 .build();
 
 
-        addModule(netherRaid);
-
+        addModule(netherRaidModule);
     }
 }

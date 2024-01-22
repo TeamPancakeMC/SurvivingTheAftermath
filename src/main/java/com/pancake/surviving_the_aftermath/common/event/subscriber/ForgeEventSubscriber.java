@@ -5,6 +5,7 @@ import com.pancake.surviving_the_aftermath.api.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.common.capability.AftermathCap;
+import com.pancake.surviving_the_aftermath.common.config.AftermathConfig;
 import com.pancake.surviving_the_aftermath.common.init.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -28,7 +29,7 @@ public class ForgeEventSubscriber {
 			ServerLevelData settings = event.getSettings();
 			BlockPos pos = level.findNearestMapStructure(ModTags.NETHER_RAID,
 					new BlockPos(settings.getXSpawn(), settings.getYSpawn(), settings.getZSpawn()), 100, false);
-			if (pos != null) {
+			if (pos != null && AftermathConfig.enableSpawnPointStructure.get()) {
 				settings.setSpawn(new BlockPos(pos.getX(), level.getHeight(Heightmap.Types.WORLD_SURFACE, pos.getX(), pos.getZ()), pos.getZ()), 0);
 				event.setCanceled(true);
 			}
