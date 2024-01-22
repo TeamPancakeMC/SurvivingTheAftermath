@@ -2,8 +2,6 @@ package com.pancake.surviving_the_aftermath.common.event;
 
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.IAftermathEvent;
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import dev.latvian.mods.kubejs.event.EventJS;
 import net.minecraft.server.level.ServerLevel;

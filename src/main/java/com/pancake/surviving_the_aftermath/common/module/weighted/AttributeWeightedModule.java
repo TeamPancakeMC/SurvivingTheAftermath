@@ -39,7 +39,7 @@ public class AttributeWeightedModule extends BaseWeightedModule<AttributeWeighte
     }
 
     public record AttributeInfo(Attribute attribute, AttributeModifier attributeModifier) {
-        public static Codec<AttributeInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        public final static Codec<AttributeInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BuiltInRegistries.ATTRIBUTE.byNameCodec().fieldOf("attribute").forGetter(AttributeInfo::attribute),
                 CodecUtils.ATTRIBUTE_MODIFIER_CODEC.fieldOf("attribute_modifier").forGetter(AttributeInfo::attributeModifier)
         ).apply(instance, AttributeInfo::new));

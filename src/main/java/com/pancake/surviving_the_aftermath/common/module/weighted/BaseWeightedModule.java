@@ -6,7 +6,6 @@ import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedEntry.Wrapper;
 
 import java.util.List;
-import java.util.Map;
 
 
 public abstract class BaseWeightedModule<T> implements IWeightedModule<T> {
@@ -32,9 +31,7 @@ public abstract class BaseWeightedModule<T> implements IWeightedModule<T> {
     @Override
     public SimpleWeightedRandomList<T> getWeightedList() {
         SimpleWeightedRandomList.Builder<T> builder = SimpleWeightedRandomList.builder();
-        this.list.forEach(build -> {
-            builder.add(build.getData(), build.getWeight().asInt());
-        });
+        this.list.forEach(build -> builder.add(build.getData(), build.getWeight().asInt()));
         return builder.build();
     }
 

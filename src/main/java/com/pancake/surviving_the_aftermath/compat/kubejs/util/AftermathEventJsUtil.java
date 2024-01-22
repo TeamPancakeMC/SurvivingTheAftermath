@@ -42,8 +42,7 @@ public class AftermathEventJsUtil {
     }
 
     public static boolean execute(EventJS kubeJS) {
-        if (kubeJS instanceof AftermathEventJS) {
-            AftermathEventJS event = (AftermathEventJS) kubeJS;
+        if (kubeJS instanceof AftermathEventJS event) {
             if (event instanceof AftermathEventJS.StartJS) {
                 return start(event.getAftermath(), event.getPlayers(), event.getLevel());
             } else if (event instanceof AftermathEventJS.ReadyJS) {
@@ -59,8 +58,7 @@ public class AftermathEventJsUtil {
             } else if (event instanceof AftermathEventJS.EndJS) {
                 return end(event.getAftermath(), event.getPlayers(), event.getLevel());
             }
-        } else if (kubeJS instanceof AftermathModifyEventJS) {
-            AftermathModifyEventJS event = (AftermathModifyEventJS) kubeJS;
+        } else if (kubeJS instanceof AftermathModifyEventJS event) {
             return modify(event.getIdentifier(), event.getAftermathModules());
         }
         return false;

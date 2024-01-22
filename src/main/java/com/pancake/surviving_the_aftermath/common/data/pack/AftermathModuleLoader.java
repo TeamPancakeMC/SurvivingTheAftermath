@@ -17,7 +17,7 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
+
 import java.util.Map;
 
 public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {

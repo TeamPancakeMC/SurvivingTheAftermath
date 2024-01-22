@@ -8,7 +8,6 @@ import com.pancake.surviving_the_aftermath.common.module.condition.LevelConditio
 import com.pancake.surviving_the_aftermath.common.module.condition.PlayerConditionModule;
 import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
-import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -95,7 +94,7 @@ public abstract class BaseAftermathModule implements IAftermathModule {
     public static class Builder<T extends IAftermathModule> {
         protected T module;
         protected List<IConditionModule> conditions = Lists.newArrayList();
-        protected ItemWeightedModule rewards;
+        protected  ItemWeightedModule rewards;
         protected String name;
         public Builder(String name) {
             this.name = name;

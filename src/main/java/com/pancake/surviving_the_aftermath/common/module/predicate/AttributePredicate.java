@@ -5,9 +5,7 @@ import com.mojang.serialization.Codec;
 import com.pancake.surviving_the_aftermath.api.module.IPredicateModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.AttributeWeightedModule;
-import com.pancake.surviving_the_aftermath.common.module.weighted.EffectWeightedModule;
 import net.minecraft.util.random.WeightedEntry;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -60,7 +58,7 @@ public class AttributePredicate implements IPredicateModule {
     }
 
     public static class Builder {
-        private List<WeightedEntry.Wrapper<AttributeWeightedModule.AttributeInfo>> attributes = Lists.newArrayList();
+        private final List<WeightedEntry.Wrapper<AttributeWeightedModule.AttributeInfo>> attributes = Lists.newArrayList();
 
         public Builder add(AttributeWeightedModule.AttributeInfo instance, int weight){
             attributes.add(WeightedEntry.wrap(instance,weight));

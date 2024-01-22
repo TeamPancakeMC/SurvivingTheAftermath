@@ -56,14 +56,12 @@ public class EquipmentPredicate implements IPredicateModule {
             }
 
             equipment.getWeightedList().getRandomValue(livingEntity.getRandom())
-                    .ifPresent(item -> {
-                        mob.equipItemIfPossible(item.getDefaultInstance());
-                    });
+                    .ifPresent(item -> mob.equipItemIfPossible(item.getDefaultInstance()));
         }
     }
 
     public static class Builder {
-        private ItemWeightedModule.Builder equipment = new ItemWeightedModule.Builder();
+        private final ItemWeightedModule.Builder equipment = new ItemWeightedModule.Builder();
         private boolean canDrop;
 
         public Builder add(String item,int weight){

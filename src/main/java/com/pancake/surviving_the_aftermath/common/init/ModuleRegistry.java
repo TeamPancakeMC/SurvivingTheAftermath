@@ -13,29 +13,29 @@ import java.util.function.Supplier;
 
 public class ModuleRegistry {
     public static final DeferredRegister<IAftermath> AFTERMATH = DeferredRegister.create(Keys.AFTERMATH, SurvivingTheAftermath.MOD_ID);
-    public static Supplier<IForgeRegistry<IAftermath>> AFTERMATH_REGISTRY = AFTERMATH.makeRegistry(RegistryBuilder::new);
+    public static final Supplier<IForgeRegistry<IAftermath>> AFTERMATH_REGISTRY = AFTERMATH.makeRegistry(RegistryBuilder::new);
     public static final DeferredRegister<IAftermathModule> AFTERMATH_MODULE = DeferredRegister.create(Keys.AFTERMATH_MODULE, SurvivingTheAftermath.MOD_ID);
-    public static Supplier<IForgeRegistry<IAftermathModule>> AFTERMATH_MODULE_REGISTRY = AFTERMATH_MODULE.makeRegistry(RegistryBuilder::new);
+    public static final Supplier<IForgeRegistry<IAftermathModule>> AFTERMATH_MODULE_REGISTRY = AFTERMATH_MODULE.makeRegistry(RegistryBuilder::new);
 
 
     public static final DeferredRegister<IEntityInfoModule> ENTITY_INFO_MODULE = DeferredRegister.create(Keys.ENTITY_INFO, SurvivingTheAftermath.MOD_ID);
-    public static Supplier<IForgeRegistry<IEntityInfoModule>> ENTITY_INFO_REGISTRY = ENTITY_INFO_MODULE.makeRegistry(RegistryBuilder::new);
+    public static final Supplier<IForgeRegistry<IEntityInfoModule>> ENTITY_INFO_REGISTRY = ENTITY_INFO_MODULE.makeRegistry(RegistryBuilder::new);
 
     public static final DeferredRegister<IAmountModule> AMOUNT_MODULE = DeferredRegister.create(Keys.AMOUNT, SurvivingTheAftermath.MOD_ID);
-    public static Supplier<IForgeRegistry<IAmountModule>> AMOUNT_REGISTRY = AMOUNT_MODULE.makeRegistry(RegistryBuilder::new);
+    public static final Supplier<IForgeRegistry<IAmountModule>> AMOUNT_REGISTRY = AMOUNT_MODULE.makeRegistry(RegistryBuilder::new);
 
     public static final DeferredRegister<IWeightedModule<?>> WEIGHTED_MODULE = DeferredRegister.create(Keys.WEIGHTED, SurvivingTheAftermath.MOD_ID);
-    public static Supplier<IForgeRegistry<IWeightedModule<?>>> WEIGHTED_REGISTRY = WEIGHTED_MODULE.makeRegistry(RegistryBuilder::new);
+    public static final Supplier<IForgeRegistry<IWeightedModule<?>>> WEIGHTED_REGISTRY = WEIGHTED_MODULE.makeRegistry(RegistryBuilder::new);
 
     public static final DeferredRegister<IConditionModule> CONDITION_MODULE = DeferredRegister.create(Keys.CONDITION, SurvivingTheAftermath.MOD_ID);
-    public static Supplier<IForgeRegistry<IConditionModule>> CONDITION_REGISTRY = CONDITION_MODULE.makeRegistry(RegistryBuilder::new);
+    public static final Supplier<IForgeRegistry<IConditionModule>> CONDITION_REGISTRY = CONDITION_MODULE.makeRegistry(RegistryBuilder::new);
 
     public static final DeferredRegister<IPredicateModule> PREDICATE_MODULE = DeferredRegister.create(Keys.PREDICATE, SurvivingTheAftermath.MOD_ID);
-    public static Supplier<IForgeRegistry<IPredicateModule>> PREDICATE_REGISTRY = PREDICATE_MODULE.makeRegistry(RegistryBuilder::new);
+    public static final Supplier<IForgeRegistry<IPredicateModule>> PREDICATE_REGISTRY = PREDICATE_MODULE.makeRegistry(RegistryBuilder::new);
 
 
     public static final DeferredRegister<ITracker> TRACKER_MODULE = DeferredRegister.create(Keys.TRACKER, SurvivingTheAftermath.MOD_ID);
-    public static Supplier<IForgeRegistry<ITracker>> TRACKER_REGISTRY = TRACKER_MODULE.makeRegistry(RegistryBuilder::new);
+    public static final Supplier<IForgeRegistry<ITracker>> TRACKER_REGISTRY = TRACKER_MODULE.makeRegistry(RegistryBuilder::new);
 
     public static void register(IEventBus bus) {
         AFTERMATH.register(bus);

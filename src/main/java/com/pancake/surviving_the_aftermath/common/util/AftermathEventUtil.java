@@ -2,7 +2,7 @@ package com.pancake.surviving_the_aftermath.common.util;
 
 import com.pancake.surviving_the_aftermath.api.AftermathState;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
-import com.pancake.surviving_the_aftermath.api.IAftermathEvent;
+
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.common.event.AftermathEvent;
 import com.pancake.surviving_the_aftermath.compat.kubejs.util.AftermathEventJsUtil;

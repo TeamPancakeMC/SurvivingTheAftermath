@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.pancake.surviving_the_aftermath.api.module.IConditionModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 

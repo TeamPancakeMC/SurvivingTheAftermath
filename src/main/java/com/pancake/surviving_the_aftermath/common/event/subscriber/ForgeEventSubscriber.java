@@ -19,7 +19,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-import java.util.Collection;
 
 @EventBusSubscriber(modid = SurvivingTheAftermath.MOD_ID, bus = Bus.FORGE)
 public class ForgeEventSubscriber {
@@ -47,9 +46,7 @@ public class ForgeEventSubscriber {
 		if (event.getLevel().isClientSide()) return;
 		AftermathManager.getInstance().getAftermathMap().values().stream()
 				.map(IAftermath::getTrackers)
-				.forEach(trackers -> {
-					trackers.forEach(ITracker::unregister);
-				});
+				.forEach(trackers -> trackers.forEach(ITracker::unregister));
 		AftermathManager.getInstance().getAftermathMap().clear();
 	}
 }

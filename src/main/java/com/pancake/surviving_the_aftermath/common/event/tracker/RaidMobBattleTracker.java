@@ -15,7 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.Optional;
+
 import java.util.UUID;
 
 public class RaidMobBattleTracker extends BaseTracker {

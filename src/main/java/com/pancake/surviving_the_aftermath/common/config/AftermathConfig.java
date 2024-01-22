@@ -6,9 +6,9 @@ public class AftermathConfig {
     public static final ForgeConfigSpec SPEC;
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
-    public static ForgeConfigSpec.BooleanValue enableMobBattleTrackerHighlight;
-    public static ForgeConfigSpec.BooleanValue enableMobBattleTrackerRestrictedRange;
-    public static ForgeConfigSpec.BooleanValue enableSpawnPointStructure;
+    public final static ForgeConfigSpec.BooleanValue enableMobBattleTrackerHighlight;
+    public final static ForgeConfigSpec.BooleanValue enableMobBattleTrackerRestrictedRange;
+    public final static ForgeConfigSpec.BooleanValue enableSpawnPointStructure;
 
 
     static {

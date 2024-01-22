@@ -61,7 +61,7 @@ public class EntityInfoWithPredicateModule extends EntityInfoModule {
 
 
     public static class Builder extends EntityInfoModule.Builder{
-        private List<IPredicateModule> predicateModules = Lists.newArrayList();
+        private final List<IPredicateModule> predicateModules = Lists.newArrayList();
 
         public Builder(String entityType) {
             super(entityType);

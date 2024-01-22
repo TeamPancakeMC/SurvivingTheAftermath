@@ -1,38 +1,21 @@
 package com.pancake.surviving_the_aftermath.common.data.datagen.raid;
 
 import com.google.common.collect.Lists;
-import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.data.datagen.AftermathModuleProviders;
 import com.pancake.surviving_the_aftermath.common.init.ModStructures;
 import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
 import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
-import com.pancake.surviving_the_aftermath.common.module.condition.LevelStageConditionModule;
-import com.pancake.surviving_the_aftermath.common.module.condition.PlayerStageConditionModule;
 import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoWithPredicateModule;
-import com.pancake.surviving_the_aftermath.common.module.predicate.AttributePredicate;
-import com.pancake.surviving_the_aftermath.common.module.predicate.EffectPredicate;
 import com.pancake.surviving_the_aftermath.common.module.predicate.EquipmentPredicate;
-import com.pancake.surviving_the_aftermath.common.module.predicate.NBTPredicate;
-import com.pancake.surviving_the_aftermath.common.module.weighted.AttributeWeightedModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
-import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
-import com.pancake.surviving_the_aftermath.common.raid.NetherRaid;
 import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import net.minecraft.data.PackOutput;
-import net.minecraft.util.random.WeightedEntry;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RaidModuleProvider extends AftermathModuleProviders<BaseRaidModule> {

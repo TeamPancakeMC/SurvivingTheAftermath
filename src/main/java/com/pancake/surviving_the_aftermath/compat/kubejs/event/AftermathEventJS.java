@@ -2,13 +2,11 @@ package com.pancake.surviving_the_aftermath.compat.kubejs.event;
 
 import com.pancake.surviving_the_aftermath.api.IAftermath;
 import com.pancake.surviving_the_aftermath.api.IAftermathEvent;
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import dev.latvian.mods.kubejs.event.EventJS;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.eventbus.api.Event;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

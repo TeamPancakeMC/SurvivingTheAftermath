@@ -1,7 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.module.predicate;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IPredicateModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import net.minecraft.nbt.CompoundTag;

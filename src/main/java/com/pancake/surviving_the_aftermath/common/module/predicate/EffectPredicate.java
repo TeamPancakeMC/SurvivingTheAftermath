@@ -2,12 +2,9 @@ package com.pancake.surviving_the_aftermath.common.module.predicate;
 
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IPredicateModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.EffectWeightedModule;
-import com.pancake.surviving_the_aftermath.common.module.weighted.EntityTypeWeightedModule;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.effect.MobEffect;
@@ -49,7 +46,7 @@ public class EffectPredicate implements IPredicateModule {
     }
 
     public static class Builder {
-        private List<WeightedEntry.Wrapper<MobEffectInstance>> effectInstances = Lists.newArrayList();
+        private final List<WeightedEntry.Wrapper<MobEffectInstance>> effectInstances = Lists.newArrayList();
 
         public Builder add(MobEffectInstance instance,int weight){
             effectInstances.add(WeightedEntry.wrap(instance,weight));

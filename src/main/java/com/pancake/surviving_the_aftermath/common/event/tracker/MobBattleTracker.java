@@ -6,13 +6,11 @@ import com.pancake.surviving_the_aftermath.api.base.BaseTracker;
 import com.pancake.surviving_the_aftermath.common.config.AftermathConfig;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.raid.BaseRaid;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.Set;
-import java.util.UUID;
+
 
 public class MobBattleTracker extends BaseTracker {
     @SubscribeEvent

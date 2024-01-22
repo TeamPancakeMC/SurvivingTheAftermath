@@ -42,7 +42,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static java.util.Arrays.stream;
 
 public class BaseRaid extends BaseAftermath implements IRaid {
     public static final String IDENTIFIER = "raid";

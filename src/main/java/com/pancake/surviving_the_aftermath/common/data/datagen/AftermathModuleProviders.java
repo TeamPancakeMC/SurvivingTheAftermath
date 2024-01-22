@@ -4,20 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.common.hash.HashingOutputStream;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
-import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
-import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
-import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
-import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
-import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
-import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -31,7 +22,6 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AftermathModuleProviders<T extends BaseAftermathModule> implements DataProvider {
@@ -53,14 +43,13 @@ public abstract class AftermathModuleProviders<T extends BaseAftermathModule> im
     @NotNull
     public CompletableFuture<?> run(@NotNull CachedOutput output) {
         addModules();
-        return CompletableFuture.runAsync(() -> modules.forEach(module -> {
-            IAftermathModule.CODEC.get()
-                    .encodeStart(JsonOps.INSTANCE, module)
-                    .resultOrPartial(SurvivingTheAftermath.LOGGER::error)
-                    .ifPresent(jsonElement -> {
-                        Save(output, module, jsonElement);
-                    });
-        }), Util.backgroundExecutor());
+        return CompletableFuture.runAsync(() -> modules.forEach(module ->
+                IAftermathModule.CODEC.get()
+                .encodeStart(JsonOps.INSTANCE, module)
+                .resultOrPartial(SurvivingTheAftermath.LOGGER::error)
+                .ifPresent(jsonElement -> {
+                    Save(output, module, jsonElement);
+                })), Util.backgroundExecutor());
     }
 
     private void Save(CachedOutput output, T module, JsonElement jsonElement) {

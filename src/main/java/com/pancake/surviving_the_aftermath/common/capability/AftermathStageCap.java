@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 public class AftermathStageCap implements INBTSerializable<ListTag> {
-    private Set<String> stages = Sets.newHashSet();
+    private final Set<String> stages = Sets.newHashSet();
 
     @Override
     public ListTag serializeNBT() {
