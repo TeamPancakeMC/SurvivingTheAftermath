@@ -53,6 +53,8 @@ public class ModAftermathModule {
     public static final RegistryObject<IConditionModule> Y_AXIS_HEIGHT_CONDITION = ModuleRegistry.CONDITION_MODULE.register(YAxisHeightConditionModule.IDENTIFIER, YAxisHeightConditionModule::new);
     public static final RegistryObject<IConditionModule> WEATHER_CONDITION = ModuleRegistry.CONDITION_MODULE.register(WeatherConditionModule.IDENTIFIER, WeatherConditionModule::new);
     public static final RegistryObject<IConditionModule> XP_CONDITION = ModuleRegistry.CONDITION_MODULE.register(XpConditionModule.IDENTIFIER, XpConditionModule::new);
+    public static final RegistryObject<IConditionModule> PLAYER_STAGE_CONDITION = ModuleRegistry.CONDITION_MODULE.register(PlayerStageConditionModule.IDENTIFIER, PlayerStageConditionModule::new);
+    public static final RegistryObject<IConditionModule> LEVEL_STAGE_CONDITION = ModuleRegistry.CONDITION_MODULE.register(LevelStageConditionModule.IDENTIFIER, LevelStageConditionModule::new);
 
 
     public static final RegistryObject<IPredicateModule> NBT_PREDICATE = ModuleRegistry.PREDICATE_MODULE.register(NBTPredicate.IDENTIFIER, NBTPredicate::new);

@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Set;
 
 public abstract class PlayerConditionModule implements IConditionModule {
     public PlayerConditionModule() {
