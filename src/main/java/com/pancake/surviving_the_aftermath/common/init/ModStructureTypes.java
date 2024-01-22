@@ -18,7 +18,7 @@ public class ModStructureTypes {
 
 	public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPES = DeferredRegister.create(Registries.STRUCTURE_TYPE.location(), SurvivingTheAftermath.MOD_ID);
 	public static final RegistryObject<StructureType<?>> HOUSE_OF_SAKURA = register("house_of_sakura", HouseOfSakura::new);
-	public static final RegistryObject<StructureType<?>> NETHER_RAID = register("nether_raid", NetherRaidStructure::new);
+	public static final RegistryObject<StructureType<?>> NETHER_RAID = register("nether_invasion_portal", NetherRaidStructure::new);
 	public static final RegistryObject<StructureType<?>> CITY = register("city", CityStructure::new);
 	public static final RegistryObject<StructureType<?>> CAMP = register("camo", CampStructure::new);
 	public static final RegistryObject<StructureType<?>> LOGS = register("logs", LogsStructure::new);

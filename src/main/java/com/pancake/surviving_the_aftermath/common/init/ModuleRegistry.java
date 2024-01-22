@@ -12,9 +12,8 @@ import net.minecraftforge.registries.*;
 import java.util.function.Supplier;
 
 public class ModuleRegistry {
-    public static final DeferredRegister<IAftermath<IAftermathModule>> AFTERMATH = DeferredRegister.create(Keys.AFTERMATH, SurvivingTheAftermath.MOD_ID);
-    public static Supplier<IForgeRegistry<IAftermath<IAftermathModule>>> AFTERMATH_REGISTRY = AFTERMATH.makeRegistry(RegistryBuilder::new);
-
+    public static final DeferredRegister<IAftermath> AFTERMATH = DeferredRegister.create(Keys.AFTERMATH, SurvivingTheAftermath.MOD_ID);
+    public static Supplier<IForgeRegistry<IAftermath>> AFTERMATH_REGISTRY = AFTERMATH.makeRegistry(RegistryBuilder::new);
     public static final DeferredRegister<IAftermathModule> AFTERMATH_MODULE = DeferredRegister.create(Keys.AFTERMATH_MODULE, SurvivingTheAftermath.MOD_ID);
     public static Supplier<IForgeRegistry<IAftermathModule>> AFTERMATH_MODULE_REGISTRY = AFTERMATH_MODULE.makeRegistry(RegistryBuilder::new);
 
@@ -31,6 +30,10 @@ public class ModuleRegistry {
     public static final DeferredRegister<IConditionModule> CONDITION_MODULE = DeferredRegister.create(Keys.CONDITION, SurvivingTheAftermath.MOD_ID);
     public static Supplier<IForgeRegistry<IConditionModule>> CONDITION_REGISTRY = CONDITION_MODULE.makeRegistry(RegistryBuilder::new);
 
+    public static final DeferredRegister<IPredicateModule> PREDICATE_MODULE = DeferredRegister.create(Keys.PREDICATE, SurvivingTheAftermath.MOD_ID);
+    public static Supplier<IForgeRegistry<IPredicateModule>> PREDICATE_REGISTRY = PREDICATE_MODULE.makeRegistry(RegistryBuilder::new);
+
+
     public static final DeferredRegister<ITracker> TRACKER_MODULE = DeferredRegister.create(Keys.TRACKER, SurvivingTheAftermath.MOD_ID);
     public static Supplier<IForgeRegistry<ITracker>> TRACKER_REGISTRY = TRACKER_MODULE.makeRegistry(RegistryBuilder::new);
 
@@ -41,19 +44,20 @@ public class ModuleRegistry {
         ENTITY_INFO_MODULE.register(bus);
         WEIGHTED_MODULE.register(bus);
         CONDITION_MODULE.register(bus);
+        PREDICATE_MODULE.register(bus);
         TRACKER_MODULE.register(bus);
     }
 
 
     public static final class Keys {
-        public static final ResourceKey<Registry<IAftermath<IAftermathModule>>> AFTERMATH = key("aftermath");
+        public static final ResourceKey<Registry<IAftermath>> AFTERMATH = key("aftermath");
         public static final ResourceKey<Registry<IAftermathModule>> AFTERMATH_MODULE = key("aftermath_module");
         public static final ResourceKey<Registry<IAmountModule>> AMOUNT = key("amount");
         public static final ResourceKey<Registry<IEntityInfoModule>> ENTITY_INFO = key("entity_info");
         public static final ResourceKey<Registry<IWeightedModule<?>>> WEIGHTED = key("weighted");
         public static final ResourceKey<Registry<IConditionModule>> CONDITION = key("condition");
+        public static final ResourceKey<Registry<IPredicateModule>> PREDICATE = key("predicate");
         public static final ResourceKey<Registry<ITracker>> TRACKER = key("tracker");
-
 
 
         private static <T> ResourceKey<Registry<T>> key(String name)

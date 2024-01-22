@@ -2,6 +2,7 @@ package com.pancake.surviving_the_aftermath.common.module.amount;
 
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 
@@ -46,5 +47,4 @@ public class IntegerAmountModule implements IAmountModule {
             return new IntegerAmountModule(amount);
         }
     }
-
 }

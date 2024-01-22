@@ -15,7 +15,7 @@ public class ModStructurePieceTypes {
 
 	public static final DeferredRegister<StructurePieceType> STRUCTURE_PIECE_TYPES = DeferredRegister.create(Registries.STRUCTURE_PIECE.location(), SurvivingTheAftermath.MOD_ID);
 	public static final RegistryObject<StructurePieceType> HOUSE_OF_SAKURA = register("house_of_sakura", HouseOfSakura.Piece::new);
-	public static final RegistryObject<StructurePieceType> NETHER_RAID = register("nether_raid", NetherRaidStructure.Piece::new);
+	public static final RegistryObject<StructurePieceType> NETHER_RAID = register("nether_invasion_portal", NetherRaidStructure.Piece::new);
 	public static final RegistryObject<StructurePieceType> CITY = register("city", CityStructure.Piece::new);
 	public static final RegistryObject<StructurePieceType> CAMP = register("camp", CampStructure.Piece::new);
 	public static final RegistryObject<StructurePieceType> LOGS = register("logs", LogsStructure.Piece::new);

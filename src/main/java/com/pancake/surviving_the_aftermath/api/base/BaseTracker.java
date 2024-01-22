@@ -1,8 +1,7 @@
 package com.pancake.surviving_the_aftermath.api.base;
 
+import com.pancake.surviving_the_aftermath.api.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.ITracker;
-import com.pancake.surviving_the_aftermath.api.aftermath.AftermathManager;
-import net.minecraft.nbt.CompoundTag;
 
 import java.util.UUID;
 

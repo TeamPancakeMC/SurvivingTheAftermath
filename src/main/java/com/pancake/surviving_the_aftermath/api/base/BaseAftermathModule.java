@@ -1,60 +1,116 @@
 package com.pancake.surviving_the_aftermath.api.base;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
+import com.pancake.surviving_the_aftermath.api.module.IConditionModule;
+import com.pancake.surviving_the_aftermath.common.module.condition.LevelConditionModule;
+import com.pancake.surviving_the_aftermath.common.module.condition.PlayerConditionModule;
+import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
 import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
-import com.pancake.surviving_the_aftermath.common.util.RegistryUtil;
-import net.minecraft.util.random.SimpleWeightedRandomList;
-import net.minecraft.util.random.WeightedEntry;
-import net.minecraft.world.item.Item;
+import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Optional;
+
 
 public abstract class BaseAftermathModule implements IAftermathModule {
-    protected ItemWeightedModule Rewards;
-    protected String jsonName;
+    protected String name;
+    protected ItemWeightedModule rewards;
+    protected List<IConditionModule> conditions = Lists.newArrayList();
 
-    public BaseAftermathModule(ItemWeightedModule rewards) {
-        Rewards = rewards;
+    public BaseAftermathModule(String name,ItemWeightedModule rewards, List<IConditionModule> conditions) {
+        this.name = name;
+        this.rewards = rewards;
+        this.conditions = conditions;
+        findStructureStartingPoint();
     }
 
     public BaseAftermathModule() {
     }
 
-    public ItemWeightedModule getRewards() {
-        return Rewards;
-    }
-    public List<WeightedEntry.Wrapper<Item>> getRewardsList() {
-        return Rewards.getList();
+    @Override
+    public boolean isCreate(Level level, BlockPos pos, @Nullable Player player) {
+        if (conditions.isEmpty()) return true;
+
+        for (IConditionModule condition : conditions) {
+            if (condition instanceof LevelConditionModule levelConditionModule) {
+                return levelConditionModule.checkCondition(level,pos);
+            }
+            if (condition instanceof PlayerConditionModule playerConditionModule && player != null) {
+                return playerConditionModule.checkCondition(player);
+            }
+        }
+        return true;
+
     }
 
-    public BaseAftermathModule setRewards(ItemWeightedModule rewards) {
-        Rewards = rewards;
+    private void findStructureStartingPoint() {
+        List<IConditionModule> mutableConditions = Lists.newArrayList(conditions);
+
+        Optional<IConditionModule> structureConditionModules = mutableConditions.stream()
+                .filter(condition -> condition instanceof StructureConditionModule)
+                .findAny();
+
+        if (structureConditionModules.isPresent()) {
+            mutableConditions.removeIf(condition -> condition instanceof StructureConditionModule);
+            mutableConditions.add(structureConditionModules.get());
+        }
+
+        conditions = ImmutableList.copyOf(mutableConditions);
+    }
+
+    public ItemWeightedModule getRewards() {
+        return rewards;
+    }
+
+    public List<IConditionModule> getConditions() {
+        return conditions;
+    }
+
+    @Override
+    public String getModuleName() {
+        return name;
+    }
+
+    public BaseAftermathModule setName(String name) {
+        this.name = name;
         return this;
     }
 
-    @Override
-    public String getJsonName() {
-        return jsonName;
-    }
-    @Override
-    public void setJsonName(String jsonName) {
-        this.jsonName = jsonName;
+    public BaseAftermathModule setRewards(ItemWeightedModule rewards) {
+        this.rewards = rewards;
+        return this;
     }
 
-    public static class Builder<T extends BaseAftermathModule> {
-        protected  T module;
-        public Builder(T module,String jsonName) {
-            this.module = module;
-            this.module.setJsonName(jsonName);
+    public BaseAftermathModule setConditions(List<IConditionModule> conditions) {
+        this.conditions = conditions;
+        return this;
+    }
+
+    public static class Builder<T extends IAftermathModule> {
+        protected T module;
+        protected List<IConditionModule> conditions = Lists.newArrayList();
+        protected ItemWeightedModule rewards;
+        protected String name;
+        public Builder(String name) {
+            this.name = name;
         }
-        protected ItemWeightedModule Rewards;
-        public Builder<T> reward(ItemWeightedModule Rewards) {
-            this.Rewards = Rewards;
+
+        public Builder<T> rewards(ItemWeightedModule Rewards) {
+            this.rewards = Rewards;
             return this;
         }
+        public Builder<T> addCondition(IConditionModule module){
+            this.conditions.add(module);
+            return this;
+        }
+
         public T build() {
-            module.setRewards(Rewards);
             return module;
         }
     }

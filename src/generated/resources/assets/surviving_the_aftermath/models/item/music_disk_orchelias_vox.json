@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/template_music_disc",
-  "textures": {
-    "layer0": "surviving_the_aftermath:item/music_disk_orchelias_vox"
-  }
-}

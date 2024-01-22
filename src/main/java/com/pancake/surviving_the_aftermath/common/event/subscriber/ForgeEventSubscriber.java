@@ -1,8 +1,11 @@
 package com.pancake.surviving_the_aftermath.common.event.subscriber;
 
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
-import com.pancake.surviving_the_aftermath.api.aftermath.AftermathManager;
+import com.pancake.surviving_the_aftermath.api.AftermathManager;
+import com.pancake.surviving_the_aftermath.api.IAftermath;
+import com.pancake.surviving_the_aftermath.api.ITracker;
 import com.pancake.surviving_the_aftermath.common.capability.AftermathCap;
+import com.pancake.surviving_the_aftermath.common.config.AftermathConfig;
 import com.pancake.surviving_the_aftermath.common.init.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -16,7 +19,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-import java.util.List;
+import java.util.Collection;
 
 @EventBusSubscriber(modid = SurvivingTheAftermath.MOD_ID, bus = Bus.FORGE)
 public class ForgeEventSubscriber {
@@ -26,13 +29,12 @@ public class ForgeEventSubscriber {
 			ServerLevelData settings = event.getSettings();
 			BlockPos pos = level.findNearestMapStructure(ModTags.NETHER_RAID,
 					new BlockPos(settings.getXSpawn(), settings.getYSpawn(), settings.getZSpawn()), 100, false);
-			if (pos != null) {
+			if (pos != null && AftermathConfig.enableSpawnPointStructure.get()) {
 				settings.setSpawn(new BlockPos(pos.getX(), level.getHeight(Heightmap.Types.WORLD_SURFACE, pos.getX(), pos.getZ()), pos.getZ()), 0);
 				event.setCanceled(true);
 			}
 		}
 	}
-
 	@SubscribeEvent
 	public static void onTickLevelTick(TickEvent.LevelTickEvent event) {
 		Level level = event.level;
@@ -43,6 +45,11 @@ public class ForgeEventSubscriber {
 	@SubscribeEvent
 	public static void onLevel(LevelEvent.Unload event) {
 		if (event.getLevel().isClientSide()) return;
+		AftermathManager.getInstance().getAftermathMap().values().stream()
+				.map(IAftermath::getTrackers)
+				.forEach(trackers -> {
+					trackers.forEach(ITracker::unregister);
+				});
 		AftermathManager.getInstance().getAftermathMap().clear();
 	}
 }

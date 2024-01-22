@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class ModStructures {
     public static final ResourceKey<Structure> HOUSE_OF_SAKURA = register("house_of_sakura");
-    public static final ResourceKey<Structure> NETHER_RAID = register("nether_raid");
+    public static final ResourceKey<Structure> NETHER_RAID = register("nether_invasion_portal");
     public static final ResourceKey<Structure> CITY = register("city");
     public static final ResourceKey<Structure> CAMP = register("camp");
     public static final ResourceKey<Structure> LOGS = register("logs");

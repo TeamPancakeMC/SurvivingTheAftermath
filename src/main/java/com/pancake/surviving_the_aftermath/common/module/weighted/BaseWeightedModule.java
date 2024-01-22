@@ -1,16 +1,16 @@
 package com.pancake.surviving_the_aftermath.common.module.weighted;
 
-import com.google.common.collect.Lists;
 import com.pancake.surviving_the_aftermath.api.module.IWeightedModule;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedEntry.Wrapper;
 
 import java.util.List;
+import java.util.Map;
 
 
 public abstract class BaseWeightedModule<T> implements IWeightedModule<T> {
-    protected List<Wrapper<T>> list = Lists.newArrayList();
+    protected List<WeightedEntry.Wrapper<T>> list;
 
     public BaseWeightedModule(List<Wrapper<T>> list) {
         this.list = list;

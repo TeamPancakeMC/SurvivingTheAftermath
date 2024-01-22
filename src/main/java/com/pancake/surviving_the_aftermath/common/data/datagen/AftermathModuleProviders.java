@@ -4,23 +4,25 @@ import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.common.hash.HashingOutputStream;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
-import com.pancake.surviving_the_aftermath.common.module.amount.IntegerAmountModule;
-import com.pancake.surviving_the_aftermath.common.module.entity_info.EntityInfoModule;
-import com.pancake.surviving_the_aftermath.common.module.weighted.ItemWeightedModule;
-import com.pancake.surviving_the_aftermath.common.raid.module.NetherRaidModule;
+import com.pancake.surviving_the_aftermath.api.module.IAmountModule;
+import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
+import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
+import com.pancake.surviving_the_aftermath.common.module.amount.RandomAmountModule;
+import com.pancake.surviving_the_aftermath.common.module.condition.StructureConditionModule;
+import com.pancake.surviving_the_aftermath.common.raid.module.BaseRaidModule;
 import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.util.random.WeightedEntry;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
@@ -28,19 +30,22 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class AftermathModuleProviders<T extends IAftermathModule> implements DataProvider {
+public abstract class AftermathModuleProviders<T extends BaseAftermathModule> implements DataProvider {
     private final PackOutput output;
     private final String modId;
+    private final String locale;
     private final List<T> modules = Lists.newArrayList();
 
 
-    public AftermathModuleProviders(PackOutput output, String modId) {
+
+    public AftermathModuleProviders(PackOutput output ,String locale) {
         this.output = output;
-        this.modId = modId;
+        this.modId = SurvivingTheAftermath.MOD_ID;
+        this.locale = locale;
     }
 
 
@@ -56,14 +61,6 @@ public abstract class AftermathModuleProviders<T extends IAftermathModule> imple
                         Save(output, module, jsonElement);
                     });
         }), Util.backgroundExecutor());
-//        IAftermathModule.CODEC.get().encodeStart(JsonOps.INSTANCE, netherRaidModule)
-//                .resultOrPartial(SurvivingTheAftermath.LOGGER::error)
-//                .ifPresent(jsonElement -> {
-//                    Save(output, netherRaidModule, jsonElement);
-//                });
-
-
-//        return CompletableFuture.allOf();
     }
 
     private void Save(CachedOutput output, T module, JsonElement jsonElement) {
@@ -77,7 +74,7 @@ public abstract class AftermathModuleProviders<T extends IAftermathModule> imple
                 GsonHelper.writeValue(jsonwriter, jsonElement, KEY_COMPARATOR);
             }
             Path path = this.output.getOutputFolder(PackOutput.Target.DATA_PACK)
-                    .resolve(this.modId).resolve("aftermath").resolve(module.getJsonName().toLowerCase() + ".json");
+                    .resolve(this.modId).resolve("aftermath").resolve(module.getModuleName().toLowerCase() + ".json");
             output.writeIfNeeded(path, bytearrayoutputstream.toByteArray(), hashingoutputstream.hash());
         } catch (IOException ioexception) {
             LOGGER.error("Failed to save file to {}", output, ioexception);
@@ -92,6 +89,6 @@ public abstract class AftermathModuleProviders<T extends IAftermathModule> imple
     @Override
     @NotNull
     public String getName() {
-        return "AftermathModuleProviders";
+        return "AftermathModuleProviders" + locale;
     }
 }

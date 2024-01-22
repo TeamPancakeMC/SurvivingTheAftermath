@@ -14,7 +14,7 @@ import static com.pancake.surviving_the_aftermath.common.init.ModStructures.*;
 public class ModStructureSets {
 
     public static final ResourceKey<StructureSet> HOUSE_OF_SAKURA_SET = register("house_of_sakura");
-    public static final ResourceKey<StructureSet> NETHER_RAID_SET = register("nether_raid");
+    public static final ResourceKey<StructureSet> NETHER_RAID_SET = register("nether_invasion_portal");
     public static final ResourceKey<StructureSet> CITY_SET = register("city");
     public static final ResourceKey<StructureSet> CAMP_SET = register("camp");
     public static final ResourceKey<StructureSet> LOGS_SET = register("logs");

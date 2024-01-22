@@ -1,9 +1,9 @@
 package com.pancake.surviving_the_aftermath.common.capability;
 
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
+import com.pancake.surviving_the_aftermath.api.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
-import com.pancake.surviving_the_aftermath.api.aftermath.AftermathManager;
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
+import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModCapability;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -16,9 +16,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
-import java.util.UUID;
 
 public class AftermathCap implements INBTSerializable<CompoundTag> {
     private static final AftermathManager AFTERMATH_MANAGER = AftermathManager.getInstance();

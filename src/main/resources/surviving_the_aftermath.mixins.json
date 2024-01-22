@@ -6,8 +6,7 @@
   "refmap": "surviving_the_aftermath.refmap.json",
   "mixins": [
     "MoveControlMixin",
-    "PortalShapeMixin",
-    "VillagerMixin"
+    "PortalShapeMixin"
   ],
   "client": [
   ],

@@ -8,9 +8,9 @@ import com.pancake.surviving_the_aftermath.api.module.IEntityInfoModule;
 import com.pancake.surviving_the_aftermath.common.init.ModAftermathModule;
 import com.pancake.surviving_the_aftermath.common.util.RegistryUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.List;
@@ -32,8 +32,9 @@ public class EntityInfoModule implements IEntityInfoModule {
 
     public EntityInfoModule() {
     }
+
     @Override
-    public List<LazyOptional<Entity>> spawnEntity(ServerLevel level) {
+    public List<LazyOptional<Entity>> spawnEntity(Level level) {
         List<LazyOptional<Entity>> arrayList = Lists.newArrayList();
         for (int i = 0; i < amountModule.getSpawnAmount(); i++) {
             Entity entity = entityType.create(level);
@@ -59,13 +60,16 @@ public class EntityInfoModule implements IEntityInfoModule {
         return ModAftermathModule.ENTITY_INFO.get();
     }
 
-
     public static class Builder {
-        private final EntityType<?> entityType;
-        private IAmountModule amountModule;
+        protected final EntityType<?> entityType;
+        protected IAmountModule amountModule;
 
         public Builder(String entityType) {
             this.entityType = RegistryUtil.getEntityTypeFromRegistryName(entityType);
+        }
+
+        public Builder(EntityType<?> entityType) {
+            this.entityType = entityType;
         }
 
         public Builder amountModule(IAmountModule amountModule) {

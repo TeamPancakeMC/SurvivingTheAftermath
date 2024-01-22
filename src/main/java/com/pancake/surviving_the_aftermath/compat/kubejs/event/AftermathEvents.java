@@ -1,9 +1,7 @@
 package com.pancake.surviving_the_aftermath.compat.kubejs.event;
 
-import com.pancake.surviving_the_aftermath.compat.kubejs.ModExtra;
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
-import dev.latvian.mods.kubejs.event.Extra;
 
 public interface AftermathEvents {
     EventGroup GROUP = EventGroup.of("AftermathEvents");
@@ -28,9 +26,8 @@ public interface AftermathEvents {
 
     //Celebrating
     EventHandler CELEBRATING = GROUP.server("celebrating", () -> AftermathEventJS.CelebratingJS.class).hasResult();
-
-    EventHandler MODIFY = GROUP.startup("modify", () -> AftermathModifyEventJS.class)
-            .extra(ModExtra.AFTERMATH_TYPE.validator(ModExtra::validateKeyExists));
+//
+    EventHandler MODIFY = GROUP.startup("modify", () -> AftermathModifyEventJS.class);
 
     static void register() {
         GROUP.register();

@@ -1,6 +1,5 @@
 package com.pancake.surviving_the_aftermath.common.data.datagen;
 
-
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import com.pancake.surviving_the_aftermath.common.init.ModSoundEvents;
 import net.minecraft.data.PackOutput;

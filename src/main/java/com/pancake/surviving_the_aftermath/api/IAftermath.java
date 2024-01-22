@@ -4,51 +4,54 @@ import com.mojang.serialization.Codec;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
 import com.pancake.surviving_the_aftermath.common.init.ModuleRegistry;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public interface IAftermath<T extends IAftermathModule> extends ICodec<IAftermath<IAftermathModule>>{
-    Supplier<Codec<IAftermath<IAftermathModule>>> CODEC = () -> ModuleRegistry.AFTERMATH_REGISTRY.get().getCodec()
+public interface IAftermath extends IModule<IAftermath> {
+    Supplier<Codec<IAftermath>> CODEC = () -> ModuleRegistry.AFTERMATH_REGISTRY.get().getCodec()
             .dispatch("aftermath", IAftermath::type, IAftermath::codec);
-
-
-    void tick();
     ResourceLocation getRegistryName();
-    boolean isEnd();
-    boolean isLose();
-    boolean isCreate();
-    UUID getUUID();
-
     ResourceLocation getBarsResource();
 
     int[] getBarsOffset();
 
-    Predicate<? super ServerPlayer> validPlayer();
+    boolean isCreate(Level level, BlockPos pos, @Nullable Player player);
+    void createRewards();
+
+    void updateProgress();
+
+    void tick();
+
+    List<ITracker> getTrackers();
+
+    IAftermathModule getModule();
+
+    boolean isEnd();
+    UUID getUUID();
+
+    BlockPos getStartPos();
+
+    void setLevel(ServerLevel level);
+
+    AftermathState getState();
+
+    void setState(AftermathState state);
+
+    void lose();
 
     Set<UUID> getEnemies();
 
-    Set<UUID> getPlayers();
-
-    void updatePlayers();
-
-    void updateProgress();
-    void spawnRewards();
-
-    void end();
-    void lose();
-     T getModule();
-
-    void ready();
-
-    void setServerLevel(ServerLevel level);
-
+    IAftermath Create();
 }

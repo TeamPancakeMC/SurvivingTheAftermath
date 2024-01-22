@@ -1,15 +1,18 @@
 package com.pancake.surviving_the_aftermath.common.util;
 
 import com.mojang.logging.LogUtils;
-import com.pancake.surviving_the_aftermath.common.init.ModBlocks;
-import com.pancake.surviving_the_aftermath.common.init.ModItems;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
+
+import java.util.Objects;
 
 public class RegistryUtil {
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -49,13 +52,16 @@ public class RegistryUtil {
         return ForgeRegistries.ITEMS.getKey(item);
     }
 
-
-    public static Iterable<Block> getKnownBlocks() {
-        return ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get)::iterator;
+    public static ResourceKey<Structure> keyStructure(String name) {
+        return ResourceKey.create(Registries.STRUCTURE, Objects.requireNonNull(ResourceLocation.tryParse(name)));
     }
 
-    public static Iterable<Item> getKnownItems() {
-        return ModItems.ITEMS.getEntries().stream().map(RegistryObject::get)::iterator;
-    }
+//    public static Iterable<Block> getKnownBlocks() {
+//        return ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get)::iterator;
+//    }
+//
+//    public static Iterable<Item> getKnownItems() {
+//        return ModItems.ITEMS.getEntries().stream().map(RegistryObject::get)::iterator;
+//    }
 
 }

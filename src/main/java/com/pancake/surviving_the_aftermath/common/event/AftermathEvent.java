@@ -1,24 +1,38 @@
 package com.pancake.surviving_the_aftermath.common.event;
 
+import com.pancake.surviving_the_aftermath.api.IAftermath;
+import com.pancake.surviving_the_aftermath.api.IAftermathEvent;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermath;
 import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
+import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
+import dev.latvian.mods.kubejs.event.EventJS;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.random.SimpleWeightedRandomList;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Supplier;
 
-public class AftermathEvent extends Event {
-    private final BaseAftermath<BaseAftermathModule> aftermath;
+public abstract class AftermathEvent extends Event implements IAftermathEvent {
+    private final IAftermath aftermath;
+    private final IAftermathModule module;
     private final Set<UUID> players;
     private final ServerLevel level;
-    private final BaseAftermathModule module;
+
+    public AftermathEvent(IAftermath aftermath, Set<UUID> players, ServerLevel level) {
+        this.aftermath = aftermath;
+        this.module = aftermath.getModule();
+        this.players = players;
+        this.level = level;
+    }
+
+    public IAftermath getAftermath() {
+        return aftermath;
+    }
+
+    public IAftermathModule getModule() {
+        return module;
+    }
 
     public Set<UUID> getPlayers() {
         return players;
@@ -28,61 +42,60 @@ public class AftermathEvent extends Event {
         return level;
     }
 
-    public BaseAftermath<BaseAftermathModule> getAftermath() {
-        return aftermath;
+    @Override
+    public Event getForge() {
+        return this;
     }
 
-    public BaseAftermathModule getModule(){return module;}
-
-    public AftermathEvent(BaseAftermath<BaseAftermathModule> aftermath,Set<UUID> players, ServerLevel level) {
-        this.aftermath = aftermath;
-        this.players = players;
-        this.level = level;
-        this.module = aftermath.getModule();
+    @Override
+    public EventJS getKubeJS() {
+        return null;
     }
 
     @Cancelable
     public static class Start extends AftermathEvent {
-        public Start(BaseAftermath<BaseAftermathModule> aftermath,Set<UUID> players, ServerLevel level) {
+        public Start(IAftermath aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath,players, level);
         }
     }
     public static class End extends AftermathEvent {
 
-        public End(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
+        public End(IAftermath aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
     @Cancelable
     public static class Ready extends AftermathEvent {
 
-        public Ready(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
+        public Ready(IAftermath aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
 
     public static class Ongoing extends AftermathEvent {
 
-        public Ongoing(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
+        public Ongoing(IAftermath aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
     public static class Victory extends AftermathEvent {
 
-        public Victory(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
+        public Victory(IAftermath aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
     public static class Lose extends AftermathEvent {
 
-        public Lose(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
+        public Lose(IAftermath aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
     @Cancelable
     public static class Celebrating extends AftermathEvent {
-        public Celebrating(BaseAftermath<BaseAftermathModule> aftermath, Set<UUID> players, ServerLevel level) {
+        public Celebrating(IAftermath aftermath, Set<UUID> players, ServerLevel level) {
             super(aftermath, players, level);
         }
     }
+
+
 }

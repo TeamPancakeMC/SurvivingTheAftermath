@@ -1,9 +1,8 @@
 package com.pancake.surviving_the_aftermath.common.event.subscriber;
 
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
+import com.pancake.surviving_the_aftermath.api.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.IAftermath;
-import com.pancake.surviving_the_aftermath.api.aftermath.AftermathManager;
-import com.pancake.surviving_the_aftermath.api.base.BaseAftermathModule;
 import net.minecraft.client.gui.components.LerpingBossEvent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,10 +21,14 @@ public class ClientForgeEvent {
         LerpingBossEvent bossEvent = event.getBossEvent();
         AftermathManager manager = AftermathManager.getInstance();
         manager.getAftermath(bossEvent.getId()).ifPresent(aftermath -> {
-            event.setCanceled(true);
             var graphics = event.getGuiGraphics();
             ResourceLocation resource = aftermath.getBarsResource();
             int[] offset = aftermath.getBarsOffset();
+
+            if (resource == null || offset == null) {
+                return;
+            }
+
             int frameWidth = offset[0];
             int frameHeight = offset[1];
             int barWidth = offset[2];
@@ -40,6 +43,7 @@ public class ClientForgeEvent {
             graphics.blit(resource, (graphics.guiWidth() - barWidth) / 2, event.getY() - 10 + barOffset,
                     0, 0, (int) (barWidth * event.getBossEvent().getProgress()), barHeight);
             event.setIncrement(frameHeight);
+            event.setCanceled(true);
         });
     }
 }

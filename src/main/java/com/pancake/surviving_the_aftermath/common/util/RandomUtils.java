@@ -3,7 +3,6 @@ package com.pancake.surviving_the_aftermath.common.util;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 public class RandomUtils<T> {
     private static final Random RANDOM = new Random();

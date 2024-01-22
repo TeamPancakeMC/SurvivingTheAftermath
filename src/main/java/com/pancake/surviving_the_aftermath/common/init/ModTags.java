@@ -1,5 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.init;
 
+
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -8,7 +9,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.Structure;
-
 public class ModTags {
 
 	public static final TagKey<Biome> HAS_CITY = createTag(Registries.BIOME, "has_city");

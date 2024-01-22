@@ -1,7 +1,6 @@
 package com.pancake.surviving_the_aftermath.common.data.pack;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,21 +8,20 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import com.pancake.surviving_the_aftermath.SurvivingTheAftermath;
-import com.pancake.surviving_the_aftermath.api.Constant;
+import com.pancake.surviving_the_aftermath.api.AftermathManager;
 import com.pancake.surviving_the_aftermath.api.module.IAftermathModule;
+import com.pancake.surviving_the_aftermath.common.util.AftermathEventUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
-    private static final Gson GSON = new GsonBuilder()
+    public static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .create();
     public static final Multimap<ResourceLocation, IAftermathModule> AFTERMATH_MODULE_MAP = ArrayListMultimap.create();
@@ -45,5 +43,11 @@ public class AftermathModuleLoader extends SimpleJsonResourceReloadListener {
                         AFTERMATH_MODULE_MAP.put(ResourceLocation.tryParse(string), aftermathModule);
                     });
         });
+
+
+        AFTERMATH_MODULE_MAP.asMap().forEach(AftermathEventUtil::modify);
+
+        AftermathManager.getInstance().fillAftermathModuleMap(AFTERMATH_MODULE_MAP);
+
     }
 }

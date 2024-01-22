@@ -18,10 +18,7 @@ public class RandomAmountModule implements IAmountModule {
     public Codec<? extends IAmountModule> codec() {
         return CODEC;
     }
-//    @Override
-//    public IAmountModule type() {
-//        return this;
-//    }
+
     private final Random rand = new Random();
     protected int min;
     protected int max;
@@ -33,7 +30,6 @@ public class RandomAmountModule implements IAmountModule {
 
     public RandomAmountModule() {
     }
-
     @Override
     public int getSpawnAmount() {
         this.max = Math.max(this.max, this.min);
